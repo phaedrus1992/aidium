@@ -1,22 +1,22 @@
 #!/bin/bash -eu
 
-# URL for pidgin/libpurple 2.14.14 release tarball
 LIBPURPLE_VERSION="2.14.14"
-LIBPURPLE_TARBALL="pidgin-${LIBPURPLE_VERSION}.tar.bz2"
-LIBPURPLE_URL="https://downloads.sourceforge.net/project/pidgin/Pidgin/${LIBPURPLE_VERSION}/${LIBPURPLE_TARBALL}"
-
-##
-# fetch_libpurple
-#
-fetch_libpurple() {
-	prereq "libpurple" "${LIBPURPLE_URL}"
-}
+LIBPURPLE_URL="https://downloads.sourceforge.net/project/pidgin/Pidgin/${LIBPURPLE_VERSION}/pidgin-${LIBPURPLE_VERSION}.tar.bz2"
+# ponytail: SHA256 verified against pidgin.im release page
+LIBPURPLE_SHA256="0ffc9994def10260f98a55cd132deefa8dc4a9835451cc0e982747bd458e2356"
 
 ##
 # libpurple
 #
 build_libpurple() {
-	fetch_libpurple
+	prereq "libpurple" "${LIBPURPLE_URL}"
+
+	# Verify tarball integrity
+	status "Verifying libpurple tarball checksum..."
+	echo "${LIBPURPLE_SHA256}  ${ROOTDIR}/source/libpurple.tar.bz2" | shasum -a 256 -c - || {
+		error "libpurple tarball checksum mismatch — expected ${LIBPURPLE_SHA256}"
+		exit 1
+	}
 
 	if [ ! -d "$ROOTDIR/source/libpurple" ]; then
 		error "libpurple checkout not found"
@@ -34,8 +34,7 @@ build_libpurple() {
 	quiet pushd "$ROOTDIR/source/libpurple"
 
 	# Protocols available in 2.14.14 — msn, oscar, and yahoo were removed upstream
-	PROTOCOLS="bonjour,gg,irc,jabber,novell,"
-	PROTOCOLS+="sametime,simple,zephyr"
+	PROTOCOLS="bonjour,gg,irc,jabber,novell,sametime,simple,zephyr"
 
 	if needsconfigure $@; then
 	(
@@ -81,13 +80,8 @@ build_libpurple() {
 	log make install
 
 	status "Copying internal libpurple headers"
-	log cp -f "$ROOTDIR/source/libpurple/libpurple/protocols/oscar/oscar.h" \
-		  "$ROOTDIR/source/libpurple/libpurple/protocols/oscar/snactypes.h" \
-		  "$ROOTDIR/source/libpurple/libpurple/protocols/oscar/peer.h" \
-		  "$ROOTDIR/source/libpurple/libpurple/cmds.h" \
+	log cp -f "$ROOTDIR/source/libpurple/libpurple/cmds.h" \
 		  "$ROOTDIR/source/libpurple/libpurple/internal.h" \
-		  "$ROOTDIR/source/libpurple/libpurple/protocols/msn/"*.h \
-		  "$ROOTDIR/source/libpurple/libpurple/protocols/yahoo/"*.h \
 		  "$ROOTDIR/source/libpurple/libpurple/protocols/gg/buddylist.h" \
 		  "$ROOTDIR/source/libpurple/libpurple/protocols/gg/gg.h" \
 		  "$ROOTDIR/source/libpurple/libpurple/protocols/gg/search.h" \

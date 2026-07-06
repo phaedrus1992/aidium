@@ -108,6 +108,10 @@ make_framework() {
 			"${FRAMEWORK_DIR}/libotr.subproj/libotr.framework/Resources/Info.plist"
 	else
 		LIBPURPLE_DYLIB=$(ls "${ROOTDIR}/build/lib/libpurple."*.dylib 2>/dev/null | head -1)
+		if [ -z "${LIBPURPLE_DYLIB}" ]; then
+			error "libpurple dylib not found in ${ROOTDIR}/build/lib — did the build succeed?"
+			exit 1
+		fi
 		status "Making a framework for libpurple (${LIBPURPLE_DYLIB}) and all dependencies..."
 		log python "${ROOTDIR}/framework_maker/frameworkize.py" \
 			"${LIBPURPLE_DYLIB}" \

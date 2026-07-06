@@ -118,7 +118,7 @@ prereq() {
 	
 	# Download the package
 	status "Downloading source for package $1"
-	curl -Lfo "$1$ext" "$2"
+	curl -L --proto-redir -all,https -fo "$1$ext" "$2"
 	
 	# Extract the source to a fixed directory name
 	status "Extracting source for package $1"
