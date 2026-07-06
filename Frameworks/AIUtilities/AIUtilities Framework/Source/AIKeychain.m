@@ -22,8 +22,6 @@
  */
 
 #import "AIKeychain.h"
-#import "AIStringAdditions.h"
-#import <CoreServices/CoreServices.h>
 #import <CoreFoundation/CoreFoundation.h>
 #import <Security/Security.h>
 
