@@ -17,14 +17,14 @@ fi
 TARGET_BASE="apple-darwin19.6."
 
 # Arrays for archs and host systems, sometimes an -arch just isnt enough!
-ARCHS=( "x86_64" )
-HOSTS=( "x86_64-${TARGET_BASE}" "i686-${TARGET_BASE}" )
+ARCHS=( "x86_64" "arm64" )
+HOSTS=( "x86_64-${TARGET_BASE}" "i686-${TARGET_BASE}" "aarch64-${TARGET_BASE}" )
 NUMBER_OF_CORES=`sysctl -n hw.activecpu`
 
 DEVELOPER=$(xcode-select -print-path)
 SDK_ROOT="${DEVELOPER}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"
 
-MIN_OS_VERSION="10.12"
+MIN_OS_VERSION="11.0"
 BASE_CFLAGS="-fstack-protector -isysroot $SDK_ROOT \
 	-mmacosx-version-min=$MIN_OS_VERSION \
 	-I$ROOTDIR/build/include \
@@ -66,8 +66,6 @@ FORCE_CONFIGURE=false
 NATIVE_BUILD=false
 BUILD_OTR=false
 STRAIGHT_TO_LIBPURPLE=false
-DOWNLOAD_LIBPURPLE=false
-HG_UPDATE_PARAM=""
 DISTCC_HOSTS=""
 for option in ${@:1} ; do
 	case $option in
@@ -103,19 +101,11 @@ for option in ${@:1} ; do
 			export CXX="$DEVELOPER/usr/bin/llvm-g++"
 			warning "Building with LLVM! This is unsupported and will probably break things!"
 			;;
-		--libpurple-rev=*)
-			HG_REV=${option##*=}
-			HG_UPDATE_PARAM="${HG_UPDATE_PARAM} -r ${HG_REV}"
-			;;
-		--libpurple-branch=*)
-			HG_BRANCH=${option##*=}
-			HG_UPDATE_PARAM="${HG_UPDATE_PARAM} ${HG_BRANCH}"
-			;;
 		--libpurple-only)
 			STRAIGHT_TO_LIBPURPLE=true
 			;;
 		--download-libpurple)
-			DOWNLOAD_LIBPURPLE=true
+			# ponytail: libpurple is now fetched from a release tarball, always downloaded
 			;;
 		-h|-help|--help)
 			echo 'The following options are valid:
@@ -130,11 +120,9 @@ for option in ${@:1} ; do
                                 `man distcc` for more information.
   --enable-llvm               : Enable building with llvm-gcc.
                                 WARNING: This is currently broken!
-  --libpurple-rev=[rev]       : Force a specific libpurple revision
-  --libpurple-branch=[branch] : Force a secific libpurple branch
   --libpurple-only            : Assume all dependencies are already built
                                 and start the build with libpurple itself
-  --download-libpurple        : Download the libpurple Mercurial repository
+  --download-libpurple        : Download the libpurple source (always done automatically)
   --help                      : This help text
 	
 Note that explicitly setting any arch flags implies a forced reconfigure.'
@@ -173,13 +161,7 @@ set_arch_flags
 
 # assert that the developer can, in fact, build libpurple.  Why waste his time if he can't?
 asserttools gcc
-asserttools hg
 
-# Ok, so we keep running into issues where MacPorts will volunteer to supply
-# dependencies that we want to build ourselves.
-# Getting hg's path before we export our own (safer?) path will ensure it works,
-# even if it's being managed by MacPorts, Fink, or similar.
-HG=`which hg`
 export PATH=$ROOTDIR/build/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:$DEVELOPER/usr/bin:$DEVELOPER/usr/sbin
 #export PKG_CONFIG="$ROOTDIR/build/bin/pkg-config"
 #export PKG_CONFIG_PATH="$ROOTDIR/build/lib/pkgconfig:/usr/lib/pkgconfig"

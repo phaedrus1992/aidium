@@ -107,9 +107,10 @@ make_framework() {
 		log cp "${ROOTDIR}/Libotr-Info.plist" \
 			"${FRAMEWORK_DIR}/libotr.subproj/libotr.framework/Resources/Info.plist"
 	else
-		status "Making a framework for libpurple-${LIBPURPLE_VERSION} and all dependencies..."
+		LIBPURPLE_DYLIB=$(ls "${ROOTDIR}/build/lib/libpurple."*.dylib 2>/dev/null | head -1)
+		status "Making a framework for libpurple (${LIBPURPLE_DYLIB}) and all dependencies..."
 		log python "${ROOTDIR}/framework_maker/frameworkize.py" \
-			"${ROOTDIR}/build/lib/libpurple.${LIBPURPLE_VERSION}.dylib" \
+			"${LIBPURPLE_DYLIB}" \
 			"${FRAMEWORK_DIR}"
 
 		status "Adding the Adium framework header..."
