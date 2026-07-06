@@ -50,12 +50,6 @@
 	return [completeUserName UTF8String];
 }
 
-- (void)dealloc {
-	[response release];
-	[conn release];
-	
-	[super dealloc];
-}
 
 - (NSString *)serverSuffix
 {
@@ -285,12 +279,11 @@
 													   keychainItem:NULL
 															  error:NULL];
 	}
-	
-	[password release];
+
 	password = [[responseDict objectForKey:@"access_token"] retain];
 	
-	[conn release]; conn = nil;
-	[response release]; response = nil;
+	; conn = nil;
+	; response = nil;
 	
 	if (password) {
 		[self setGTalkMechEnabled:YES];
