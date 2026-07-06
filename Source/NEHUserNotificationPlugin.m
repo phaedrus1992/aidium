@@ -17,26 +17,20 @@
 #import "NEHUserNotificationPlugin.h"
 #import <Adium/AIChatControllerProtocol.h>
 #import <Adium/AIContactControllerProtocol.h>
-#import <Adium/AIContentControllerProtocol.h>
 #import <Adium/AIInterfaceControllerProtocol.h>
 #import <Adium/AIContactAlertsControllerProtocol.h>
 #import <Adium/AIStatusControllerProtocol.h>
-#import <Adium/AIAccount.h>
 #import <Adium/AIChat.h>
 #import <Adium/AIContentObject.h>
 #import <Adium/AIListContact.h>
 #import <Adium/AIListObject.h>
-#import <Adium/AIServiceIcons.h>
 #import <Adium/AIStatus.h>
 #import <Adium/ESFileTransfer.h>
 #import <AIUtilities/AIImageAdditions.h>
-#import <AIUtilities/AIStringAdditions.h>
 
 // UserNotifications requires macOS 10.14+. Runtime guards are in place below.
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunguarded-availability"
-
-#define USER_NOTIFICATION_TEXT_SIZE 11
 
 #define KEY_FILE_TRANSFER_ID	@"fileTransferUniqueID"
 #define KEY_CHAT_ID				@"uniqueChatID"
