@@ -165,8 +165,9 @@
 
 - (NSView *)hitTest:(NSPoint)aPoint {
     // Check if click is on the "clear" area (right side)
+    // aPoint is already in self's coordinate system when hitTest: is called.
     if (self.hotKey && [self.hotKey isValidCombo] && !_recording) {
-        NSPoint localPoint = [self convertPoint:aPoint fromView:[self superview]];
+        NSPoint localPoint = aPoint;
         NSRect bounds = [self bounds];
         NSRect clearRect = NSMakeRect(NSMaxX(bounds) - 22.0, NSMinY(bounds), 22.0, NSHeight(bounds));
         if (NSPointInRect(localPoint, clearRect)) {
@@ -175,11 +176,6 @@
         }
     }
     return self;
-}
-
-- (void)mouseDown:(NSEvent *)event {
-    // Check clear area first via hitTest
-    [super mouseDown:event];
 }
 
 #pragma mark - Recording
@@ -252,6 +248,11 @@
         return nil;
     }] retain];
 
+    if (!_localMonitor) {
+        AILogWithSignature(@"Failed to create local event monitor — key capture disabled.");
+        [self _stopRecording];
+    }
+
     [self _updateDisplay];
 }
 
@@ -301,10 +302,6 @@
 #pragma mark - First responder
 
 - (BOOL)acceptsFirstResponder {
-    return YES;
-}
-
-- (BOOL)becomeFirstResponder {
     return YES;
 }
 

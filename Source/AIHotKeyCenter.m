@@ -109,10 +109,18 @@
             [strongSelf _handleKeyDown:event];
         }
     }] retain];
+
+    if (!_globalMonitor) {
+        AILogWithSignature(@"Failed to create global event monitor — hotkeys will not work. "
+                           @"The app may lack accessibility permissions.");
+    }
 }
 
 - (void)_handleKeyDown:(NSEvent *)event {
-    for (AIHotKey *hotKey in _hotKeys) {
+    // Snapshot to prevent mutation-during-enumeration if a hotkey action
+    // callback calls registerHotKey: or unregisterHotKey:.
+    NSArray *snapshot = [[_hotKeys copy] autorelease];
+    for (AIHotKey *hotKey in snapshot) {
         if ([hotKey isValidCombo] && [self _hotKey:hotKey matchesEvent:event]) {
             [self _invokeHotKey:hotKey];
             return;

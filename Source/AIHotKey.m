@@ -69,8 +69,8 @@ static NSString * const kShiftGlyph   = @"⇧";
         return [self initWithIdentifier:nil keyCode:0 modifierFlags:0];
     }
 
-    signed short theKeyCode = [[dict objectForKey:AIHotKeyKeyCodeKey] integerValue];
-    NSUInteger theModifiers = [[dict objectForKey:AIHotKeyModifiersKey] integerValue];
+    NSInteger theKeyCode = [[dict objectForKey:AIHotKeyKeyCodeKey] integerValue];
+    NSUInteger theModifiers = [[dict objectForKey:AIHotKeyModifiersKey] unsignedIntegerValue];
 
     // Convert Carbon modifiers to Cocoa modifiers if needed
     NSUInteger cocoaFlags = [self _carbonToCocoaFlags:theModifiers];
@@ -86,8 +86,8 @@ static NSString * const kShiftGlyph   = @"⇧";
 - (NSDictionary *)dictionaryRepresentation {
     NSUInteger carbonFlags = [self _cocoaToCarbonFlags:self.modifierFlags];
     return [NSDictionary dictionaryWithObjectsAndKeys:
-            [NSNumber numberWithInteger:self.keyCode], AIHotKeyKeyCodeKey,
-            [NSNumber numberWithInteger:carbonFlags], AIHotKeyModifiersKey,
+            [NSNumber numberWithUnsignedInteger:self.keyCode], AIHotKeyKeyCodeKey,
+            [NSNumber numberWithUnsignedInteger:carbonFlags], AIHotKeyModifiersKey,
             nil];
 }
 
@@ -98,7 +98,7 @@ static NSString * const kShiftGlyph   = @"⇧";
 }
 
 - (BOOL)isValidCombo {
-    return self.keyCode > 0 && self.modifierFlags > 0;
+    return self.modifierFlags > 0;
 }
 
 #pragma mark - Display

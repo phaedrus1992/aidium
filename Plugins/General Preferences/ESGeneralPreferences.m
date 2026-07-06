@@ -243,7 +243,7 @@
 
 - (BOOL)hotKeyRecorder:(AIHotKeyRecorder *)aRecorder shouldCaptureKeyCode:(unsigned short)keyCode modifierFlags:(NSUInteger)modifierFlags
 {
-	return NO;
+	return YES;
 }
 
 - (void)hotKeyRecorder:(AIHotKeyRecorder *)aRecorder keyComboDidChange:(AIHotKey *)hotKey
