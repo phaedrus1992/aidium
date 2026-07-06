@@ -71,37 +71,37 @@ asserttools() {
 			missing=true
 		fi
 	done
-	
+
 	if $missing; then exit 1; fi
 }
 
 ##
 # needsconfigure <opts>
-# 
+#
 # Checks if the current directory has a config.status file, or if the options
 # passed include --configure
 needsconfigure() {
 	needsconfig=true
 	if [ -f config.status ]; then needsconfig=false; fi
-	
+
 	if $FORCE_CONFIGURE; then
 		needsconfig=true
 		quiet make clean
 	fi
-	
+
 	"$needsconfig"
 }
 
 ##
 # prereq <package> <URL>
 #
-# Downloads the source code to the package if it is not already found in the 
+# Downloads the source code to the package if it is not already found in the
 # source directory.
 #
 prereq() {
 	if [ -d "$ROOTDIR/source/$1" ]; then return 0; fi
 	quiet pushd "$ROOTDIR/source"
-	
+
 	# Work out the file extension from the name
 	ext=""
 	for zxt in ".tar.gz" ".tar.xz" ".tgz" ".tar.bz2" ".tbz", ".tar", ".zip"; do
@@ -110,50 +110,27 @@ prereq() {
 			break
 		fi
 	done
-	
+
 	if [ "$ext" = "" ]; then
 		error "Couldn't autodetect file type of $2 for $1"
 		exit 1
 	fi
-	
+
 	# Download the package
 	status "Downloading source for package $1"
-	curl -L --proto-redir -all,https -fo "$1$ext" "$2"
-	
+	curl -L --fail --proto-redir -all,https -fo "$1$ext" "$2"
+
 	# Extract the source to a fixed directory name
 	status "Extracting source for package $1"
-	case "$ext" in
-		\.tar\.gz|\.tgz)
-			tarflags=z
-			;;
-		\.tar\.bz2|\.tbz)
-			tarflags=j
-			;;
-		\.tar)
-			tarflags=
-			;;
-		\.zip)
-			# Zip is a pain in the ass. We have to decide whether to make a
-			# directory and extract into it, or otherwise extract the archive
-			# and then rename the parent directory.
-			error "Too lazy to unzip package $1"
-			exit 1
-			;;
-	esac
-
- status "Done extracting."
 
 	# Count the number of parent directories there are
 	IFS="/" read -a firstfile < <(tar tf "$1$ext" | head -n 1)
-  status "IFS: ${IFS}."
-	levels=(${#firstfile[@]} - 1)
-
- status "Levels: ${levels}."
+	levels=$(( ${#firstfile[@]} - 1 ))
 
 	# Extract to the source directory
 	quiet mkdir "$1"
 	tar xf "$1$ext" --strip-components $levels -C "$1"
-	
+
 	# Clean up and resume previous operation
 	if [ -f "$1$ext" ]; then rm -f "$1$ext"; fi
 	quiet popd
@@ -183,7 +160,7 @@ fwdpatch() {
 			break
 		fi
 	done
-	
+
 	# Get the list of files that will be changed
 	patchfiles=( )
 	while read line
@@ -200,14 +177,14 @@ status "Patching ${patchfiles}"
 	for file in ${patchfiles[@]} ; do
     access_state=$(stat -f %a ${file})
     access_date=$(date -r ${access_state} +%Y%m%d%H%M.%S)
-    
+
     modify_state=$(stat -f %m ${file})
     modify_date=$(date -r ${modify_state} +%Y%m%d%H%M.%S)
 
 		access+=( ${access_date} )
 		modify+=( ${modify_date} )
 	done
-	
+
 	# Go ahead and apply the patch
 	if [ ${#patchfiles[@]} -eq 1 ]; then
 		status "$mode patch $(basename \"$1\") to 1 file"
@@ -241,7 +218,7 @@ xcompile() {
 
 	# ensure we don't have old object files laying around
 	quiet make clean
-	
+
 	# first check that we, in fact, have declared arches to build against
 	# if not, just do a native build.
 	if ${NATIVE_BUILD} ; then
@@ -249,9 +226,9 @@ xcompile() {
 		(
 		export CFLAGS="${1}"
 		export LDFLAGS="${2}"
-		
+
 		log ${3} --prefix="$ROOTDIR/build"
-		
+
 		status "...making and installing for native host"
 		log make -j $NUMBER_OF_CORES
 		log make install
@@ -265,10 +242,10 @@ xcompile() {
 		(
 		export CFLAGS="${1}"
 		export LDFLAGS="${2}"
-		
+
 		log ${3} --host="${HOSTS[0]}" --build="${HOSTS[0]}" \
-			--prefix="$ROOTDIR/build" 
-		
+			--prefix="$ROOTDIR/build"
+
 		status "...making and installing for ${ARCH[0]} Only"
 		log make -j $NUMBER_OF_CORES
 		log make install
@@ -276,7 +253,7 @@ xcompile() {
 		# we're done now, exit early
 		return
 	fi
-	
+
 	quiet mkdir "${ROOTDIR}/sandbox"
 	for (( i=0; i<${#HOSTS[@]}; i++ )) ; do
 	(
@@ -287,17 +264,17 @@ xcompile() {
 		local arch=`arch`
 		log ${3} --host="${HOSTS[i]}" --build="${HOSTS[i]}" \
 			--prefix="${ROOTDIR}/sandbox/root-${ARCHS[i]}"
-		
+
 		status "...making and installing for ${HOSTS[i]}"
 		log make -j $NUMBER_OF_CORES
 		log make install
 		quiet make clean
 	)
 	done
-	
+
 	# create universal
 	for FILE in ${@:4} ; do
-		# change library location and 
+		# change library location and
 		local ext=${FILE##*.}
 		local lipoFiles=""
 		for ARCH in ${ARCHS[@]} ; do
@@ -310,17 +287,17 @@ xcompile() {
 		status "combine ${lipoFiles} to build/${FILE}"
 		lipo -create ${lipoFiles} -output "${ROOTDIR}/build/${FILE}"
 	done
-	
+
 	#copy headers
 	local files="${ROOTDIR}/sandbox/root-${ARCHS[0]}/include/*"
 	for f in ${files} ; do
 		log cp -R ${f} "${ROOTDIR}/build/include"
 	done
-	
+
 	#copy bin
 	cp -R "${ROOTDIR}/sandbox/root-${ARCHS[0]}/bin/" \
 		"${ROOTDIR}/build/bin"
-	
+
 	#copy pkgconfig files and modify prefix
 	if [ -d "${ROOTDIR}/sandbox/root-${ARCHS[0]}/lib/pkgconfig" ] ; then
 		local files="${ROOTDIR}/sandbox/root-${ARCHS[0]}/lib/pkgconfig/*"
@@ -332,7 +309,7 @@ xcompile() {
 			sed -e "${SEDPAT}" "${f}" > "${ROOTDIR}/build/lib/pkgconfig/${basename}"
 		done
 	fi
-	
+
 	#copy .la files and modify
 	local files="${ROOTDIR}/sandbox/root-${ARCHS[0]}/lib/*.la"
 	for f in ${files} ; do
@@ -342,7 +319,7 @@ xcompile() {
 		local SEDPAT="s/^libdir=.*/libdir=\'${SEDREP}\\/build\\/lib\'/"
 		sed -e "${SEDPAT}" "${f}" > "${ROOTDIR}/build/lib/${basename}"
 	done
-	
+
 	#copy symlinks in lib
 	local files="${ROOTDIR}/sandbox/root-${ARCHS[0]}/lib/*"
 	for f in ${files} ; do
@@ -366,7 +343,7 @@ xconfigure() {
 		(
 		export CFLAGS="${1}"
 		export LDFLAGS="${2}"
-		
+
 		log ${3}
 		)
 		# we're done here
@@ -389,7 +366,7 @@ xconfigure() {
 			done
 		fi
 	done
-	
+
 	#only do this for more than 1 arch
 	if [[ 1 < ${#ARCHS[@]} ]] ; then
 		# reconfigure *again* to set C and LD Flags right
@@ -402,7 +379,7 @@ xconfigure() {
 		local self_host=`gcc -dumpmachine`
 		log ${3}
 		)
-		
+
 		# mux headers
 		for FILE in ${@:4} ; do
 			status "Muxing ${FILE}..."
@@ -420,7 +397,7 @@ xconfigure() {
 			done
 			echo "#else" >> ${FILE}
 			echo "#error This isn't a recognized platform." >> ${FILE}
-			echo "#endif" >> ${FILE} 
+			echo "#endif" >> ${FILE}
 			status "...${FILE} muxed"
 		done
 	fi

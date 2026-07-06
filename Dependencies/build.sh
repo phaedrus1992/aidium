@@ -18,7 +18,7 @@ TARGET_BASE="apple-darwin19.6."
 
 # Arrays for archs and host systems, sometimes an -arch just isnt enough!
 ARCHS=( "x86_64" "arm64" )
-HOSTS=( "x86_64-${TARGET_BASE}" "i686-${TARGET_BASE}" "aarch64-${TARGET_BASE}" )
+HOSTS=( "x86_64-${TARGET_BASE}" "aarch64-${TARGET_BASE}" )
 NUMBER_OF_CORES=`sysctl -n hw.activecpu`
 
 DEVELOPER=$(xcode-select -print-path)
@@ -105,7 +105,7 @@ for option in ${@:1} ; do
 			STRAIGHT_TO_LIBPURPLE=true
 			;;
 		--download-libpurple)
-			# ponytail: libpurple is now fetched from a release tarball, always downloaded
+			warning "--download-libpurple is no longer needed — libpurple is fetched automatically"
 			;;
 		-h|-help|--help)
 			echo 'The following options are valid:
