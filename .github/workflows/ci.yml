@@ -30,16 +30,7 @@ jobs:
           # Set deployment target to 10.13 in the project file (needed for libarclite removal)
           plutil -convert json -o /tmp/mmtab.json \
             "Dependencies/MMTabBarView/MMTabBarView/MMTabBarView.xcodeproj/project.pbxproj"
-          python3 -c "
-import json
-with open('/tmp/mmtab.json') as f:
-    d = json.load(f)
-for obj in d.get('objects', {}).values():
-    if isinstance(obj, dict) and 'buildSettings' in obj:
-        obj['buildSettings']['MACOSX_DEPLOYMENT_TARGET'] = '10.13'
-with open('/tmp/mmtab.json', 'w') as f:
-    json.dump(d, f)
-"
+          python3 -c 'import json; d=json.load(open("/tmp/mmtab.json")); [o.get("buildSettings",{}).__setitem__("MACOSX_DEPLOYMENT_TARGET","10.13") for o in d.get("objects",{}).values() if isinstance(o,dict)]; json.dump(d,open("/tmp/mmtab.json","w"))'
           plutil -convert binary1 -o \
             "Dependencies/MMTabBarView/MMTabBarView/MMTabBarView.xcodeproj/project.pbxproj" \
             /tmp/mmtab.json
