@@ -46,6 +46,10 @@ jobs:
           cp -R "$(find ~/Library/Developer/Xcode/DerivedData/MMTabBarView-*/Build/Products/Release -name 'MMTabBarView.framework' -type d | head -1)" \
             Frameworks/MMTabBarView.framework
 
+      - name: Build universal dependencies (glib, gettext, json-glib)
+        run: |
+          bash Dependencies/build-universal-deps.sh 2>&1 | tail -20
+
       - name: Build AIUtilities.framework
         run: |
           set -o pipefail
@@ -56,8 +60,9 @@ jobs:
                      CODE_SIGNING_ALLOWED=NO \
                      build 2>&1 | xcpretty
 
-      # AdiumLibpurple and Adium targets depend on libpurple/glib/gettext
-      # framework headers that reference Homebrew Cellar paths not available
-      # on CI runners. See #16 (rebuild bundled unix deps).
-      # MMTabBarView.framework is built and copied above so it's ready
-      # when those dependencies land.
+      # AdiumLibpurple and Adium targets have pre-existing compilation
+      # errors exposed by modern clang (missing function-body braces,
+      # ARC bridged casts). These need a proper code review to fix and
+      # are tracked separately. The universal deps (glib, gettext,
+      # json-glib) above and MMTabBarView below are built so they're
+      # available when those fixes land.
