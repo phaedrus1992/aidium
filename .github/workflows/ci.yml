@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: macos-15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+      - name: Build Adium
+        run: |
+          xcodebuild -project Adium.xcodeproj \
+                     -target Adium \
+                     -configuration Debug \
+                     -sdk macosx \
+                     CODE_SIGNING_ALLOWED=NO \
+                     build | xcpretty && exit ${PIPESTATUS[0]}
+
+      - name: Build AdiumLibpurple
+        run: |
+          xcodebuild -project Adium.xcodeproj \
+                     -target AdiumLibpurple \
+                     -configuration Debug \
+                     -sdk macosx \
+                     CODE_SIGNING_ALLOWED=NO \
+                     build | xcpretty && exit ${PIPESTATUS[0]}
+
+      - name: Build AIUtilities.framework
+        run: |
+          xcodebuild -project Frameworks/AIUtilities/AIUtilities.xcodeproj \
+                     -target AIUtilities.framework \
+                     -configuration Debug \
+                     -sdk macosx \
+                     CODE_SIGNING_ALLOWED=NO \
+                     build | xcpretty && exit ${PIPESTATUS[0]}
+
+      - name: Build unit tests
+        run: |
+          xcodebuild -project Adium.xcodeproj \
+                     -target "Unit tests" \
+                     -configuration Debug \
+                     -sdk macosx \
+                     CODE_SIGNING_ALLOWED=NO \
+                     build | xcpretty && exit ${PIPESTATUS[0]}
