@@ -22,13 +22,10 @@ jobs:
       - name: Initialize submodules
         run: git submodule update --init Dependencies/MMTabBarView
 
-      - name: Fix MMTabBarView for modern SDKs
+      - name: Fix and build MMTabBarView.framework
         run: |
           sed -i '' 's/@import Darwin.Availability;/#import <Availability.h>/' \
             "Dependencies/MMTabBarView/MMTabBarView/MMTabBarView/Styles/Mojave Tab Style/MMMojaveTabStyle+Assets.m"
-
-      - name: Build MMTabBarView.framework
-        run: |
           xcodebuild -project Dependencies/MMTabBarView/MMTabBarView/MMTabBarView.xcodeproj \
                      -scheme MMTabBarView \
                      -configuration Release \
