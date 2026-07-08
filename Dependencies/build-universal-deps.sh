@@ -17,10 +17,12 @@ SRCROOT="$(cd "$ROOTDIR/.." && pwd)"
 
 # ---- Parse flags ----
 CLEAN=0
+ONLY_PHASE=""
 while [ $# -gt 0 ]; do
     case "$1" in
         --clean) CLEAN=1 ;;
         --build-dir=*) BUILD_DIR_OVERRIDE="${1#*=}" ;;
+        --only=*) ONLY_PHASE="${1#*=}" ;;
         *) echo "Unknown option: $1" >&2; exit 1 ;;
     esac
     shift
@@ -50,10 +52,17 @@ echo "Build dir: $BUILD_DIR"
 echo "Source cache: $ROOTDIR/.cache"
 echo ""
 
+run_phase() {
+    local name="$1" fn="$2"
+    if [ -z "$ONLY_PHASE" ] || [ "$ONLY_PHASE" = "$name" ]; then
+        "$fn"
+    fi
+}
+
 # Phase order matters: gettext -> glib -> json-glib (each depends on the previous)
-build_gettext_phase
-build_glib_phase
-build_json_glib_phase
+run_phase gettext build_gettext_phase
+run_phase glib build_glib_phase
+run_phase json-glib build_json_glib_phase
 
 # ---- Rewrite dependency links ----
 echo ""

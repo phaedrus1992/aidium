@@ -336,3 +336,46 @@ download_and_extract() {
     fi
     echo "$src_path"
 }
+
+# ---- Extract a vendored source tarball ----
+# Usage: vendored_extract <filename> <sha256> <expected_dirname>
+# Reads Dependencies/vendor/<filename>; the build never downloads.
+# Returns: path to extracted source directory
+vendored_extract() {
+    local filename="$1"
+    local sha256="$2"
+    local expected_dirname="$3"
+    local tarball="$ROOTDIR/vendor/$filename"
+    local extract_dir="$ROOTDIR/.cache/src"
+
+    if [ ! -f "$tarball" ]; then
+        echo "  ERROR: missing vendored source $tarball" >&2
+        echo "  Fetch it once with: Dependencies/vendor-fetch.sh <url> $sha256" >&2
+        return 1
+    fi
+
+    local actual
+    actual="$(shasum -a 256 "$tarball" | awk '{print $1}')"
+    if [ "$actual" != "$sha256" ]; then
+        echo "  ERROR: SHA256 mismatch for $filename: expected $sha256, got $actual" >&2
+        return 1
+    fi
+
+    mkdir -p "$extract_dir"
+    rm -rf "$extract_dir/$expected_dirname"
+    echo "  Extracting $filename..." >&2
+    case "$filename" in
+        *.tar.gz|*.tgz) tar -xzf "$tarball" -C "$extract_dir" ;;
+        *.tar.xz)       tar -xJf "$tarball" -C "$extract_dir" ;;
+        *.tar.bz2)      tar -xjf "$tarball" -C "$extract_dir" ;;
+        *)              echo "  ERROR: unknown archive format: $filename" >&2; return 1 ;;
+    esac
+
+    local src_path="$extract_dir/$expected_dirname"
+    if [ ! -d "$src_path" ]; then
+        echo "  ERROR: expected source dir $src_path not found" >&2
+        ls "$extract_dir" >&2
+        return 1
+    fi
+    echo "$src_path"
+}
