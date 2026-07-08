@@ -60,7 +60,7 @@ static NSMutableDictionary *lookupRequestsByQueryData = nil;
  */
 + (BOOL)performDnsRequestWithData:(PurpleDnsQueryData *)inData resolvedCB:(PurpleDnsQueryResolvedCallback)inResolved failedCB:(PurpleDnsQueryFailedCallback)inFailed
 {
-	return [[[[self alloc] initWithData:inData resolvedCB:inResolved failedCB:inFailed] autorelease] startLookup];
+	return [[[self alloc] initWithData:inData resolvedCB:inResolved failedCB:inFailed] startLookup];
 }
 
 - (id)initWithData:(PurpleDnsQueryData *)data resolvedCB:(PurpleDnsQueryResolvedCallback)resolved failedCB:(PurpleDnsQueryFailedCallback)failed
@@ -102,7 +102,7 @@ static void host_client_cb(CFHostRef theHost, CFHostInfoType typeInfo,
 {
 	@autoreleasepool {
 	
-	AdiumPurpleDnsRequest *self = (AdiumPurpleDnsRequest *)info;
+	AdiumPurpleDnsRequest *self = (__bridge AdiumPurpleDnsRequest *)info;
 	if (streamError && (streamError->error != 0)) {
 		[self lookupFailedWithError:streamError];
 
@@ -113,7 +113,7 @@ static void host_client_cb(CFHostRef theHost, CFHostInfoType typeInfo,
 		 CFArrayRef of addresses.  Each address is a CFDataRef wrapping a struct sockaddr. */
 		CFArrayRef addresses = CFHostGetAddressing(theHost, &hasBeenResolved);
 		if (hasBeenResolved) {
-			[self lookupSucceededWithAddresses:(NSArray *)addresses];
+			[self lookupSucceededWithAddresses:(__bridge NSArray *)addresses];
 
 		} else {
 			[self lookupFailedWithError:NULL];

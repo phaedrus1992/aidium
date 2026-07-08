@@ -176,7 +176,7 @@
 	
 	AILogWithSignature(@"%@", request);
 	
-	conn = [[NSURLConnection connectionWithRequest:request delegate:self] retain];
+	conn = [[NSURLConnection connectionWithRequest:request delegate:self];
 	
 	response = [[NSMutableData alloc] init];
 }
@@ -197,7 +197,7 @@
 	
 	AILogWithSignature(@"%@", request);
 	
-	conn = [[NSURLConnection connectionWithRequest:request delegate:self] retain];
+	conn = [[NSURLConnection connectionWithRequest:request delegate:self];
 	
 	response = [[NSMutableData alloc] init];
 }
@@ -280,7 +280,7 @@
 															  error:NULL];
 	}
 
-	password = [[responseDict objectForKey:@"access_token"] retain];
+	password = [[responseDict objectForKey:@"access_token"];
 	
 	; conn = nil;
 	; response = nil;

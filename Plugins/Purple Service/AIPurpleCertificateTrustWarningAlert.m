@@ -176,7 +176,7 @@
 				NSWindow *fakeWindow = [[[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, TRUST_PANEL_WIDTH, 1)
 																	styleMask:(NSTitledWindowMask | NSMiniaturizableWindowMask)
 																	  backing:NSBackingStoreBuffered
-																		defer:NO] autorelease];
+																		defer:NO];
 				[fakeWindow center];
 				[fakeWindow setTitle:AILocalizedString(@"Verify Certificate", nil)];
 

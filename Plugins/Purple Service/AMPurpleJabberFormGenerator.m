@@ -54,7 +54,7 @@
 	else
 		return nil;
 	
-	return [[[class alloc] initWithXML:xml] autorelease];
+	return [[[class alloc] initWithXML:xml];
 }
 
 - (id)initWithXML:(xmlnode*)xml {

@@ -145,7 +145,7 @@ static NSImage *det_triangle_closed = nil;
 		NSArray *commands = [(AMPurpleJabberNode*)item commands];
 		
 		if (commands) {
-			menu = [[[NSMenu alloc] initWithTitle:@""] autorelease];
+			menu = [[[NSMenu alloc] initWithTitle:@""];
 			AMPurpleJabberNode *command;
 			
 			for (command in commands) {
@@ -239,32 +239,32 @@ static NSImage *det_triangle_closed = nil;
     NSString *identifier = [tableColumn identifier];
     
 	if ([identifier isEqualToString:@"jid"])
-		return [[[NSAttributedString alloc] initWithString:[item jid] attributes:style] autorelease];
+		return [[[NSAttributedString alloc] initWithString:[item jid] attributes:style];
 	else if ([identifier isEqualToString:@"name"]) {
 		if ([item node]) {
 			if ([item name])
-				return [[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ (%@)",[item name],[item node]] attributes:style] autorelease];
-			return [[[NSAttributedString alloc] initWithString:[item node] attributes:style] autorelease];
+				return [[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ (%@)",[item name],[item node]] attributes:style];
+			return [[[NSAttributedString alloc] initWithString:[item node] attributes:style];
 		}
 		if ([item node])
-			return [[[NSAttributedString alloc] initWithString:[item name] attributes:style] autorelease];
+			return [[[NSAttributedString alloc] initWithString:[item name] attributes:style];
 		// try to guess a name when there's none supplied
 		NSRange slashsign = [[item jid] rangeOfString:@"/"];
 		if (slashsign.location != NSNotFound)
-			return [[[NSAttributedString alloc] initWithString:[[item jid] substringFromIndex:slashsign.location+1] attributes:style] autorelease];
+			return [[[NSAttributedString alloc] initWithString:[[item jid] substringFromIndex:slashsign.location+1] attributes:style];
 		NSRange atsign = [[item jid] rangeOfString:@"@"];
 		if (atsign.location != NSNotFound)
-			return [[[NSAttributedString alloc] initWithString:[[item jid] substringToIndex:atsign.location] attributes:style] autorelease];
+			return [[[NSAttributedString alloc] initWithString:[[item jid] substringToIndex:atsign.location] attributes:style];
 		if ([[item identities] count] > 0) {
 			NSDictionary *identity = [[item identities] objectAtIndex:0];
 			id name = [identity objectForKey:@"name"];
 			if (name != [NSNull null] && [name length] > 0)
-				return [[[NSAttributedString alloc] initWithString:[identity objectForKey:@"name"] attributes:style] autorelease];
+				return [[[NSAttributedString alloc] initWithString:[identity objectForKey:@"name"] attributes:style];
 		}
-		return [[[NSAttributedString alloc] initWithString:AILocalizedString(@"(unknown)",nil) attributes:style] autorelease];
+		return [[[NSAttributedString alloc] initWithString:AILocalizedString(@"(unknown)",nil) attributes:style];
 	} else if ([identifier isEqualToString:@"category"]) {
 		if (![item identities])
-			[[[NSAttributedString alloc] initWithString:AILocalizedString(@"Fetching...",nil) attributes:style] autorelease];
+			[[[NSAttributedString alloc] initWithString:AILocalizedString(@"Fetching...",nil) attributes:style];
 		
 		NSMutableArray *identities = [[NSMutableArray alloc] init];
 		
@@ -275,7 +275,7 @@ static NSImage *det_triangle_closed = nil;
 		
 		NSString *result = [identities componentsJoinedByString:@", "];
 
-		return [[[NSAttributedString alloc] initWithString:result attributes:style] autorelease];
+		return [[[NSAttributedString alloc] initWithString:result attributes:style];
 	} else
         return @"???";
 }
@@ -328,7 +328,7 @@ static NSImage *det_triangle_closed = nil;
 		[img unlockFocus];
 		[cell setImage:img];
 
-		NSInvocation *inv = [[NSInvocation invocationWithMethodSignature:[outlineView methodSignatureForSelector:@selector(setNeedsDisplayInRect:)]] retain];
+		NSInvocation *inv = [[NSInvocation invocationWithMethodSignature:[outlineView methodSignatureForSelector:@selector(setNeedsDisplayInRect:)]];
 		[inv setSelector:@selector(setNeedsDisplayInRect:)];
 		NSRect rect = [outlineView rectOfRow:[outlineView rowForItem:item]];
 		[inv setArgument:&rect atIndex:2];

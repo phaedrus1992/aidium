@@ -16,6 +16,7 @@
 
 #import "ESPurpleZephyrAccountViewController.h"
 #import "ESPurpleZephyrAccount.h"
+#import <Adium/AIListContact.h>
 #import <Adium/AIStatus.h>
 
 #define ZHM_NAME @"zhm"

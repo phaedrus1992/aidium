@@ -44,10 +44,10 @@ static inline CFMutableDictionaryRef sourceInfoDict() {
 }
 
 static inline dispatch_source_t sourceForTag(unsigned long tag) {
-    return (dispatch_source_t)CFDictionaryGetValue(sourceInfoDict(), (void *)tag);
+    return (__bridge dispatch_source_t)CFDictionaryGetValue(sourceInfoDict(), (void *)tag);
 }
 static inline void setSourceForTag(dispatch_source_t source, unsigned long tag) {
-    CFDictionarySetValue(sourceInfoDict(), (void *)tag, source);
+    CFDictionarySetValue(sourceInfoDict(), (void *)tag, (__bridge const void *)source);
 }
 static inline void removeSourceForTag(unsigned long tag) {
     CFDictionaryRemoveValue(sourceInfoDict(), (void *)tag);
@@ -67,7 +67,7 @@ gboolean adium_source_remove(guint tag) {
 	
     removeSourceForTag(tag);
 
-	dispatch_release(src);
+	// ARC: release not needed
 	
 	return success;
 }

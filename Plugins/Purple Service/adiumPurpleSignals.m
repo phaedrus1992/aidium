@@ -126,6 +126,7 @@ static void buddy_event_cb(PurpleBuddy *buddy, PurpleBuddyEvent event)
 
 }
 
+}
 static void buddy_status_changed_cb(PurpleBuddy *buddy, PurpleStatus *oldstatus, PurpleStatus *status, PurpleBuddyEvent event)
 {
 	@autoreleasepool {
@@ -155,6 +156,7 @@ static void buddy_status_changed_cb(PurpleBuddy *buddy, PurpleStatus *oldstatus,
 
 }
 
+}
 static void buddy_idle_changed_cb(PurpleBuddy *buddy, gboolean old_idle, gboolean idle, PurpleBuddyEvent event)
 {
 	@autoreleasepool {
@@ -177,6 +179,7 @@ static void buddy_idle_changed_cb(PurpleBuddy *buddy, gboolean old_idle, gboolea
 }
 
 //This is called when a buddy is added or changes groups
+}
 static void buddy_added_cb(PurpleBuddy *buddy)
 {
 	@autoreleasepool {
@@ -213,6 +216,7 @@ static void buddy_added_cb(PurpleBuddy *buddy)
 
 }
 
+}
 static void buddy_removed_cb(PurpleBuddy *buddy)
 {
 	@autoreleasepool {
@@ -232,6 +236,7 @@ static void buddy_removed_cb(PurpleBuddy *buddy)
 
 }
 
+}
 static void connection_signed_on_cb(PurpleConnection *gc)
 {
 	@autoreleasepool {
@@ -244,6 +249,7 @@ static void connection_signed_on_cb(PurpleConnection *gc)
 
 }
 
+}
 static void node_aliased_cb(PurpleBlistNode *node, char *old_alias)
 {
 	@autoreleasepool {
@@ -264,6 +270,7 @@ static void node_aliased_cb(PurpleBlistNode *node, char *old_alias)
 
 }
 
+}
 static NSDictionary *dictionaryFromHashTable(GHashTable *data)
 {
 	NSMutableDictionary *dict = [NSMutableDictionary dictionary];
@@ -305,6 +312,7 @@ static void chat_join_failed_cb(PurpleConnection *gc, GHashTable *components)
 
 }
 
+}
 static void typing_changed(PurpleAccount *account, const char *name, AITypingState typingState)
 {
 	@autoreleasepool {
@@ -329,6 +337,7 @@ static void typing_changed(PurpleAccount *account, const char *name, AITypingSta
 
 }
 
+}
 static void conversation_created_cb(PurpleConversation *conv, void *data) {
 	@autoreleasepool {
 	if (purple_conversation_get_type(conv) == PURPLE_CONV_TYPE_IM) {
@@ -338,6 +347,7 @@ static void conversation_created_cb(PurpleConversation *conv, void *data) {
 	}
 
 }
+}
 
 /* The buddy-typing, buddy-typed, and buddy-typing-stopped signals will only be sent
  * when there isn't an open conversation, so we're not duplicating typing information here.
@@ -345,23 +355,19 @@ static void conversation_created_cb(PurpleConversation *conv, void *data) {
  * adiumPurpleConversation has the typing code for open conversations.
  */
  
-static void
-buddy_typing_cb(PurpleAccount *account, const char *name, void *data) {
+static void buddy_typing_cb(PurpleAccount *account, const char *name, void *data) {
 	typing_changed(account, name, AITyping);
-}
 
-static void
-buddy_typed_cb(PurpleAccount *account, const char *name, void *data) {
+
+static void buddy_typed_cb(PurpleAccount *account, const char *name, void *data) {
 	typing_changed(account, name, AIEnteredText);
-}
 
-static void
-buddy_typing_stopped_cb(PurpleAccount *account, const char *name, void *data) {
+
+static void buddy_typing_stopped_cb(PurpleAccount *account, const char *name, void *data) {
 	typing_changed(account, name, AINotTyping);
-}
 
-static void
-chat_joined_cb(PurpleConversation *conv, void *data) {
+
+static void chat_joined_cb(PurpleConversation *conv, void *data) {
 	@autoreleasepool {
 	//Pass chats along to the account
 	if (purple_conversation_get_type(conv) == PURPLE_CONV_TYPE_CHAT) {
@@ -375,6 +381,7 @@ chat_joined_cb(PurpleConversation *conv, void *data) {
 
 static void
 file_recv_request_cb(PurpleXfer *xfer)
+
 {
 	@autoreleasepool {
 	ESFileTransfer  *fileTransfer;

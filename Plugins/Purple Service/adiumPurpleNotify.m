@@ -22,6 +22,7 @@
 
 static void *adiumPurpleNotifyMessage(PurpleNotifyMsgType type, const char *title, const char *primary, const char *secondary)
 {
+	__block void *res = NULL;
     @autoreleasepool {
 
 	AILog(@"adiumPurpleNotifyMessage: type: %i\n%s\n%s\n%s ",
@@ -30,7 +31,7 @@ static void *adiumPurpleNotifyMessage(PurpleNotifyMsgType type, const char *titl
 			   (primary ? primary : ""),
 			   (secondary ? secondary : ""));
 
-	void *res = ([[SLPurpleCocoaAdapter sharedInstance] handleNotifyMessageOfType:type
+	res = ([[SLPurpleCocoaAdapter sharedInstance] handleNotifyMessageOfType:type
                                                                         withTitle:title
                                                                           primary:primary
                                                                         secondary:secondary]);
@@ -40,6 +41,7 @@ static void *adiumPurpleNotifyMessage(PurpleNotifyMsgType type, const char *titl
 
 static void *adiumPurpleNotifyEmails(PurpleConnection *gc, size_t count, gboolean detailed, const char **subjects, const char **froms, const char **tos, const char **urls)
 {
+	__block void *res = NULL;
 	// Don't notify that 0 emails are present.
 	if (!count)
 		return NULL;
@@ -74,6 +76,7 @@ static void *adiumPurpleNotifyEmail(PurpleConnection *gc, const char *subject, c
 
 static void *adiumPurpleNotifyFormatted(const char *title, const char *primary, const char *secondary, const char *text)
 {
+	__block void *res = NULL;
     @autoreleasepool {
 
 	AILog(@"adiumPurpleNotifyFormatted: %s\n%s\n%s\n%s ",
@@ -82,7 +85,7 @@ static void *adiumPurpleNotifyFormatted(const char *title, const char *primary, 
 			   (secondary ? secondary : ""),
 			   (text ? text : ""));
 
-	void * res = ([[SLPurpleCocoaAdapter sharedInstance] handleNotifyFormattedWithTitle:title
+	res = ([[SLPurpleCocoaAdapter sharedInstance] handleNotifyFormattedWithTitle:title
                                                                                 primary:primary
                                                                               secondary:secondary
                                                                                    text:text]);	
@@ -94,10 +97,11 @@ static void *adiumPurpleNotifySearchResults(PurpleConnection *gc, const char *ti
 										  const char *primary, const char *secondary,
 										  PurpleNotifySearchResults *results, gpointer user_data)
 {
+	__block void *res = NULL;
     @autoreleasepool {
 	AILog(@"**** returning search results");
 	//This will be released in adiumPurpleNotifyClose()
-	void *res = [[AMPurpleSearchResultsController alloc] initWithPurpleConnection:gc
+	res = (__bridge void *)[[AMPurpleSearchResultsController alloc] initWithPurpleConnection:gc
 																	   title:(title ? [NSString stringWithUTF8String:title] : nil)
 																 primaryText:(primary ? [NSString stringWithUTF8String:primary] : nil)
 															   secondaryText:(secondary ? [NSString stringWithUTF8String:secondary] : nil)
@@ -112,8 +116,8 @@ static void adiumPurpleNotifySearchResultsNewRows(PurpleConnection *gc,
 												 void *data)
 {
     @autoreleasepool {
-	if([(id)data isKindOfClass:[AMPurpleSearchResultsController class]]) {
-		[(AMPurpleSearchResultsController*)data addResults:results];
+	if([(__bridge id)data isKindOfClass:[AMPurpleSearchResultsController class]]) {
+		[(__bridge AMPurpleSearchResultsController*)data addResults:results];
 	}
     }
 }
@@ -168,7 +172,7 @@ static void *adiumPurpleNotifyUri(const char *uri)
 			FSRef appRef;
 			
 			//Open the HTML file with a web browser, not with an HTML editor
-			if (LSGetApplicationForURL((CFURLRef)[NSURL URLWithString:@"http://google.com"],
+			if (LSGetApplicationForURL((__bridge CFURLRef)[NSURL URLWithString:@"http://google.com"],
 									   kLSRolesViewer,
 									   &appRef,
 									   NULL) != kLSApplicationNotFoundErr) {
@@ -201,7 +205,7 @@ static void adiumPurpleNotifyClose(PurpleNotifyType type,void *uiHandle)
 {
     @autoreleasepool {
 
-	id ourHandle = uiHandle;
+	id ourHandle = (__bridge id)uiHandle;
 	AILogWithSignature(@"Closing %p (%i)",ourHandle,type);
 
 	if ([ourHandle respondsToSelector:@selector(purpleRequestClose)]) {

@@ -345,10 +345,10 @@
 			}
 			// fallthrough
 		case 1: // always accept
-			[[self purpleAdapter] doAuthRequestCbValue:[[[dict objectForKey:@"authorizeCB"] retain] autorelease] withUserDataValue:[[[dict objectForKey:@"userData"] retain] autorelease]];
+			[[self purpleAdapter] doAuthRequestCbValue:[[[dict objectForKey:@"authorizeCB"] withUserDataValue:[[[dict objectForKey:@"userData"]];
 			break;
 		case 3: // always deny
-			[[self purpleAdapter] doAuthRequestCbValue:[[[dict objectForKey:@"denyCB"] retain] autorelease] withUserDataValue:[[[dict objectForKey:@"userData"] retain] autorelease]];
+			[[self purpleAdapter] doAuthRequestCbValue:[[[dict objectForKey:@"denyCB"] withUserDataValue:[[[dict objectForKey:@"userData"]];
 			break;
 		default: // ask (should be 0)
 			return [super authorizationRequestWithDict:dict];
@@ -625,7 +625,7 @@
 - (NSDictionary *)willJoinChatUsingDictionary:(NSDictionary *)chatCreationDictionary
 {
 	if (![[chatCreationDictionary objectForKey:@"handle"] length]) {
-		NSMutableDictionary *dict = [[chatCreationDictionary mutableCopy] autorelease];
+		NSMutableDictionary *dict = [[chatCreationDictionary mutableCopy];
 		
 		[dict setObject:self.displayName
 				 forKey:@"handle"];
@@ -808,7 +808,7 @@
 	if(atsign.location != NSNotFound)
 		[super removeContact:theContact];
 	else {
-		for (NSDictionary *gatewaydict in [[gateways copy] autorelease]) {
+		for (NSDictionary *gatewaydict in [[gateways copy]) {
 			if([[[gatewaydict objectForKey:@"contact"] UID] isEqualToString:theContact.UID]) {
 				[[self purpleAdapter] removeUID:theContact.UID onAccount:self fromGroup:[gatewaydict objectForKey:@"remoteGroup"]];
 				

@@ -114,7 +114,7 @@ static SLPurpleCocoaAdapter *purpleAdapter = nil;
 - (SLPurpleCocoaAdapter *)purpleAdapter
 {
 	if (!purpleAdapter) {
-		purpleAdapter = [[SLPurpleCocoaAdapter sharedInstance] retain];	
+		purpleAdapter = [[SLPurpleCocoaAdapter sharedInstance];	
 	}	
 	return purpleAdapter;
 }
@@ -367,7 +367,7 @@ static SLPurpleCocoaAdapter *purpleAdapter = nil;
 {
 	NSMutableString *returnString = nil;
 	if ([inString rangeOfString:@"Purple could not find any information in the user's profile. The user most likely does not exist."].location != NSNotFound) {
-		returnString = [[inString mutableCopy] autorelease];
+		returnString = [[inString mutableCopy];
 		[returnString replaceOccurrencesOfString:@"Purple could not find any information in the user's profile. The user most likely does not exist."
 									  withString:AILocalizedString(@"Adium could not find any information in the user's profile. This may not be a registered name.", "Message shown when a contact's profile can't be found")
 										 options:NSLiteralSearch
@@ -455,7 +455,7 @@ static SLPurpleCocoaAdapter *purpleAdapter = nil;
 		NSString *value = [dict objectForKey:KEY_VALUE];
 		if (value &&
 			[value rangeOfString:webProfileValue options:(NSBackwardsSearch | NSAnchoredSearch | NSLiteralSearch)].location != NSNotFound) {
-			NSMutableString *newValue = [[value mutableCopy] autorelease];
+			NSMutableString *newValue = [[value mutableCopy];
 			[newValue replaceOccurrencesOfString:webProfileValue
 									  withString:[self webProfileStringForContact:contact]
 										 options:(NSBackwardsSearch | NSAnchoredSearch | NSLiteralSearch)];
@@ -714,7 +714,7 @@ static SLPurpleCocoaAdapter *purpleAdapter = nil;
 - (id)authorizationRequestWithDict:(NSDictionary*)dict
 {
 	// We retain this in case libpurple wants to close the request early. It is freed below.
-	return [[AdiumAuthorization showAuthorizationRequestWithDict:dict forAccount:self] retain];
+	return [[AdiumAuthorization showAuthorizationRequestWithDict:dict forAccount:self];
 }
 
 - (void)authorizationWithDict:(NSDictionary *)infoDict response:(AIAuthorizationResponse)authorizationResponse
@@ -724,10 +724,10 @@ static SLPurpleCocoaAdapter *purpleAdapter = nil;
 
 		switch (authorizationResponse) {
 			case AIAuthorizationAllowed:
-				callback = [[[infoDict objectForKey:@"authorizeCB"] retain] autorelease];
+				callback = [[[infoDict objectForKey:@"authorizeCB"];
 				break;
 			case AIAuthorizationDenied:
-				callback = [[[infoDict objectForKey:@"denyCB"] retain] autorelease];
+				callback = [[[infoDict objectForKey:@"denyCB"];
 				break;
 			case AIAuthorizationNoResponse:
 				callback = nil;
@@ -736,7 +736,7 @@ static SLPurpleCocoaAdapter *purpleAdapter = nil;
 		
 		//libpurple will remove its reference to the handle for this request, which is inDict, in response to this callback invocation
 		if (callback) {
-			[purpleAdapter doAuthRequestCbValue:callback withUserDataValue:[[[infoDict objectForKey:@"userData"] retain] autorelease]];
+			[purpleAdapter doAuthRequestCbValue:callback withUserDataValue:[[[infoDict objectForKey:@"userData"]];
 
 			/* Retained in -[self authorizationRequestWithDict:].  We kept it around before now in case libpurle wanted us to close it early, such as because the
 			 * account disconnected.
@@ -2405,7 +2405,7 @@ static void prompt_host_ok_cb(CBPurpleAccount *self, const char *host) {
 
 - (void)iTunesDidUpdate:(NSNotification*)notification {
 
-	tuneinfo = [[notification object] retain];
+	tuneinfo = [[notification object];
 
 	/* Only if we're including the information in all statuses do we need to do an update;
 	 * if we just have a 'now playing' status, the dynamic stats update will call
@@ -2459,7 +2459,7 @@ static void prompt_host_ok_cb(CBPurpleAccount *self, const char *host) {
 		if ([self shouldAddMusicalNoteToNowPlayingStatus]) {
 #define MUSICAL_NOTE_AND_SPACE [NSString stringWithUTF8String:"\xe2\x99\xab "]
 			NSMutableAttributedString *temporaryStatusMessage;
-			temporaryStatusMessage = [[[NSMutableAttributedString alloc] initWithString:MUSICAL_NOTE_AND_SPACE] autorelease];
+			temporaryStatusMessage = [[[NSMutableAttributedString alloc] initWithString:MUSICAL_NOTE_AND_SPACE];
 			[temporaryStatusMessage appendAttributedString:inStatusMessage];
 
 			inStatusMessage = temporaryStatusMessage;
@@ -2889,7 +2889,7 @@ static void prompt_host_ok_cb(CBPurpleAccount *self, const char *host) {
 						menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:title
 																						 target:self
 																						 action:@selector(performAccountMenuAction:)
-																				  keyEquivalent:@""] autorelease];
+																				  keyEquivalent:@""];
 						dict = [NSDictionary dictionaryWithObjectsAndKeys:
 							[NSValue valueWithPointer:action->callback], @"PurplePluginActionCallback",
 							[NSValue valueWithPointer:action->user_data], @"PurplePluginActionCallbackUserData",
@@ -2926,7 +2926,7 @@ static void prompt_host_ok_cb(CBPurpleAccount *self, const char *host) {
 		NSMenuItem *showCertificateMenuItem = [[[NSMenuItem alloc] initWithTitle:AILocalizedString(@"Show Server Certificate",nil)
 																		 target:self
 																		 action:@selector(showServerCertificate) 
-																  keyEquivalent:@""] autorelease];
+																  keyEquivalent:@""];
 		
 		[menuItemArray addObject:showCertificateMenuItem];
 	}

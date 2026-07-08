@@ -248,7 +248,7 @@ static void *adiumPurpleRequestActionWithIcon(const char *title, const char *pri
 
 		if (icon_data && (icon_size > 0)) {
 			NSData *imageData = [NSData dataWithBytes:icon_data length:icon_size];
-			NSImage *image = [[[NSImage alloc] initWithData:imageData] autorelease];
+			NSImage *image = [[[NSImage alloc] initWithData:imageData];
 			if (image) 
 				[infoDict setObject:image forKey:@"Image"];
 		}
@@ -411,7 +411,7 @@ static void *adiumPurpleRequestFile(const char *title, const char *filename,
 static void adiumPurpleRequestClose(PurpleRequestType type, void *uiHandle)
 {
     @autoreleasepool {
-	id	ourHandle = (id)uiHandle;
+	id	ourHandle = (__bridge id)uiHandle;
 	AILogWithSignature(@"%@ (%i)",uiHandle,[ourHandle respondsToSelector:@selector(purpleRequestClose)]);
 	if ([ourHandle respondsToSelector:@selector(purpleRequestClose)]) {
 		[ourHandle purpleRequestClose];

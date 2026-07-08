@@ -218,7 +218,7 @@ static NSComparisonResult compareByDistance(id one, id two, void*context) {
 		NSError *err = NULL;
 		NSXMLDocument *serverfeed = [[[NSXMLDocument alloc] initWithContentsOfURL:[NSURL URLWithString:SERVERFEEDRSSURL]
 																		 options:0
-																		   error:&err] autorelease];
+																		   error:&err];
 		if(err) {
 			[[NSAlert alertWithError:err] runModal];
 		} else {

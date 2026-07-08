@@ -43,3 +43,5 @@ void adium_query_cert_chain(PurpleSslConnection *gsc, const char *hostname, CFAr
 	query_cert_cb(true, userdata);
 
 }
+}
+}

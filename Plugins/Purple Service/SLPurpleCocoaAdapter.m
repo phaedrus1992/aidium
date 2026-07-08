@@ -866,7 +866,7 @@ NSString *processPurpleImages(NSString* inString, AIAccount* adiumAccount)
 	}
 	
 	static AIHTMLDecoder	*notifyFormattedHTMLDecoder = nil;
-	if (!notifyFormattedHTMLDecoder) notifyFormattedHTMLDecoder = [[AIHTMLDecoder decoder] retain];
+	if (!notifyFormattedHTMLDecoder) notifyFormattedHTMLDecoder = [[AIHTMLDecoder decoder];
 
 	NSString	*textString = (text ? [NSString stringWithUTF8String:text] : nil); 
 	if (textString) textString = [[notifyFormattedHTMLDecoder decodeHTML:textString] string];

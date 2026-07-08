@@ -326,7 +326,7 @@
 																		 target:self
 																	   selector:@selector(_performDelayedUpdates:) 
 																	   userInfo:nil 
-																		repeats:YES] retain];
+																		repeats:YES];
 		}
 	}
 }
@@ -622,7 +622,7 @@
 	
 	static NSCharacterSet *elementEndCharacters = nil;
 	if (!elementEndCharacters)
-		elementEndCharacters = [[NSCharacterSet characterSetWithCharactersInString:@" >"] retain];
+		elementEndCharacters = [[NSCharacterSet characterSetWithCharactersInString:@" >"];
 	static NSString		*tagStart = @"<", *tagEnd = @">";
 	NSString			*chunkString;
 	NSMutableString		*processedString;
@@ -688,14 +688,14 @@
 						if (requiresConversionToJPEG) {
 							NSImage				*image = [[NSImage alloc] initWithData:imageData];
 							
-							imageData = [[[image JPEGRepresentationWithCompressionFactor:1.0f] retain] autorelease];
+							imageData = [[[image JPEGRepresentationWithCompressionFactor:1.0f];
 							extension = @"jpg";
 
 						} else if (![extension length]) {
 							//We don't know what we're working with. Try to produce a PNG so we know the format.
 							NSImage				*image = [[NSImage alloc] initWithData:imageData];
 							
-							imageData = [[[image PNGRepresentation] retain] autorelease];
+							imageData = [[[image PNGRepresentation];
 							extension = @"png";
 
 						}
@@ -810,10 +810,10 @@
 
 		//Get day & time strings
 		[NSDateFormatter withLocalizedDateFormatterPerform:^(NSDateFormatter *dayFormatter){
-			valueDay = [[dayFormatter stringForObjectValue:date] retain];
+			valueDay = [[dayFormatter stringForObjectValue:date];
 		}];
 		[NSDateFormatter withLocalizedDateFormatterShowingSeconds:NO showingAMorPM:YES perform:^(NSDateFormatter *timeFormatter) {
-			valueTime = [[timeFormatter stringForObjectValue:date] retain];
+			valueTime = [[timeFormatter stringForObjectValue:date];
 		}];
 
 		if (valueDay && valueTime) {

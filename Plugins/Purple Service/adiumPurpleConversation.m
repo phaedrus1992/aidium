@@ -573,8 +573,9 @@ static gboolean adiumPurpleConvJoin(PurpleConversation *conv, const char *name,
 									PurpleConvChatBuddyFlags flags,
 									GHashTable *users)
 {
+	__block AIChat *chat;
     @autoreleasepool {
-	AIChat *chat = groupChatLookupFromConv(conv);
+	chat = groupChatLookupFromConv(conv);
     }
 	// We return TRUE if we want to hide it.
 	return !chat.showJoinLeave;
@@ -583,8 +584,9 @@ static gboolean adiumPurpleConvJoin(PurpleConversation *conv, const char *name,
 static gboolean adiumPurpleConvLeave(PurpleConversation *conv, const char *name,
 									 const char *reason, GHashTable *users)
 {
+	__block AIChat *chat;
     @autoreleasepool {
-	AIChat *chat = groupChatLookupFromConv(conv);
+	chat = groupChatLookupFromConv(conv);
     }
 	
 	// We return TRUE if we want to hide it.
