@@ -203,7 +203,6 @@ rewrite_dependency_links() {
             libgobject) FW_MAP["libgobject-2.0"]=1 ;;
             libgio)   FW_MAP["libgio-2.0"]=1 ;;
             libintl)  FW_MAP["libintl"]=1 ;;
-            libjson-glib) FW_MAP["libjson-glib-1.0"]=1 ;;
             libffi)   FW_MAP["libffi"]=1 ;;
             libpcre2-8) FW_MAP["libpcre2-8"]=1 ;;
             libgcrypt) FW_MAP["libgcrypt"]=1 ;;
