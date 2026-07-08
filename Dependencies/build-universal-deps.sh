@@ -1,8 +1,9 @@
 #!/bin/bash -eu
 # build-universal-deps.sh — Build Adium's Unix dependencies as universal (x86_64+arm64) frameworks
 #
-# Downloads source tarballs (SHA256-verified), builds for both architectures,
-# creates .framework bundles in Frameworks/, and rewrites install_name references.
+# Reads vendored source tarballs from Dependencies/vendor/ (SHA256-verified),
+# builds for both architectures, creates .framework bundles in Frameworks/,
+# and rewrites install_name references.
 #
 # Usage: ./build-universal-deps.sh [--clean] [--build-dir=<dir>]
 #

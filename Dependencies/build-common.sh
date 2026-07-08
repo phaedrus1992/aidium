@@ -210,7 +210,6 @@ rewrite_dependency_links() {
             libgcrypt) FW_MAP["libgcrypt"]=1 ;;
             libotr)   FW_MAP["libotr"]=1 ;;
             libpurple) FW_MAP["libpurple"]=1 ;;
-            libmeanwhile) FW_MAP["libmeanwhile"]=1 ;;
         esac
     done
 
