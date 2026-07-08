@@ -10,6 +10,7 @@ BUILD_LIBPURPLE_SHA256="0ffc9994def10260f98a55cd132deefa8dc4a9835451cc0e982747bd
 build_libpurple() {
     local src_dir
     src_dir="$(vendored_extract "$BUILD_LIBPURPLE_FILE" "$BUILD_LIBPURPLE_SHA256" "pidgin-$BUILD_LIBPURPLE_VERSION")"
+    LIBPURPLE_SRC="$src_dir"
 
     cd "$src_dir"
 
@@ -48,7 +49,7 @@ build_libpurple_phase() {
     # Purple Service imports internal + prpl headers not installed by `make install`.
     # Copy them from the source tree (same set the old fork's build shipped, minus
     # dead protocols).
-    local src="$ROOTDIR/.cache/src/pidgin-$BUILD_LIBPURPLE_VERSION/libpurple"
+    local src="${LIBPURPLE_SRC}/libpurple"
     local hdr="$SRCROOT/Frameworks/libpurple.framework/Versions/A/Headers"
     cp "$src/internal.h" "$src/cmds.h" "$hdr/"
     cp "$src/protocols/jabber/auth.h" "$src/protocols/jabber/bosh.h" \
