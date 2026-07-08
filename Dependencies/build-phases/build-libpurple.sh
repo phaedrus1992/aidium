@@ -8,11 +8,10 @@ BUILD_LIBPURPLE_FILE="pidgin-${BUILD_LIBPURPLE_VERSION}.tar.bz2"
 BUILD_LIBPURPLE_SHA256="0ffc9994def10260f98a55cd132deefa8dc4a9835451cc0e982747bd458e2356"
 
 build_libpurple() {
-    local src_dir
-    src_dir="$(vendored_extract "$BUILD_LIBPURPLE_FILE" "$BUILD_LIBPURPLE_SHA256" "pidgin-$BUILD_LIBPURPLE_VERSION")"
-    LIBPURPLE_SRC="$src_dir"
-
-    cd "$src_dir"
+    # Source already extracted in build_libpurple_phase(); LIBPURPLE_SRC is set there.
+    # build_for_archs runs build functions in a subshell, so vars set inside don't
+    # propagate — the extract MUST happen in the caller scope.
+    cd "$LIBPURPLE_SRC"
 
     export PKG_CONFIG_PATH="$SANDBOX/lib/pkgconfig:$BUILD_DIR/lib/pkgconfig"
     export LIBXML_CFLAGS="-I$BUILD_DIR/include/libxml2"
@@ -41,6 +40,12 @@ build_libpurple() {
 
 build_libpurple_phase() {
     echo "=== Phase: libpurple $BUILD_LIBPURPLE_VERSION ==="
+
+    # Extract here (outer scope) so LIBPURPLE_SRC survives build_for_archs's subshell.
+    local src_dir
+    src_dir="$(vendored_extract "$BUILD_LIBPURPLE_FILE" "$BUILD_LIBPURPLE_SHA256" "pidgin-$BUILD_LIBPURPLE_VERSION")"
+    LIBPURPLE_SRC="$src_dir"
+
     build_for_archs build_libpurple "libpurple.0.dylib"
 
     build_framework "libpurple" "libpurple" "$BUILD_DIR/lib/libpurple.0.dylib" \
