@@ -80,7 +80,6 @@ static void buddy_event_cb(PurpleBuddy *buddy, PurpleBuddyEvent event)
 											  length:len];
 						AILog(@"[buddy icon: %s got data]",purple_buddy_get_name(buddy));
 					}
-				}
 				break;
 			}
 			case PURPLE_BUDDY_NAME: {
@@ -94,7 +93,6 @@ static void buddy_event_cb(PurpleBuddy *buddy, PurpleBuddyEvent event)
 				data = [NSNumber numberWithInteger:event];
 				break;
 			}
-		}
 		
 		if (letAccountHandleUpdate) {
 			if (updateSelector) {
@@ -105,7 +103,6 @@ static void buddy_event_cb(PurpleBuddy *buddy, PurpleBuddyEvent event)
 				[account updateContact:theContact
 							  forEvent:data];
 			}
-		}
 		
 		/* If a status event didn't change from its previous value, we won't be notified of it.
 		 * That's generally a good thing, but we clear some values when a contact signs off, including
@@ -121,13 +118,12 @@ static void buddy_event_cb(PurpleBuddy *buddy, PurpleBuddyEvent event)
 				buddy_idle_changed_cb(buddy, FALSE, purple_presence_is_idle(presence), event);
 				buddy_event_cb(buddy, PURPLE_BUDDY_SIGNON_TIME);
 			}
-		}
-	}
 
 }
 
 }
 static void buddy_status_changed_cb(PurpleBuddy *buddy, PurpleStatus *oldstatus, PurpleStatus *status, PurpleBuddyEvent event)
+}
 {
 	@autoreleasepool {
 	CBPurpleAccount		*account = accountLookup(purple_buddy_get_account(buddy));
@@ -157,6 +153,7 @@ static void buddy_status_changed_cb(PurpleBuddy *buddy, PurpleStatus *oldstatus,
 }
 
 }
+}
 static void buddy_idle_changed_cb(PurpleBuddy *buddy, gboolean old_idle, gboolean idle, PurpleBuddyEvent event)
 {
 	@autoreleasepool {
@@ -179,6 +176,7 @@ static void buddy_idle_changed_cb(PurpleBuddy *buddy, gboolean old_idle, gboolea
 }
 
 //This is called when a buddy is added or changes groups
+}
 }
 static void buddy_added_cb(PurpleBuddy *buddy)
 {
@@ -215,6 +213,7 @@ static void buddy_added_cb(PurpleBuddy *buddy)
 	}
 
 }
+}
 
 }
 static void buddy_removed_cb(PurpleBuddy *buddy)
@@ -235,6 +234,7 @@ static void buddy_removed_cb(PurpleBuddy *buddy)
 	}
 
 }
+}
 
 }
 static void connection_signed_on_cb(PurpleConnection *gc)
@@ -246,6 +246,7 @@ static void connection_signed_on_cb(PurpleConnection *gc)
 		buddy_added_cb((PurpleBuddy *)cur->data);
 	}
 	g_slist_free(buddies);
+}
 
 }
 
@@ -266,6 +267,7 @@ static void node_aliased_cb(PurpleBlistNode *node, char *old_alias)
 		AILogWithSignature(@"%@ -> %s", contactLookupFromBuddy(buddy), alias);
 		[account updateContact:contactLookupFromBuddy(buddy)
 					   toAlias:(alias ? [NSString stringWithUTF8String:alias] : nil)];
+}
 	}
 
 }
@@ -291,7 +293,6 @@ static NSDictionary *dictionaryFromHashTable(GHashTable *data)
 			[dict setValue:valueString
 					forKey:keyString];
 		}
-	}
 	
 	return dict;
 }
@@ -308,7 +309,6 @@ static void chat_join_failed_cb(PurpleConnection *gc, GHashTable *components)
 			[account chatJoinDidFail:chat];
 			break;
 		}
-	}
 
 }
 
@@ -347,7 +347,6 @@ static void conversation_created_cb(PurpleConversation *conv, void *data) {
 	}
 
 }
-}
 
 /* The buddy-typing, buddy-typed, and buddy-typing-stopped signals will only be sent
  * when there isn't an open conversation, so we're not duplicating typing information here.
@@ -357,14 +356,17 @@ static void conversation_created_cb(PurpleConversation *conv, void *data) {
  
 static void buddy_typing_cb(PurpleAccount *account, const char *name, void *data) {
 	typing_changed(account, name, AITyping);
+}
 
 
 static void buddy_typed_cb(PurpleAccount *account, const char *name, void *data) {
 	typing_changed(account, name, AIEnteredText);
+}
 
 
 static void buddy_typing_stopped_cb(PurpleAccount *account, const char *name, void *data) {
 	typing_changed(account, name, AINotTyping);
+}
 
 
 static void chat_joined_cb(PurpleConversation *conv, void *data) {
@@ -379,8 +381,8 @@ static void chat_joined_cb(PurpleConversation *conv, void *data) {
 
 }
 
-static void
-file_recv_request_cb(PurpleXfer *xfer)
+}
+static void file_recv_request_cb(PurpleXfer *xfer)
 
 {
 	@autoreleasepool {
@@ -411,6 +413,7 @@ file_recv_request_cb(PurpleXfer *xfer)
 
 }
 
+}
 void configureAdiumPurpleSignals(void)
 {
 	@autoreleasepool {

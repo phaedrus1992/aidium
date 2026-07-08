@@ -161,6 +161,7 @@ static void adiumPurpleCoreDebugInit(void)
 
 }
 
+}
 static void associateLibpurpleAccounts(void)
 {
 	for (CBPurpleAccount *adiumAccount in adium.accountController.accounts) {
@@ -304,6 +305,7 @@ static PurpleCoreUiOps adiumPurpleCoreOps = {
 };
 
 PurpleCoreUiOps *adium_purple_core_get_ops(void)
+}
 {
 	return &adiumPurpleCoreOps;
 }
