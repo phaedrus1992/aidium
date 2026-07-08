@@ -58,7 +58,7 @@ jobs:
             Frameworks/libgobject.framework
             Frameworks/libgthread.framework
             Frameworks/libintl.framework
-          key: deps-frameworks-${{ runner.os }}-${{ hashFiles('Dependencies/vendor/**', 'Dependencies/build-common.sh', 'Dependencies/build-phases/**', 'Dependencies/build-universal-deps.sh') }}
+          key: deps-frameworks-${{ runner.os }}-${{ hashFiles('Dependencies/vendor/**', 'Dependencies/build-common.sh', 'Dependencies/build-phases/**', 'Dependencies/build-universal-deps.sh', 'Dependencies/meson-cross-*.ini') }}
 
       - name: Build universal dependencies (vendored, no network)
         if: steps.deps-cache.outputs.cache-hit != 'true'
