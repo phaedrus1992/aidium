@@ -40,7 +40,28 @@ jobs:
       - name: Install build tools
         run: brew install meson ninja pkg-config intltool || true
 
+      - name: Cache vendored dependency frameworks
+        id: deps-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            Frameworks/libffi.framework
+            Frameworks/libgcrypt.framework
+            Frameworks/libgpg-error.framework
+            Frameworks/libotr.framework
+            Frameworks/libpcre2-8.framework
+            Frameworks/libpurple.framework
+            Frameworks/libxml2.framework
+            Frameworks/glib.framework
+            Frameworks/libgio.framework
+            Frameworks/libgmodule.framework
+            Frameworks/libgobject.framework
+            Frameworks/libgthread.framework
+            Frameworks/libintl.framework
+          key: deps-frameworks-${{ runner.os }}-${{ hashFiles('Dependencies/vendor/**', 'Dependencies/build-common.sh', 'Dependencies/build-phases/**', 'Dependencies/build-universal-deps.sh') }}
+
       - name: Build universal dependencies (vendored, no network)
+        if: steps.deps-cache.outputs.cache-hit != 'true'
         run: bash Dependencies/build-universal-deps.sh 2>&1 | tail -40
 
       - name: Assert universal architectures
