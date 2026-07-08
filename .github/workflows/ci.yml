@@ -65,7 +65,16 @@ jobs:
         if: steps.deps-cache.outputs.cache-hit != 'true'
         run: |
           set -o pipefail
-          bash Dependencies/build-universal-deps.sh 2>&1 | tail -40
+          LOG_FILE="$RUNNER_TEMP/build-deps.log"
+          bash Dependencies/build-universal-deps.sh 2>&1 | tee "$LOG_FILE" | tail -40
+          echo "log-path=$LOG_FILE" >> "$GITHUB_ENV"
+
+      - name: Upload build log (on failure)
+        if: failure() && env.log-path != ''
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f48907a1d5 # v4.6.2
+        with:
+          name: build-deps-log
+          path: ${{ env.log-path }}
 
       - name: Assert universal architectures
         run: |
