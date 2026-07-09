@@ -3037,6 +3037,8 @@
 		<dict>
 			<key>fileRef</key>
 			<string>344836900BC8510B0083723B</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
 		</dict>
 		<key>11E7867F0F8860210014612E</key>
 		<dict>
