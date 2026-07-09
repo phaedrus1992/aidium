@@ -13,6 +13,12 @@ build_libpurple() {
     # propagate — the extract MUST happen in the caller scope.
     cd "$LIBPURPLE_SRC"
 
+    # Clean artifacts from the previous arch build. Both arch builds share
+    # the same extracted source tree; without this, make (with
+    # --disable-dependency-tracking) sees .o files as up-to-date and skips
+    # recompilation for the second arch, producing wrong-arch binaries.
+    make clean 2>/dev/null || true
+
     export PKG_CONFIG_PATH="$SANDBOX/lib/pkgconfig:$BUILD_DIR/lib/pkgconfig"
     export LIBXML_CFLAGS="-I$BUILD_DIR/include/libxml2"
     export LIBXML_LIBS="-L$BUILD_DIR/lib -lxml2"

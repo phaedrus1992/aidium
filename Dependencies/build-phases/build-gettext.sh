@@ -12,6 +12,9 @@ build_gettext() {
 
     cd "$src_dir"
 
+    # Clean artifacts from previous arch build (shared source tree)
+    make clean 2>/dev/null || true
+
     # Only build gettext-runtime (libintl), not tools or other bindings
     ./configure --prefix="$SANDBOX" \
         --disable-java --disable-csharp --disable-perl --disable-php --disable-ruby \

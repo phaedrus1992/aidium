@@ -12,6 +12,9 @@ build_gpg_error() {
 
     cd "$src_dir"
 
+    # Clean artifacts from previous arch build (shared source tree)
+    make clean 2>/dev/null || true
+
     ./configure --prefix="$SANDBOX" \
         --disable-static --enable-shared \
         --disable-doc --disable-tests \
