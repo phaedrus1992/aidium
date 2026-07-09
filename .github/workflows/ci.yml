@@ -9,9 +9,13 @@ on:
 jobs:
   build:
     runs-on: macos-15
+    permissions:
+      contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
 
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
@@ -19,21 +23,8 @@ jobs:
       - name: Install xcpretty
         run: sudo gem install xcpretty --no-document --quiet 2>&1 || true
 
-      - name: Initialize submodules
-        run: git submodule update --init Dependencies/MMTabBarView
-
-      - name: Fix and build MMTabBarView.framework
+      - name: Build MMTabBarView.framework
         run: |
-          # Fix Darwin.Availability module import for modern SDKs
-          sed -i '' 's/@import Darwin.Availability;/#import <Availability.h>/' \
-            "Dependencies/MMTabBarView/MMTabBarView/MMTabBarView/Styles/Mojave Tab Style/MMMojaveTabStyle+Assets.m"
-          # Set deployment target to 10.13 in the project file (needed for libarclite removal)
-          plutil -convert json -o /tmp/mmtab.json \
-            "Dependencies/MMTabBarView/MMTabBarView/MMTabBarView.xcodeproj/project.pbxproj"
-          python3 -c 'import json; d=json.load(open("/tmp/mmtab.json")); [o.get("buildSettings",{}).__setitem__("MACOSX_DEPLOYMENT_TARGET","10.13") for o in d.get("objects",{}).values() if isinstance(o,dict)]; json.dump(d,open("/tmp/mmtab.json","w"))'
-          plutil -convert binary1 -o \
-            "Dependencies/MMTabBarView/MMTabBarView/MMTabBarView.xcodeproj/project.pbxproj" \
-            /tmp/mmtab.json
           xcodebuild -project Dependencies/MMTabBarView/MMTabBarView/MMTabBarView.xcodeproj \
                      -scheme MMTabBarView \
                      -configuration Release \
@@ -43,12 +34,59 @@ jobs:
 
       - name: Copy MMTabBarView.framework
         run: |
-          cp -R "$(find ~/Library/Developer/Xcode/DerivedData/MMTabBarView-*/Build/Products/Release -name 'MMTabBarView.framework' -type d | head -1)" \
-            Frameworks/MMTabBarView.framework
+          SRC="$(find ~/Library/Developer/Xcode/DerivedData/MMTabBarView-*/Build/Products/Release -name 'MMTabBarView.framework' -type d | head -1)"
+          if [ -z "$SRC" ]; then echo "ERROR: MMTabBarView.framework not found in DerivedData"; exit 1; fi
+          cp -R "$SRC" Frameworks/MMTabBarView.framework
 
-      - name: Build universal dependencies (glib, gettext, json-glib)
+      - name: Install build tools
+        run: brew install meson ninja pkg-config intltool || true
+
+      - name: Cache vendored dependency frameworks
+        id: deps-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            Frameworks/libffi.framework
+            Frameworks/libgcrypt.framework
+            Frameworks/libgpg-error.framework
+            Frameworks/libotr.framework
+            Frameworks/libpcre2-8.framework
+            Frameworks/libpurple.framework
+            Frameworks/libxml2.framework
+            Frameworks/glib.framework
+            Frameworks/libgio.framework
+            Frameworks/libgmodule.framework
+            Frameworks/libgobject.framework
+            Frameworks/libgthread.framework
+            Frameworks/libintl.framework
+          key: deps-frameworks-${{ runner.os }}-${{ hashFiles('Dependencies/vendor/**', 'Dependencies/build-common.sh', 'Dependencies/build-phases/**', 'Dependencies/build-universal-deps.sh', 'Dependencies/meson-cross-*.ini') }}
+
+      - name: Build universal dependencies (vendored, no network)
+        if: steps.deps-cache.outputs.cache-hit != 'true'
         run: |
-          bash Dependencies/build-universal-deps.sh 2>&1 | tail -20
+          set -o pipefail
+          LOG_FILE="$RUNNER_TEMP/build-deps.log"
+          bash Dependencies/build-universal-deps.sh 2>&1 | tee "$LOG_FILE" | tail -40
+          echo "log-path=$LOG_FILE" >> "$GITHUB_ENV"
+
+      - name: Upload build log (on failure)
+        if: failure() && env.log-path != ''
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: build-deps-log
+          path: ${{ env.log-path }}
+
+      - name: Assert universal architectures
+        run: |
+          set -e
+          for fw in libintl libffi libpcre2-8 glib libgmodule libgobject \
+                    libgthread libgio libxml2 libgpg-error libgcrypt libotr libpurple; do
+            bin="Frameworks/$fw.framework/Versions/A/$fw"
+            archs="$(lipo -archs "$bin")"
+            echo "$fw: $archs"
+            [ "$archs" = "x86_64 arm64" ] || [ "$archs" = "arm64 x86_64" ] || { echo "FAIL: $fw"; exit 1; }
+          done
+          nm -gU Frameworks/libpurple.framework/Versions/A/libpurple | grep -q ' _purple_core_init'
 
       - name: Build AIUtilities.framework
         run: |
@@ -60,9 +98,8 @@ jobs:
                      CODE_SIGNING_ALLOWED=NO \
                      build 2>&1 | xcpretty
 
-      # AdiumLibpurple and Adium targets have pre-existing compilation
-      # errors exposed by modern clang (missing function-body braces,
-      # ARC bridged casts). These need a proper code review to fix and
-      # are tracked separately. The universal deps (glib, gettext,
-      # json-glib) above and MMTabBarView below are built so they're
-      # available when those fixes land.
+      # AdiumLibpurple, Purple Service, and Adium targets compile
+      # against the vendored frameworks. Upstream libpurple 2.14.14
+      # is configured with --with-static-prpls=jabber,irc,simple and
+      # --disable-plugins. The universal deps pipeline, MMTabBarView,
+      # and AIUtilities are built first so they are available.

@@ -61,7 +61,7 @@
 	//Resource
 	NSString *resource = [account preferenceForKey:KEY_JABBER_RESOURCE group:GROUP_ACCOUNT_STATUS];
 	if (!resource)
-		resource = (__bridge_transfer NSString *)SCDynamicStoreCopyLocalHostName(NULL);
+		resource = [(NSString*)SCDynamicStoreCopyLocalHostName(NULL) autorelease];
 	if (!resource)
 		resource = @"";	
 	[textField_resource setStringValue:resource];
@@ -153,6 +153,10 @@
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[window_registerServer release];
+	[servers release];
+
+	[super dealloc];
 }
 
 #pragma mark group combobox datasource

@@ -57,6 +57,12 @@ set_build_env() {
         export SANDBOX="$SANDBOX_ARM64"
     fi
 
+    # Meson places LDFLAGS before dependency -l flags but cross-file c_link_args
+    # after them. Add -L paths here so meson (and autotools) can find libraries
+    # in build- and sandbox-dir lib/ when a dependency like intl provides only
+    # a bare -lintl flag without a search path.
+    export LDFLAGS="$LDFLAGS -L$BUILD_DIR/lib -L$SANDBOX/lib"
+
     export PKG_CONFIG_PATH="$BUILD_DIR/lib/pkgconfig"
     export PATH="$BUILD_DIR/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 }
@@ -76,7 +82,7 @@ build_for_archs() {
         set_build_env "$arch"
         rm -rf "$SANDBOX"
         mkdir -p "$SANDBOX"
-        (cd "$SANDBOX" && "$build_fn")
+        (cd "$SANDBOX" && "$build_fn") || { echo "  ERROR: $build_fn failed for $arch" >&2; return 1; }
         echo "--- $arch build complete ---"
     done
 
@@ -184,32 +190,20 @@ PLIST
 # ---- Rewrite inter-framework dependency links ----
 # Scans all framework binaries and rewrites SANDBOX/BUILD_DIR paths to
 # @executable_path/../Frameworks/<dep>.framework/Versions/A/<dep>
+# NOTE: macOS ships bash 3.2 (no declare -A), so this uses indexed arrays.
 rewrite_dependency_links() {
     local frameworks_dir="$1"
 
     echo "--- Rewriting dependency links ---"
 
-    # Build a map of known framework names
-    declare -A FW_MAP
+    # Collect framework names (indexed array, bash 3.2 compatible).
+    # Substring match in the lookup loop handles dylib aliases natively
+    # (e.g. "glib" matches "libglib-2.0"), no explicit alias map needed.
+    local fw_names=()
+    local fw fw_name
     for fw in "$frameworks_dir"/*.framework; do
-        local name
-        name="$(basename "$fw" .framework)"
-        FW_MAP["$name"]=1
-        # Also map common dylib names to frameworks
-        case "$name" in
-            glib)    FW_MAP["libglib-2.0"]=1 ;;
-            libgthread) FW_MAP["libgthread-2.0"]=1 ;;
-            libgmodule) FW_MAP["libgmodule-2.0"]=1 ;;
-            libgobject) FW_MAP["libgobject-2.0"]=1 ;;
-            libgio)   FW_MAP["libgio-2.0"]=1 ;;
-            libintl)  FW_MAP["libintl"]=1 ;;
-            libjson-glib) FW_MAP["libjson-glib-1.0"]=1 ;;
-            libffi)   FW_MAP["libffi"]=1 ;;
-            libgcrypt) FW_MAP["libgcrypt"]=1 ;;
-            libotr)   FW_MAP["libotr"]=1 ;;
-            libpurple) FW_MAP["libpurple"]=1 ;;
-            libmeanwhile) FW_MAP["libmeanwhile"]=1 ;;
-        esac
+        fw_name="$(basename "$fw" .framework)"
+        fw_names+=("$fw_name")
     done
 
     for fw in "$frameworks_dir"/*.framework; do
@@ -230,7 +224,8 @@ rewrite_dependency_links() {
             if [ -z "$dep_path" ]; then continue; fi
 
             # Check if this path matches a known framework
-            for fw_name in "${!FW_MAP[@]}"; do
+            local fw_name
+            for fw_name in "${fw_names[@]}"; do
                 if echo "$dep_path" | grep -q "$fw_name"; then
                     local new_path="@executable_path/../Frameworks/$fw_name.framework/Versions/A/$fw_name"
                     if [ "$dep_path" != "$new_path" ]; then
@@ -246,85 +241,37 @@ rewrite_dependency_links() {
     echo "--- Dependency rewriting done ---"
 }
 
-# ---- Download and verify a source tarball ----
-# Usage: download_source <url> <sha256> <dest_dir>
-download_source() {
-    local url="$1"
-    local sha256="$2"
-    local dest_dir="$3"
-    local filename
-    filename="$(basename "$url")"
-    local dest="$dest_dir/$filename"
-
-    mkdir -p "$dest_dir"
-
-    if [ -f "$dest" ]; then
-        # Verify existing file
-        local actual
-        actual="$(shasum -a 256 "$dest" | awk '{print $1}')"
-        if [ "$actual" = "$sha256" ]; then
-            echo "  $filename: cached, checksum OK" >&2
-            return 0
-        fi
-        echo "  $filename: checksum mismatch, re-downloading" >&2
-    fi
-
-    echo "  Downloading $filename..." >&2
-    curl -sL -o "$dest" "$url"
-    local actual
-    actual="$(shasum -a 256 "$dest" | awk '{print $1}')"
-    if [ "$actual" != "$sha256" ]; then
-        echo "  ERROR: SHA256 mismatch for $filename" >&2
-        echo "  Expected: $sha256" >&2
-        echo "  Got:      $actual" >&2
-        rm -f "$dest"
-        return 1
-    fi
-    echo "  $filename: downloaded, checksum OK" >&2
-}
-
-# ---- Extract a tarball ----
-# Usage: extract_source <tarball_path> <extract_dir>
-extract_source() {
-    local tarball="$1"
-    local extract_dir="$2"
-    mkdir -p "$extract_dir"
-    tar -xzf "$tarball" -C "$extract_dir" 2>/dev/null || \
-        tar -xJf "$tarball" -C "$extract_dir" 2>/dev/null || {
-        echo "  ERROR: could not extract $tarball" >&2
-        return 1
-    }
-    # Return the top-level directory name
-    for d in "$extract_dir"/*/; do
-        echo "${d%/}"
-        return 0
-    done
-}
-
-# ---- Download, verify, extract in one step ----
-# Usage: download_and_extract <url> <sha256> <expected_dirname>
+# ---- Extract a vendored source tarball ----
+# Usage: vendored_extract <filename> <sha256> <expected_dirname>
+# Reads Dependencies/vendor/<filename>; the build never downloads.
 # Returns: path to extracted source directory
-download_and_extract() {
-    local url="$1"
+vendored_extract() {
+    local filename="$1"
     local sha256="$2"
     local expected_dirname="$3"
-    local tarball_dir="$ROOTDIR/.cache"
+    local tarball="$ROOTDIR/vendor/$filename"
     local extract_dir="$ROOTDIR/.cache/src"
 
-    mkdir -p "$tarball_dir" "$extract_dir"
+    if [ ! -f "$tarball" ]; then
+        echo "  ERROR: missing vendored source $tarball" >&2
+        echo "  Fetch it once with: Dependencies/vendor-fetch.sh <url> $sha256" >&2
+        return 1
+    fi
 
-    # Clean old extracts
+    local actual
+    actual="$(shasum -a 256 "$tarball" | awk '{print $1}')"
+    if [ "$actual" != "$sha256" ]; then
+        echo "  ERROR: SHA256 mismatch for $filename: expected $sha256, got $actual" >&2
+        return 1
+    fi
+
+    mkdir -p "$extract_dir"
     rm -rf "$extract_dir/$expected_dirname"
-
-    local filename
-    filename="$(basename "$url")"
-    download_source "$url" "$sha256" "$tarball_dir"
-
-    local tarball="$tarball_dir/$filename"
     echo "  Extracting $filename..." >&2
     case "$filename" in
         *.tar.gz|*.tgz) tar -xzf "$tarball" -C "$extract_dir" ;;
         *.tar.xz)       tar -xJf "$tarball" -C "$extract_dir" ;;
+        *.tar.bz2)      tar -xjf "$tarball" -C "$extract_dir" ;;
         *)              echo "  ERROR: unknown archive format: $filename" >&2; return 1 ;;
     esac
 

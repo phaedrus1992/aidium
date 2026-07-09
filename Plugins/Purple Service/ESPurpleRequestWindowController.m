@@ -182,7 +182,7 @@
 				  withUserDataValue:userDataValue
 						inputString:[[[textField_input stringValue] copy] autorelease]];
 		
-		; cancelCallbackValue = nil;
+		[cancelCallbackValue release]; cancelCallbackValue = nil;
 		[[self window] close];
 		
 	} else if (sender == button_cancel) {
@@ -192,10 +192,11 @@
 
 - (void)dealloc
 {
-	; okayCallbackValue = nil;
-	; cancelCallbackValue = nil;
-	; userDataValue = nil;
-
+	[okayCallbackValue release]; okayCallbackValue = nil;
+	[cancelCallbackValue release]; cancelCallbackValue = nil;
+	[userDataValue release]; userDataValue = nil;
+	
+	[super dealloc];
 }
 
 - (void)doWindowWillClose
@@ -246,7 +247,7 @@
 														  table:nil]
 					   forKey:@"Cancel Text"];
 	
-	return translatedDict;
+	return [translatedDict autorelease];
 }
 
 @end

@@ -2,15 +2,18 @@
 # build-gettext.sh — Build gettext (libintl only) as universal framework
 # Shell function, sourced by build-universal-deps.sh
 
-BUILD_GETTEXT_VERSION="0.22.5"
-BUILD_GETTEXT_URL="https://ftp.gnu.org/gnu/gettext/gettext-${BUILD_GETTEXT_VERSION}.tar.gz"
-BUILD_GETTEXT_SHA256="ec1705b1e969b83a9f073144ec806151db88127f5e40fe5a94cb6c8fa48996a0"
+BUILD_GETTEXT_VERSION="1.0"  # gettext-runtime internal version, not upstream gettext
+BUILD_GETTEXT_FILE="gettext-${BUILD_GETTEXT_VERSION}.tar.xz"
+BUILD_GETTEXT_SHA256="71132a3fb71e68245b8f2ac4e9e97137d3e5c02f415636eb508ae607bc01add7"
 
 build_gettext() {
     local src_dir
-    src_dir="$(download_and_extract "$BUILD_GETTEXT_URL" "$BUILD_GETTEXT_SHA256" "gettext-$BUILD_GETTEXT_VERSION")"
+    src_dir="$(vendored_extract "$BUILD_GETTEXT_FILE" "$BUILD_GETTEXT_SHA256" "gettext-$BUILD_GETTEXT_VERSION")"
 
     cd "$src_dir"
+
+    # Clean artifacts from previous arch build (shared source tree)
+    make clean 2>/dev/null || true
 
     # Only build gettext-runtime (libintl), not tools or other bindings
     ./configure --prefix="$SANDBOX" \
@@ -34,9 +37,26 @@ build_gettext_phase() {
     build_for_archs build_gettext "libintl.8.dylib"
     build_framework "libintl" "libintl" "$BUILD_DIR/lib/libintl.8.dylib" "$BUILD_DIR/include"
 
-    # Copy libintl headers to build dir so glib/json-glib can include <libintl.h>
+    # Copy libintl headers to build dir so glib can include <libintl.h>
     if [ -d "$SANDBOX_X86_64/include" ]; then
         mkdir -p "$BUILD_DIR/include"
         cp "$SANDBOX_X86_64/include/"libintl*.h "$BUILD_DIR/include/" 2>/dev/null || true
+    fi
+
+    # Create minimal intl.pc so glib's meson can find libintl via pkg-config
+    mkdir -p "$BUILD_DIR/lib/pkgconfig"
+    if [ ! -f "$BUILD_DIR/lib/pkgconfig/intl.pc" ]; then
+        cat > "$BUILD_DIR/lib/pkgconfig/intl.pc" <<PCEOF
+prefix=$BUILD_DIR
+exec_prefix=\${prefix}
+libdir=\${exec_prefix}/lib
+includedir=\${prefix}/include
+
+Name: intl
+Description: libintl from gettext
+Version: $BUILD_GETTEXT_VERSION
+Libs: -L\${libdir} -lintl
+Cflags: -I\${includedir}
+PCEOF
     fi
 }

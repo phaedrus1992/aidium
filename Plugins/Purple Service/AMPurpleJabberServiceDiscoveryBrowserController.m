@@ -37,7 +37,7 @@ static NSImage *det_triangle_closed = nil;
 		//Load the window immediately
 		[self window];
 
-		node = _node;
+		node = [_node retain];
 		[node addDelegate:self];
 		if (![node items])
 			[node fetchItems];
@@ -45,7 +45,8 @@ static NSImage *det_triangle_closed = nil;
 			[node fetchInfo];
         
         [[self window] makeKeyAndOrderFront:nil];
-
+		
+        [self retain];
         [outlineview setTarget:self];
         [outlineview setDoubleAction:@selector(openService:)];
     }
@@ -56,7 +57,8 @@ static NSImage *det_triangle_closed = nil;
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
-    ;
+	[node release];
+    [super dealloc];
 }
 
 - (NSString *)adiumFrameAutosaveName
@@ -155,7 +157,7 @@ static NSImage *det_triangle_closed = nil;
 				[mitem setTarget:self];
 				[mitem setRepresentedObject:command];
 				[menu addItem:mitem];
-
+				[mitem release];
 			}
 		}
 	}
@@ -164,7 +166,7 @@ static NSImage *det_triangle_closed = nil;
 }
 
 - (IBAction)changeServiceName:(id)sender {
-
+	[node release];
 	node = [[AMPurpleJabberNode alloc] initWithJID:[servicename stringValue] node:([[nodename stringValue] length]>0)?[nodename stringValue]:nil name:nil connection:gc];
 	[node addDelegate:self];
 	[node fetchInfo];
@@ -173,7 +175,8 @@ static NSImage *det_triangle_closed = nil;
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-
+    [self release];
+	
 	[super windowWillClose:notification];
 }
 
@@ -274,7 +277,8 @@ static NSImage *det_triangle_closed = nil;
 			[identities addObject:[NSString stringWithFormat:@"%@ (%@)",[identity objectForKey:@"category"],[identity objectForKey:@"type"]]];
 		
 		NSString *result = [identities componentsJoinedByString:@", "];
-
+		
+		[identities release];
 		return [[[NSAttributedString alloc] initWithString:result attributes:style] autorelease];
 	} else
         return @"???";
@@ -327,7 +331,7 @@ static NSImage *det_triangle_closed = nil;
 		[[NSAffineTransform transform] set];
 		[img unlockFocus];
 		[cell setImage:img];
-
+		[img release];
 		NSInvocation *inv = [[NSInvocation invocationWithMethodSignature:[outlineView methodSignatureForSelector:@selector(setNeedsDisplayInRect:)]] retain];
 		[inv setSelector:@selector(setNeedsDisplayInRect:)];
 		NSRect rect = [outlineView rectOfRow:[outlineView rowForItem:item]];
@@ -346,7 +350,8 @@ static NSImage *det_triangle_closed = nil;
 				[det_triangle_opened lockFocus];
 				[triangleCell drawWithFrame:NSMakeRect(0.0f,0.0f,13.0f,13.0f) inView:outlineView];
 				[det_triangle_opened unlockFocus];
-
+				
+				[triangleCell release];
 			}
 
 			[cell setImage:det_triangle_opened];
@@ -361,7 +366,8 @@ static NSImage *det_triangle_closed = nil;
 				[det_triangle_closed lockFocus];
 				[triangleCell drawWithFrame:NSMakeRect(0.0f,0.0f,13.0f,13.0f) inView:outlineView];
 				[det_triangle_closed unlockFocus];
-
+				
+				[triangleCell release];
 			}
 			
 			[cell setImage:det_triangle_closed];

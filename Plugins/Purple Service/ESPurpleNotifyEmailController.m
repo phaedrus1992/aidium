@@ -150,6 +150,9 @@
 				   withObject:message
 				   withObject:(urlString ? urlString : nil)];
 
+	[centeredParagraphStyle release];
+	[message release];
+	
 	return NULL;
 }
 
@@ -290,7 +293,7 @@
 		appName = [[appName substringToIndex:appRange.location] retain];
 	}
 
-	return appName;
+	return [appName autorelease];
 }
 
 @end

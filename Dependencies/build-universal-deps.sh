@@ -1,8 +1,9 @@
 #!/bin/bash -eu
 # build-universal-deps.sh — Build Adium's Unix dependencies as universal (x86_64+arm64) frameworks
 #
-# Downloads source tarballs (SHA256-verified), builds for both architectures,
-# creates .framework bundles in Frameworks/, and rewrites install_name references.
+# Reads vendored source tarballs from Dependencies/vendor/ (SHA256-verified),
+# builds for both architectures, creates .framework bundles in Frameworks/,
+# and rewrites install_name references.
 #
 # Usage: ./build-universal-deps.sh [--clean] [--build-dir=<dir>]
 #
@@ -17,10 +18,12 @@ SRCROOT="$(cd "$ROOTDIR/.." && pwd)"
 
 # ---- Parse flags ----
 CLEAN=0
+ONLY_PHASE=""
 while [ $# -gt 0 ]; do
     case "$1" in
         --clean) CLEAN=1 ;;
         --build-dir=*) BUILD_DIR_OVERRIDE="${1#*=}" ;;
+        --only=*) ONLY_PHASE="${1#*=}" ;;
         *) echo "Unknown option: $1" >&2; exit 1 ;;
     esac
     shift
@@ -30,9 +33,15 @@ done
 source "$ROOTDIR/build-common.sh"
 
 # ---- Source build phases ----
+source "$ROOTDIR/build-phases/build-libffi.sh"
 source "$ROOTDIR/build-phases/build-gettext.sh"
+source "$ROOTDIR/build-phases/build-pcre2.sh"
 source "$ROOTDIR/build-phases/build-glib.sh"
-source "$ROOTDIR/build-phases/build-json-glib.sh"
+source "$ROOTDIR/build-phases/build-libxml2.sh"
+source "$ROOTDIR/build-phases/build-gpg-error.sh"
+source "$ROOTDIR/build-phases/build-gcrypt.sh"
+source "$ROOTDIR/build-phases/build-libotr.sh"
+source "$ROOTDIR/build-phases/build-libpurple.sh"
 
 # More phases will be added here as they're implemented
 
@@ -50,10 +59,23 @@ echo "Build dir: $BUILD_DIR"
 echo "Source cache: $ROOTDIR/.cache"
 echo ""
 
-# Phase order matters: gettext -> glib -> json-glib (each depends on the previous)
-build_gettext_phase
-build_glib_phase
-build_json_glib_phase
+run_phase() {
+    local name="$1" fn="$2"
+    if [ -z "$ONLY_PHASE" ] || [ "$ONLY_PHASE" = "$name" ]; then
+        "$fn"
+    fi
+}
+
+# Phase order matters: libffi -> gettext -> glib -> ... (each depends on the previous)
+run_phase libffi build_libffi_phase
+run_phase gettext build_gettext_phase
+run_phase pcre2 build_pcre2_phase
+run_phase glib build_glib_phase
+run_phase libxml2 build_libxml2_phase
+run_phase gpg-error build_gpg_error_phase
+run_phase gcrypt build_gcrypt_phase
+run_phase libotr build_libotr_phase
+run_phase libpurple build_libpurple_phase
 
 # ---- Rewrite dependency links ----
 echo ""

@@ -105,6 +105,11 @@
 - (void)dealloc
 {
 	[xmlConsoleController close];
+	[xmlConsoleController release];
+	[adhocServer release];
+	[gateways release];
+
+	[super dealloc];
 }
 
 - (NSSet *)supportedPropertyKeys
@@ -224,7 +229,7 @@
     NSString *resource = [self preferenceForKey:KEY_JABBER_RESOURCE group:GROUP_ACCOUNT_STATUS];
     
     if(resource == nil || [resource length] == 0)
-        resource = (__bridge_transfer NSString *)SCDynamicStoreCopyLocalHostName(NULL);
+        resource = [(NSString*)SCDynamicStoreCopyLocalHostName(NULL) autorelease];
     
 	return resource;
 }
@@ -830,7 +835,7 @@
 }
 
 - (void)didConnect {
-
+	[gateways release];
 	gateways = [[NSMutableArray alloc] init];
 
 	[adhocServer addCommand:@"ping" delegate:(id<AMPurpleJabberAdHocServerDelegate>)[AMPurpleJabberAdHocPing class] name:@"Ping"];
@@ -849,12 +854,12 @@
 - (void)didDisconnect {
 	[xmlConsoleController setPurpleConnection:NULL];
 	
-	; discoveryBrowserController = nil;
-	; adhocServer = nil;
+	[discoveryBrowserController release]; discoveryBrowserController = nil;
+	[adhocServer release]; adhocServer = nil;
 
 	[super didDisconnect];
 
-	; gateways = nil;
+	[gateways release]; gateways = nil;
 }
 
 - (IBAction)showXMLConsole:(id)sender {
@@ -919,16 +924,17 @@
 			[removeItem setTarget:self];
 			[removeItem setRepresentedObject:gateway];
 			[submenu addItem:removeItem];
-
+			[removeItem release];
+			
 			[mitem setSubmenu:submenu];
-
+			[submenu release];
 			[mitem setRepresentedObject:gateway];
 			[mitem setImage:[AIStatusIcons statusIconForListObject:gateway
 															  type:AIStatusIconTab
 														 direction:AIIconNormal]];
 			[mitem setTarget:self];
 			[menu addObject:mitem];
-
+			[mitem release];
 		}
         [menu addObject:[NSMenuItem separatorItem]];
 	}
@@ -945,7 +951,7 @@
 															 keyEquivalent:@""];
 		[xmlConsoleMenuItem setTarget:self];
 		[menu addObject:xmlConsoleMenuItem];
-
+		[xmlConsoleMenuItem release];
 	}
 
 	NSMenuItem *discoveryBrowserMenuItem = [[NSMenuItem alloc] initWithTitle:AILocalizedString(@"Discovery Browser",nil)
@@ -953,8 +959,9 @@
 															   keyEquivalent:@""];
     [discoveryBrowserMenuItem setTarget:self];
     [menu addObject:discoveryBrowserMenuItem];
-
-    return menu;
+    [discoveryBrowserMenuItem release];
+	
+    return [menu autorelease];
 }
 
 - (void)registerGateway:(NSMenuItem*)mitem {
@@ -988,7 +995,9 @@
 		// now, remove them from the roster
 		[self removeContacts:gatewayContacts
 				  fromGroups:removeGroups.allObjects];
-
+		
+		[gatewayContacts release];
+		
 		// finally, remove the gateway itself
 		[self removeContact:gateway];
 	}
