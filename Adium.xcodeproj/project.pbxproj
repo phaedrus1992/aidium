@@ -1415,17 +1415,6 @@
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>113891850F6B6B0300A7D7DC</key>
-		<dict>
-			<key>children</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Laconica</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
 		<key>113900B00F85BEF60081A418</key>
 		<dict>
 			<key>isa</key>
@@ -2900,17 +2889,6 @@
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>11BE28E30FCC7DA8000E6A10</key>
-		<dict>
-			<key>children</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Image Uploading</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
 		<key>11C157D504A88DE0008E0C76</key>
 		<dict>
 			<key>children</key>
@@ -3059,26 +3037,6 @@
 		<dict>
 			<key>fileRef</key>
 			<string>344836900BC8510B0083723B</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>11D135D80FBE4C65000B0A5E</key>
-		<dict>
-			<key>children</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXVariantGroup</string>
-			<key>name</key>
-			<string>AITwitterAccountView.nib</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>11D135D90FBE4C65000B0A5E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>11D135D80FBE4C65000B0A5E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
 		</dict>
 		<key>11E7867F0F8860210014612E</key>
 		<dict>
@@ -3355,23 +3313,6 @@
 			<string>34BD9DAF05314751000AB133</string>
 			<key>targetProxy</key>
 			<string>11F6CB2D109BC6AC0070022D</string>
-		</dict>
-		<key>11F738F40F58D15500B3285B</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>5A3B4D6A16D878AB00903E40</string>
-				<string>113891850F6B6B0300A7D7DC</string>
-				<string>11D135D80FBE4C65000B0A5E</string>
-				<string>EFB1C3120DDBDA3100B3973D</string>
-				<string>EFB1C3130DDBDA3100B3973D</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Twitter</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
 		</dict>
 		<key>11FC23BF0F768C0900C1C906</key>
 		<dict>
@@ -24618,7 +24559,6 @@
 				<string>112B4A3E0F831A4400690E84</string>
 				<string>1111B2300F8478500068CE51</string>
 				<string>113900B10F85BEF60081A418</string>
-				<string>11D135D90FBE4C65000B0A5E</string>
 				<string>11A2F10A0FC8FC1A00C3F05C</string>
 				<string>112939020FD5AC1B00FA8F53</string>
 				<string>1130EA99109B445500FB3454</string>
@@ -24931,7 +24871,6 @@
 				<string>4F1CB6320D640D7F0073A1E6</string>
 				<string>632D859E0DB70FC800040EC7</string>
 				<string>34EBB2C30DCA8DE500B4CB6E</string>
-				<string>EFB1C3140DDBDA3100B3973D</string>
 				<string>11077B6F0DE647C100A4DD25</string>
 				<string>34A1AB6C0DFC531000AC78CF</string>
 				<string>34A1B2C30DFDBA1200AC78CF</string>
@@ -36815,7 +36754,6 @@
 		<dict>
 			<key>children</key>
 			<array>
-				<string>11BE28E30FCC7DA8000E6A10</string>
 				<string>34FDD6E305632BFD00F5B30F</string>
 				<string>34FDD6E405632BFD00F5B30F</string>
 				<string>F57938FB033E745F01A8010A</string>
@@ -36980,7 +36918,6 @@
 		<dict>
 			<key>children</key>
 			<array>
-				<string>11F738F40F58D15500B3285B</string>
 				<string>4947F5BB0655E7C400B791E5</string>
 				<string>4B7F278605440C6200CDFC90</string>
 			</array>
@@ -39499,30 +39436,6 @@
 			<string>MessageView.xib</string>
 			<key>path</key>
 			<string>Plugins/Dual Window Interface/MessageView.xib</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>5A3B4D6A16D878AB00903E40</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>5A3B4D7616D878AC00903E40</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>STTwitter</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>5A3B4D7616D878AC00903E40</key>
-		<dict>
-			<key>children</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Vendor</string>
 			<key>sourceTree</key>
 			<string>&lt;group&gt;</string>
 		</dict>
@@ -47446,43 +47359,6 @@
 		<dict>
 			<key>fileRef</key>
 			<string>EEC461B4096D68580028632F</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>EFB1C3120DDBDA3100B3973D</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.h</string>
-			<key>name</key>
-			<string>AITwitterIMPlugin.h</string>
-			<key>path</key>
-			<string>Source/AITwitterIMPlugin.h</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>EFB1C3130DDBDA3100B3973D</key>
-		<dict>
-			<key>fileEncoding</key>
-			<string>4</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.c.objc</string>
-			<key>name</key>
-			<string>AITwitterIMPlugin.m</string>
-			<key>path</key>
-			<string>Source/AITwitterIMPlugin.m</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>EFB1C3140DDBDA3100B3973D</key>
-		<dict>
-			<key>fileRef</key>
-			<string>EFB1C3130DDBDA3100B3973D</string>
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
