@@ -3533,7 +3533,6 @@
 				<string>4DAA96852577B48D0000D3F7</string>
 				<string>4DAA965C2577B2820000D3F7</string>
 				<string>4D4A20DF25775815008BB8E3</string>
-				<string>4D4B483D25F3F204000CEF01</string>
 				<string>4D4A23AD25776FDB008BB8E3</string>
 				<string>4D4A20A125775535008BB8E3</string>
 				<string>34DE9E60237E2BFC006D5C7F</string>
@@ -17820,7 +17819,6 @@
 				<string>4D4B483625F3F04B000CEF01</string>
 				<string>4D4B483A25F3F064000CEF01</string>
 				<string>4D4B483825F3F058000CEF01</string>
-				<string>4D4B484125F3F575000CEF01</string>
 				<string>4D4B484325F3F5EC000CEF01</string>
 				<string>811034050CDE216F00EC6038</string>
 				<string>81E45D760C15BFF800B7381B</string>
@@ -38101,48 +38099,6 @@
 			<key>isa</key>
 			<string>PBXBuildFile</string>
 		</dict>
-		<key>4D4B483D25F3F204000CEF01</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.pb-project</string>
-			<key>name</key>
-			<string>adium-dependencies.xcodeproj</string>
-			<key>path</key>
-			<string>Dependencies/adium-dependencies.xcodeproj</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>4D4B483E25F3F204000CEF01</key>
-		<dict>
-			<key>children</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Products</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>4D4B484125F3F575000CEF01</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>4D4B484225F3F5EC000CEF01</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>compiled.mach-o.dylib</string>
-			<key>name</key>
-			<string>libintl.8.dylib</string>
-			<key>path</key>
-			<string>../../../../../usr/local/lib/libintl.8.dylib</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
 		<key>4D4B484325F3F5EC000CEF01</key>
 		<dict>
 			<key>fileRef</key>
@@ -39003,7 +38959,6 @@
 				<string>4D4B486E25F3F981000CEF01</string>
 				<string>4D4B486825F3F932000CEF01</string>
 				<string>4D4B485425F3F79E000CEF01</string>
-				<string>4D4B484225F3F5EC000CEF01</string>
 				<string>4D4B484025F3F575000CEF01</string>
 				<string>4D4B483925F3F064000CEF01</string>
 				<string>4D4B483725F3F058000CEF01</string>
