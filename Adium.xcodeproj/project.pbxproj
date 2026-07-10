@@ -7071,19 +7071,17 @@
 				LastUpgradeCheck = 1240;
 				TargetAttributes = {
 					312ED3C90C7E875B00A6BDA9 = {
-						DevelopmentTeam = PYTBE5VFE5;
-						ProvisioningStyle = Automatic;
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
 					};
 					3485D67F09EB416300232CC4 = {
-						DevelopmentTeam = VQ6ZEL8UD3;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 					34BD9CD1053146CC000AB133 = {
 						ProvisioningStyle = Manual;
 					};
 					34BD9DAF05314751000AB133 = {
-						DevelopmentTeam = VQ6ZEL8UD3;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -9346,13 +9344,15 @@
 			baseConfigurationReference = 63C7E2060FAFAA4700B310AC /* AdiumLibpurple.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				DEVELOPMENT_TEAM = VQ6ZEL8UD3;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/Frameworks",
 				);
 				MARKETING_VERSION = 1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.phaedrus1992.adiumY.AdiumPurple;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
@@ -9362,13 +9362,15 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				DEVELOPMENT_TEAM = VQ6ZEL8UD3;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/Frameworks",
 				);
 				MARKETING_VERSION = 1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.phaedrus1992.adiumY.AdiumPurple;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};
@@ -9378,13 +9380,15 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				DEVELOPMENT_TEAM = VQ6ZEL8UD3;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/Frameworks",
 				);
 				MARKETING_VERSION = 1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.phaedrus1992.adiumY.AdiumPurple;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = "Release-Debug";
 		};
@@ -9393,11 +9397,13 @@
 			baseConfigurationReference = 63C7E2070FAFAA4700B310AC /* Adium.framework.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				DEVELOPMENT_TEAM = VQ6ZEL8UD3;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Frameworks/Adium/Resources/Info.plist;
 				MARKETING_VERSION = 1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.phaedrus1992.adiumY.AdiumFramework;
 				PRODUCT_NAME = Adium;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
@@ -9407,11 +9413,13 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				DEVELOPMENT_TEAM = VQ6ZEL8UD3;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Frameworks/Adium/Resources/Info.plist;
 				MARKETING_VERSION = 1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.phaedrus1992.adiumY.AdiumFramework;
 				PRODUCT_NAME = Adium;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};
@@ -9421,11 +9429,13 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				DEVELOPMENT_TEAM = VQ6ZEL8UD3;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Frameworks/Adium/Resources/Info.plist;
 				MARKETING_VERSION = 1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.phaedrus1992.adiumY.AdiumFramework;
 				PRODUCT_NAME = Adium;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = "Release-Debug";
 		};
@@ -9435,6 +9445,7 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -9462,6 +9473,7 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -9490,6 +9502,7 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
