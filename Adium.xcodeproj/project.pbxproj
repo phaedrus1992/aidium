@@ -9458,8 +9458,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					/usr/local/Cellar/libffi/3.3_2/lib,
-					/usr/local/Cellar/expat/2.2.10/lib,
+					"$(PROJECT_DIR)/Dependencies/build/lib",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.phaedrus1992.adiumY.adiumX;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -9486,8 +9485,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					/usr/local/Cellar/libffi/3.3_2/lib,
-					/usr/local/Cellar/expat/2.2.10/lib,
+					"$(PROJECT_DIR)/Dependencies/build/lib",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.phaedrus1992.adiumY.adiumX;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -9517,8 +9515,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					/usr/local/Cellar/libffi/3.3_2/lib,
-					/usr/local/Cellar/expat/2.2.10/lib,
+					"$(PROJECT_DIR)/Dependencies/build/lib",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.phaedrus1992.adiumY.adiumX;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -9561,14 +9558,10 @@
 				GCC_PREFIX_HEADER = Adium.pch;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				HEADER_SEARCH_PATHS = (
-					/usr/local/opt/libffi/include,
-					/usr/local/opt/expat/include,
-					/usr/local/include,
+					"$(PROJECT_DIR)/Dependencies/build/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
-					/usr/local/opt/libffi/lib,
-					/usr/local/opt/expat/lib,
-					/usr/local/lib,
+					"$(PROJECT_DIR)/Dependencies/build/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				ONLY_ACTIVE_ARCH = YES;
@@ -9612,14 +9605,10 @@
 				GCC_PREFIX_HEADER = Adium.pch;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				HEADER_SEARCH_PATHS = (
-					/usr/local/opt/libffi/include,
-					/usr/local/opt/expat/include,
-					/usr/local/include,
+					"$(PROJECT_DIR)/Dependencies/build/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
-					/usr/local/opt/libffi/lib,
-					/usr/local/opt/expat/lib,
-					/usr/local/lib,
+					"$(PROJECT_DIR)/Dependencies/build/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				ONLY_ACTIVE_ARCH = YES;
@@ -9663,14 +9652,10 @@
 				GCC_PREFIX_HEADER = Adium.pch;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				HEADER_SEARCH_PATHS = (
-					/usr/local/opt/libffi/include,
-					/usr/local/opt/expat/include,
-					/usr/local/include,
+					"$(PROJECT_DIR)/Dependencies/build/include",
 				);
 				LIBRARY_SEARCH_PATHS = (
-					/usr/local/opt/libffi/lib,
-					/usr/local/opt/expat/lib,
-					/usr/local/lib,
+					"$(PROJECT_DIR)/Dependencies/build/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				ONLY_ACTIVE_ARCH = YES;

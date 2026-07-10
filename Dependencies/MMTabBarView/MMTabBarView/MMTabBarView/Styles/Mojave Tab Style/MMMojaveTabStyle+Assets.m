@@ -10,7 +10,6 @@
 #import "MMMojaveTabStyle+Assets.h"
 #import <MMTabBarView/MMTabBarView.h>
 #import <Availability.h>
-#endif
 
 
 @implementation MMMojaveTabStyle (Assets)
