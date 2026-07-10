@@ -11,8 +11,8 @@
 # Usage: ./get-sparkle.sh [--clean]
 
 set -o pipefail
-ROOTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SRCROOT="$(cd "$ROOTDIR/.." && pwd)"
+ROOTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"  # Dependencies/build-phases
+SRCROOT="$(cd "$ROOTDIR/../.." && pwd)"               # project root (two up from build-phases)
 
 SPARKLE_VERSION="2.9.4"
 FRAMEWORK_DIR="$SRCROOT/Frameworks/Sparkle.framework"
