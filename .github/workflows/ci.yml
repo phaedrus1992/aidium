@@ -42,8 +42,8 @@ jobs:
 
       - name: Copy MMTabBarView.framework
         run: |
-          SRC="$(find ~/Library/Developer/Xcode/DerivedData/MMTabBarView-*/Build/Products/Release -name 'MMTabBarView.framework' -type d | head -1)"
-          if [ -z "$SRC" ]; then echo "ERROR: MMTabBarView.framework not found in DerivedData"; exit 1; fi
+          SRC="build/Release/MMTabBarView.framework"
+          if [ ! -d "$SRC" ]; then echo "ERROR: $SRC not found (SYMROOT set to build/)"; exit 1; fi
           cp -R "$SRC" Frameworks/MMTabBarView.framework
 
       - name: Install build tools
