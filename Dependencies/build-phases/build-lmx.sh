@@ -15,7 +15,7 @@ build_lmx() {
 
     clang -dynamiclib -fno-objc-arc \
         -arch "$ARCH" -mmacosx-version-min="$SDK_VER" -isysroot "$SDK_DIR" \
-        -O2 -framework Foundation \
+        -O2 -include Foundation/Foundation.h -framework Foundation \
         -install_name @rpath/LMX.framework/Versions/A/LMX \
         -o "$SANDBOX/lib/libLMX.dylib" \
         "$src_dir/LMXParser.m" \
