@@ -48,7 +48,7 @@ readonly DYLIB_MAP_DYLIB=(
     "libgcrypt.20.dylib"
     "libotr.5.dylib"
     "libpurple.0.dylib"
-    "libfribidi.2.dylib"
+    "libfribidi.0.dylib"
     "libLMX.dylib"
 )
 readonly DYLIB_MAP_FRAMEWORK=(
