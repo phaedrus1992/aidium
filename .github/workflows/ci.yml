@@ -23,6 +23,14 @@ jobs:
       - name: Install xcpretty
         run: sudo gem install xcpretty --no-document --quiet 2>&1 || true
 
+      - name: Shellcheck build scripts
+        run: |
+          brew install shellcheck 2>&1 || true
+          shellcheck \
+            Dependencies/build-common.sh \
+            Dependencies/build-universal-deps.sh \
+            Dependencies/build-phases/*.sh
+
       - name: Build MMTabBarView.framework
         run: |
           xcodebuild -project Dependencies/MMTabBarView/MMTabBarView/MMTabBarView.xcodeproj \

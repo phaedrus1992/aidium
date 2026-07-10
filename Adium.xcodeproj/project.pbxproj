@@ -1123,6 +1123,8 @@
 		157A41826D404EB05E6A696A /* FriBidi.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9719C92B1530EDF700217FBE /* FriBidi.framework */; };
 		8705FD124693CDB6DDA2205E /* NSString-FBAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E6D0F02CCCE8ED0F1E4F348D /* NSString-FBAdditions.m */; };
 		46A29DBDFEF508EE3F2E6FF2 /* NSString-FBAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 703142272A64505D5DE405E5 /* NSString-FBAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+			6B4D8A2012345678ABCD0003 /* TestFBAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B4D8A2012345678ABCD0002 /* TestFBAdditions.m */; };
+			6B4D8A2012345678ABCD0006 /* TestLMXParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B4D8A2012345678ABCD0005 /* TestLMXParser.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -3572,6 +3574,10 @@
 		F5F8CA4B0A1A9C9400154550 /* GBQuestionHandlerPlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GBQuestionHandlerPlugin.m; path = Source/GBQuestionHandlerPlugin.m; sourceTree = "<group>"; };
 		703142272A64505D5DE405E5 /* NSString-FBAdditions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = "NSString-FBAdditions.h"; path = Frameworks/Adium/Source/NSString-FBAdditions.h; sourceTree = "<group>"; };
 		E6D0F02CCCE8ED0F1E4F348D /* NSString-FBAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString-FBAdditions.m"; path = Frameworks/Adium/Source/NSString-FBAdditions.m; sourceTree = "<group>"; };
+			6B4D8A2012345678ABCD0001 /* TestFBAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestFBAdditions.h; path = UnitTests/TestFBAdditions.h; sourceTree = "<group>"; };
+			6B4D8A2012345678ABCD0002 /* TestFBAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestFBAdditions.m; path = UnitTests/TestFBAdditions.m; sourceTree = "<group>"; };
+			6B4D8A2012345678ABCD0004 /* TestLMXParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestLMXParser.h; path = UnitTests/TestLMXParser.h; sourceTree = "<group>"; };
+			6B4D8A2012345678ABCD0005 /* TestLMXParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestLMXParser.m; path = UnitTests/TestLMXParser.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3833,6 +3839,10 @@
 				634BCD1E0DDC1542005AF1C2 /* TestMutableStringAdditions.m */,
 				31034EFD0C8142680003F5AA /* TestStringAdditions.h */,
 				31034EFE0C8142680003F5AA /* TestStringAdditions.m */,
+				6B4D8A2012345678ABCD0001 /* TestFBAdditions.h */,
+				6B4D8A2012345678ABCD0002 /* TestFBAdditions.m */,
+				6B4D8A2012345678ABCD0004 /* TestLMXParser.h */,
+				6B4D8A2012345678ABCD0005 /* TestLMXParser.m */,
 				31034F0B0C8142720003F5AA /* UTF8Snowman.txt */,
 			);
 			name = "Unit tests";
@@ -7644,6 +7654,8 @@
 				318EA69C0D7A659900EDB105 /* TestColorAdditions.m in Sources */,
 				634BCD1F0DDC1542005AF1C2 /* TestMutableStringAdditions.m in Sources */,
 				3107D5250F63134F0051DDD5 /* TestAttributedStringAdditions.m in Sources */,
+				6B4D8A2012345678ABCD0003 /* TestFBAdditions.m in Sources */,
+				6B4D8A2012345678ABCD0006 /* TestLMXParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

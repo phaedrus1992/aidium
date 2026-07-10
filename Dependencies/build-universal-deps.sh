@@ -7,6 +7,7 @@
 #
 # Usage: ./build-universal-deps.sh [--clean] [--build-dir=<dir>]
 #
+# shellcheck disable=SC1091 # sourced files use ROOTDIR, not determinable statically
 # Flags:
 #   --clean        Remove all cached source and build artifacts before building
 #   --build-dir=<dir>  Override build output directory (default: Dependencies/build/)
@@ -20,6 +21,7 @@ SRCROOT="$(cd "$ROOTDIR/.." && pwd)"
 # ---- Parse flags ----
 CLEAN=0
 ONLY_PHASE=""
+# shellcheck disable=SC2034 # BUILD_DIR_OVERRIDE is parsed for future build-dir override support; FORCE used by build-common.sh
 while [ $# -gt 0 ]; do
     case "$1" in
         --clean) CLEAN=1 ;;
@@ -126,9 +128,14 @@ for i in "${!DYLIB_MAP_DYLIB[@]}"; do
         has_errors=1
     fi
 
-    # Check code signature — currently non-fatal (dev cycle, not distributing yet)
+    # Check code signature — WARN only (non-fatal for dev cycle).
+    # Ad-hoc signing (codesign -s -) satisfies arm64 runtime requirements but
+    # fails --verify --strict because there is no certificate chain. This is
+    # expected for local development builds and will be superseded by proper
+    # Developer ID signing + notarization for distribution builds.
+    # See: docs/design/signing.md (pending)
     if ! codesign --verify --strict "$binary" 2>/dev/null; then
-        echo "  WARN: $fw.framework — codesign verification failed (non-fatal)"
+        echo "  WARN: $fw.framework — codesign verification failed (non-fatal, ad-hoc only)"
     fi
 
     # Check top-level symlinks
