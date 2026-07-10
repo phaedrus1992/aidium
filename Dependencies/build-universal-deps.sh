@@ -126,9 +126,14 @@ for i in "${!DYLIB_MAP_DYLIB[@]}"; do
         has_errors=1
     fi
 
-    # Check code signature — currently non-fatal (dev cycle, not distributing yet)
+    # Check code signature — WARN only (non-fatal for dev cycle).
+    # Ad-hoc signing (codesign -s -) satisfies arm64 runtime requirements but
+    # fails --verify --strict because there is no certificate chain. This is
+    # expected for local development builds and will be superseded by proper
+    # Developer ID signing + notarization for distribution builds.
+    # See: docs/design/signing.md (pending)
     if ! codesign --verify --strict "$binary" 2>/dev/null; then
-        echo "  WARN: $fw.framework — codesign verification failed (non-fatal)"
+        echo "  WARN: $fw.framework — codesign verification failed (non-fatal, ad-hoc only)"
     fi
 
     # Check top-level symlinks

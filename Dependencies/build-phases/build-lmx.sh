@@ -10,12 +10,17 @@ build_lmx() {
     local src_dir
     src_dir="$(vendored_extract "$BUILD_LMX_FILE" "$BUILD_LMX_SHA256" "LMX-1.0")"
 
+    # Fix pre-existing format warnings in vendored LMXParser.m before building.
+    # - %u → %zu for [dataToParse length] (NSUInteger, not unsigned int)
+    # This keeps -Werror clean without modifying the vendored tarball.
+    sed -i '' 's/out of %u bytes/out of %zu bytes/' "$src_dir/LMXParser.m"
+
     mkdir -p "$SANDBOX/lib"
     mkdir -p "$SANDBOX/include/lmx"
 
     clang -dynamiclib -fno-objc-arc \
         -arch "$ARCH" -mmacosx-version-min="$SDK_VER" -isysroot "$SDK_DIR" \
-        -O2 -include Foundation/Foundation.h -framework Foundation \
+        -O2 -Werror -include Foundation/Foundation.h -framework Foundation \
         -install_name @rpath/LMX.framework/Versions/A/LMX \
         -o "$SANDBOX/lib/libLMX.dylib" \
         "$src_dir/LMXParser.m" \

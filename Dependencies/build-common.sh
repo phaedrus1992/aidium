@@ -227,61 +227,63 @@ build_framework() {
     mkdir -p "$ver_dir/Resources" "$ver_dir/Headers"
 
     # ---- Binary ----
-    if [ -f "$dylib_path" ]; then
-        cp "$dylib_path" "$ver_dir/$binary_name"
-        chmod 755 "$ver_dir/$binary_name"
-
-        # Set @rpath-based install name (relocatable, matches consumer rpaths)
-        install_name_tool -id \
-            "@rpath/$name.framework/Versions/A/$binary_name" \
-            "$ver_dir/$binary_name"
-
-        # ---- Rewrite inter-framework dependency links ----
-        # Collect all non-system, non-@rpath dependency paths from otool -L.
-        # For each one, look up the dylib basename in DYLIB_MAP: mapped deps get
-        # rewritten to @rpath/<fw>.framework/Versions/<ver>/<bin>; unmapped
-        # absolute paths (which should never exist for our vendored deps) fail
-        # the phase loudly.
-        local dep_path dylib_basename fw_lookup bin_lookup new_path has_errors
-        has_errors=0
-
-        while IFS= read -r line; do
-            dep_path="$(echo "$line" | awk '{print $1}')"
-            [ -z "$dep_path" ] && continue
-
-            dylib_basename="$(basename "$dep_path")"
-            fw_lookup="$(_lookup_framework "$dylib_basename")" || true
-
-            if [ -n "$fw_lookup" ]; then
-                bin_lookup="$(_lookup_binary "$dylib_basename")"
-                new_path="@rpath/${fw_lookup}.framework/Versions/A/${bin_lookup}"
-                if [ "$dep_path" != "$new_path" ]; then
-                    install_name_tool -change "$dep_path" "$new_path" "$ver_dir/$binary_name"
-                    echo "  $binary_name: $dep_path -> $new_path"
-                fi
-            else
-                # Only fail on absolute paths (these are build-system leaks).
-                # System paths, @rpath, @loader_path, and leaf names are fine.
-                case "$dep_path" in
-                    /*)
-                        echo "  ERROR: unmapped absolute dependency $dep_path in $binary_name" >&2
-                        has_errors=1
-                        ;;
-                esac
-            fi
-        done < <(
-            otool -L "$ver_dir/$binary_name" 2>/dev/null | \
-            grep -v ':' | grep -v '/usr/lib/' | grep -v '/System/' | \
-            grep -v '@rpath' | grep -v '@executable_path'
-        )
-
-        if [ "$has_errors" -ne 0 ]; then
-            return 1
-        fi
-
-        # Re-sign after install_name_tool edits (arm64 macOS kills unsigned edits)
-        codesign -f -s - "$ver_dir/$binary_name"
+    if [ ! -f "$dylib_path" ]; then
+        echo "  ERROR: dylib $dylib_path not found for framework $name" >&2
+        return 1
     fi
+    cp "$dylib_path" "$ver_dir/$binary_name"
+    chmod 755 "$ver_dir/$binary_name"
+
+    # Set @rpath-based install name (relocatable, matches consumer rpaths)
+    install_name_tool -id \
+        "@rpath/$name.framework/Versions/A/$binary_name" \
+        "$ver_dir/$binary_name"
+
+    # ---- Rewrite inter-framework dependency links ----
+    # Collect all non-system, non-@rpath dependency paths from otool -L.
+    # For each one, look up the dylib basename in DYLIB_MAP: mapped deps get
+    # rewritten to @rpath/<fw>.framework/Versions/<ver>/<bin>; unmapped
+    # absolute paths (which should never exist for our vendored deps) fail
+    # the phase loudly.
+    local dep_path dylib_basename fw_lookup bin_lookup new_path has_errors
+    has_errors=0
+
+    while IFS= read -r line; do
+        dep_path="$(echo "$line" | awk '{print $1}')"
+        [ -z "$dep_path" ] && continue
+
+        dylib_basename="$(basename "$dep_path")"
+        fw_lookup="$(_lookup_framework "$dylib_basename")" || true
+
+        if [ -n "$fw_lookup" ]; then
+            bin_lookup="$(_lookup_binary "$dylib_basename")"
+            new_path="@rpath/${fw_lookup}.framework/Versions/A/${bin_lookup}"
+            if [ "$dep_path" != "$new_path" ]; then
+                install_name_tool -change "$dep_path" "$new_path" "$ver_dir/$binary_name"
+                echo "  $binary_name: $dep_path -> $new_path"
+            fi
+        else
+            # Only fail on absolute paths (these are build-system leaks).
+            # System paths, @rpath, @loader_path, and leaf names are fine.
+            case "$dep_path" in
+                /*)
+                    echo "  ERROR: unmapped absolute dependency $dep_path in $binary_name" >&2
+                    has_errors=1
+                    ;;
+            esac
+        fi
+    done < <(
+        otool -L "$ver_dir/$binary_name" 2>/dev/null | \
+        grep -v ':' | grep -v '/usr/lib/' | grep -v '/System/' | \
+        grep -v '@rpath' | grep -v '@executable_path'
+    )
+
+    if [ "$has_errors" -ne 0 ]; then
+        return 1
+    fi
+
+    # Re-sign after install_name_tool edits (arm64 macOS kills unsigned edits)
+    codesign -f -s - "$ver_dir/$binary_name"
 
     # ---- Headers ----
     # cp -RL dereferences symlinks so no absolute symlinks leak into bundles
