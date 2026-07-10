@@ -333,7 +333,7 @@ vendored_extract() {
     case "$filename" in
         *.tar.gz|*.tgz) tar -xzf "$tarball" -C "$extract_dir" ;;
         *.tar.xz)       tar -xJf "$tarball" -C "$extract_dir" ;;
-        *.tar.bz2)      tar -xjf "$tarball" -C "$extract_dir" ;;
+        *.tar.bz2|*.tbz|*.tbz2) tar -xjf "$tarball" -C "$extract_dir" ;;
         *)              echo "  ERROR: unknown archive format: $filename" >&2; return 1 ;;
     esac
 
