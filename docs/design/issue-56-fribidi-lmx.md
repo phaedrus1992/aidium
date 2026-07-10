@@ -80,7 +80,7 @@ which links and copies LMX.framework via existing pbxproj phases.
   <staged headers> "1.0.16"` — keeping the existing framework name means the
   pbxproj file reference and Copy Frameworks entry need no changes.
 - Register in the `DYLIB_MAP_*` arrays in `build-common.sh`:
-  dylib `libfribidi.2.dylib` → framework `FriBidi` → binary `FriBidi`.
+  dylib `libfribidi.0.dylib` → framework `FriBidi` → binary `FriBidi`.
   This puts FriBidi under the existing verification gate (universal-arch
   check, sandbox-path leak check, symlink check) and the @rpath rewrite
   machinery automatically.
