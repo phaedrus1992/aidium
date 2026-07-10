@@ -28,7 +28,7 @@
 
 /*!
  * @class XtrasInstaller
- * @brief Class which displays a progress window and downloads an AdiumXtra, decompresses it, and installs it.
+ * @brief Class which displays a progress window and downloads an AdiumYExtra, decompresses it, and installs it.
  */
 @implementation XtrasInstaller
 
@@ -78,7 +78,7 @@
 
 - (void)installXtraAtURL:(NSURL *)url
 {
-	if ([[url host] isEqualToString:@"xtras.adium.im"] || [[url host] isEqualToString:@"www.adiumxtras.com"] || ALLOW_UNTRUSTED_XTRAS) {
+	if ([[url host] isEqualToString:@"xtras.adium.im"] || [[url host] isEqualToString:@"www.adiumyextras.com"] || ALLOW_UNTRUSTED_XTRAS) {
 		NSURL	*urlToDownload;
 
 		[NSBundle loadNibNamed:@"XtraProgressWindow" owner:self];

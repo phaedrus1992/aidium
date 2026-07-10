@@ -42,7 +42,7 @@
 			<string>Viewer</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>com.adiumx.xmllog</string>
+				<string>com.github.phaedrus1992.adiumy.xmllog</string>
 			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
@@ -64,7 +64,7 @@
 			<string>Viewer</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>com.adiumx.htmllog</string>
+				<string>com.github.phaedrus1992.adiumy.htmllog</string>
 			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
@@ -122,7 +122,7 @@
 			<key>UTTypeDescription</key>
 			<string>Adium X chat log</string>
 			<key>UTTypeIdentifier</key>
-			<string>com.adiumx.xmllog</string>
+			<string>com.github.phaedrus1992.adiumy.xmllog</string>
 			<key>UTTypeReferenceURL</key>
 			<string>http://www.adiumx.com</string>
 			<key>UTTypeTagSpecification</key>
@@ -148,7 +148,7 @@
 			<key>UTTypeDescription</key>
 			<string>Adium X HTML chat log</string>
 			<key>UTTypeIdentifier</key>
-			<string>com.adiumx.htmllog</string>
+			<string>com.github.phaedrus1992.adiumy.htmllog</string>
 			<key>UTTypeReferenceURL</key>
 			<string>http://www.adiumx.com</string>
 			<key>UTTypeTagSpecification</key>

@@ -456,7 +456,7 @@
 }
 - (NSString *) uniformTypeIdentifier
 {
-	return @"com.adiumx.xtra";
+	return @"com.github.phaedrus1992.adiumy.xtra";
 }
 
 - (NSArray *) validResourceTypes

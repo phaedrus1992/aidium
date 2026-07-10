@@ -269,7 +269,7 @@ static NSString	*prefsCategory;
 	//Broadcast our presence
 	connection = [[NSConnection alloc] init];
 	[connection setRootObject:self];
-	[connection registerName:@"com.adiumX.adiumX"];
+	[connection registerName:@"com.github.phaedrus1992.adiumY.adiumX"];
 
 	[[AIContactObserverManager sharedManager] delayListObjectNotifications];
 	[[NSNotificationCenter defaultCenter] postNotificationName:AIApplicationDidFinishLoadingNotification object:nil];

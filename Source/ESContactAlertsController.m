@@ -394,7 +394,7 @@ NSInteger eventIDSort(id objectA, id objectB, void *context) {
 /*!
  * @brief Find the eventID associated with an English name
  *
- * This exists for compatibility with old AdiumXtras...
+ * This exists for compatibility with old AdiumYExtras...
  */
 - (NSString *)eventIDForEnglishDisplayName:(NSString *)displayName
 {	

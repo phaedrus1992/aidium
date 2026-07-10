@@ -9,42 +9,42 @@
 	are CFNumber, CFDate, CFBoolean and CFData.		      
     </note>
     <attributes>
-        <attribute name="com_adiumX_chatSource" multivalued="false" type="CFString"/>
-        <attribute name="com_adiumX_chatDestination" multivalued="false" type="CFString"/>
-        <attribute name="com_adiumX_chatDestinations" multivalued="true" type="CFString"/>		
-        <attribute name="com_adiumX_service" multivalued="false" type="CFString"/>
+        <attribute name="com_github_phaedrus1992_adiumY_chatSource" multivalued="false" type="CFString"/>
+        <attribute name="com_github_phaedrus1992_adiumY_chatDestination" multivalued="false" type="CFString"/>
+        <attribute name="com_github_phaedrus1992_adiumY_chatDestinations" multivalued="true" type="CFString"/>		
+        <attribute name="com_github_phaedrus1992_adiumY_service" multivalued="false" type="CFString"/>
     </attributes>
 
     <types>
-        <type name="com.adiumx.xmllog">
+        <type name="com.github.phaedrus1992.adiumy.xmllog">
             <note>
 		The keys that this metadata importer handles.
             </note>
             <allattrs>
-	    com_adiumX_chatSource
-		com_adiumX_chatDestinations
-		com_adiumX_service
+	    com_github_phaedrus1992_adiumY_chatSource
+		com_github_phaedrus1992_adiumY_chatDestinations
+		com_github_phaedrus1992_adiumY_service
             </allattrs>
             <displayattrs>
-	    com_adiumX_chatSource
-		com_adiumX_chatDestinations
-		com_adiumX_service
+	    com_github_phaedrus1992_adiumY_chatSource
+		com_github_phaedrus1992_adiumY_chatDestinations
+		com_github_phaedrus1992_adiumY_service
             </displayattrs>
         </type>
 		
-		<type name="com.adiumx.htmllog">
+		<type name="com.github.phaedrus1992.adiumy.htmllog">
             <note>
 		The keys that this metadata importer handles.
             </note>
             <allattrs>
-			com_adiumX_chatSource
-			com_adiumX_chatDestination
-			com_adiumX_service
+			com_github_phaedrus1992_adiumY_chatSource
+			com_github_phaedrus1992_adiumY_chatDestination
+			com_github_phaedrus1992_adiumY_service
             </allattrs>
             <displayattrs>
-			com_adiumX_chatSource
-			com_adiumX_chatDestination
-			com_adiumX_service
+			com_github_phaedrus1992_adiumY_chatSource
+			com_github_phaedrus1992_adiumY_chatDestination
+			com_github_phaedrus1992_adiumY_service
             </displayattrs>
         </type>
 

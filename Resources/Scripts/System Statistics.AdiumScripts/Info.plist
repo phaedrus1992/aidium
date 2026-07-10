@@ -7,7 +7,7 @@
 	<key>CFBundleGetInfoString</key>
 	<string>System Statistics Scripts</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.adiumx.SystemStatistics.scripts</string>
+	<string>com.github.phaedrus1992.adiumy.SystemStatistics.scripts</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>1.0</string>
 	<key>CFBundleName</key>

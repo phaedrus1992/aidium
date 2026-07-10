@@ -58,7 +58,7 @@
 	static dispatch_queue_t passwordQueue;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        passwordQueue = dispatch_queue_create("com.adium.Passwords", 0);
+        passwordQueue = dispatch_queue_create("com.github.phaedrus1992.adiumy.Passwords", 0);
     });
 	
 	return passwordQueue;

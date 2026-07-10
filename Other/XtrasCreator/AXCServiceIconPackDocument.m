@@ -18,7 +18,7 @@
 	return @"AdiumServiceIcons";
 }
 - (NSString *) uniformTypeIdentifier {
-	return @"com.adiumx.serviceicons";
+	return @"com.github.phaedrus1992.adiumy.serviceicons";
 }
 
 - (NSArray *) categoryNames {

@@ -103,7 +103,7 @@
  * If this is the first launch, or the user has "enforce Adium as default" set, set ourself
  * as the default for all available service schemes.
  *
- * Always set ourself as the default for our helper schemes (such as adiumxtra).
+ * Always set ourself as the default for our helper schemes (such as adiumyextra).
  */
 - (void)checkHandledSchemes
 {
@@ -181,13 +181,13 @@
  * @brief Helper schemes
  *
  * Helper schemes are schemes which we should always be registered as the default application
- * for. This includes things like the adiumxtra:// installer.
+ * for. This includes things like the adiumyextra:// installer.
  *
  * @returns An NSArray of all of the helper schemes we support.
  */
 - (NSArray *)helperSchemes
 {
-	return [NSArray arrayWithObjects:@"adiumxtra", nil];
+	return [NSArray arrayWithObjects:@"adiumyextra", nil];
 }
 
 #pragma mark Default Bundle
@@ -475,9 +475,9 @@
 								 withMessage:nil];
 		}
 		
-	} else if ([scheme isEqualToString:@"adiumxtra"]) {
+	} else if ([scheme isEqualToString:@"adiumyextra"]) {
 		//Installs an adium extra
-		// adiumxtra://xtras.adium.im/path/to/xtra.zip
+		// adiumyextra://xtras.adium.im/path/to/xtra.zip
 		
 		[[XtrasInstaller installer] installXtraAtURL:url];
 	}

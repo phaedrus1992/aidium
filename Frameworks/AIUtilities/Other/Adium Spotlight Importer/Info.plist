@@ -11,8 +11,8 @@
 			<string>MDImporter</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>com.adiumx.htmllog</string>
-				<string>com.adiumx.xmllog</string>
+				<string>com.github.phaedrus1992.adiumy.htmllog</string>
+				<string>com.github.phaedrus1992.adiumy.xmllog</string>
 			</array>
 			<key>LSTypeIsPackage</key>
 			<true/>

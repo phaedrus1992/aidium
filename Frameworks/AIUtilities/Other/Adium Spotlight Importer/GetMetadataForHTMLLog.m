@@ -105,15 +105,15 @@ Boolean GetMetadataForHTMLLog(NSMutableDictionary *attributes, NSString *pathToF
     [textContent release];
 	
 	[attributes setObject:serviceClass
-				   forKey:@"com_adiumX_service"];
+				   forKey:@"com_github_phaedrus1992_adiumY_service"];
 	if (fromUID) {
 		[attributes setObject:fromUID
-					   forKey:@"com_adiumX_chatSource"];
+					   forKey:@"com_github_phaedrus1992_adiumY_chatSource"];
 	}
 
 	if (toUID) {
 		[attributes setObject:toUID
-					   forKey:@"com_adiumX_chatDestination"];
+					   forKey:@"com_github_phaedrus1992_adiumY_chatDestination"];
 		[attributes setObject:[NSString stringWithFormat:@"%@ on %@",toUID,[date descriptionWithCalendarFormat:@"%y-%m-%d"
 																									  timeZone:nil
 																										locale:nil]]

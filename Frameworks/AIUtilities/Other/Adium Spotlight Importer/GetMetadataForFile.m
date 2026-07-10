@@ -60,9 +60,9 @@ Boolean GetMetadataForFile(void* thisInterface,
 	NSAutoreleasePool	*pool;
 	pool = [[NSAutoreleasePool alloc] init];
 
-	if (CFStringCompare(contentTypeUTI, (CFStringRef)@"com.adiumx.htmllog", kCFCompareBackwards) == kCFCompareEqualTo) {
+	if (CFStringCompare(contentTypeUTI, (CFStringRef)@"com.github.phaedrus1992.adiumy.htmllog", kCFCompareBackwards) == kCFCompareEqualTo) {
 		success = GetMetadataForHTMLLog((NSMutableDictionary *)attributes, (NSString *)pathToFile);
-	} else if (CFStringCompare(contentTypeUTI, (CFStringRef)@"com.adiumx.xmllog", kCFCompareBackwards) == kCFCompareEqualTo) {
+	} else if (CFStringCompare(contentTypeUTI, (CFStringRef)@"com.github.phaedrus1992.adiumy.xmllog", kCFCompareBackwards) == kCFCompareEqualTo) {
 		success = GetMetadataForXMLLog((NSMutableDictionary *)attributes, (NSString *)pathToFile);
 	} else {
 		NSLog(@"We were passed %@, of type %@, which is an unknown type",pathToFile,contentTypeUTI);
@@ -78,12 +78,12 @@ static CFStringRef ResolveUTI(CFStringRef contentTypeUTI, NSURL *urlToFile) {
     CFStringRef pathExtension = (CFStringRef)[urlToFile pathExtension];
 	if (contentTypeUTI == NULL) {
 		if (CFStringCompare(pathExtension, CFSTR("chatLog"), (kCFCompareBackwards | kCFCompareCaseInsensitive)) == kCFCompareEqualTo) {
-			contentTypeUTI = CFSTR("com.adiumx.xmllog");
+			contentTypeUTI = CFSTR("com.github.phaedrus1992.adiumy.xmllog");
 		} else if (CFStringCompare(pathExtension, CFSTR("AdiumXMLLog"), (kCFCompareBackwards | kCFCompareCaseInsensitive)) == kCFCompareEqualTo) {
-			contentTypeUTI = CFSTR("com.adiumx.xmllog");
+			contentTypeUTI = CFSTR("com.github.phaedrus1992.adiumy.xmllog");
 		} else {
 			//Treat all other log extensions as HTML logs (plaintext will come out fine this way, too)
-			contentTypeUTI = CFSTR("com.adiumx.htmllog");
+			contentTypeUTI = CFSTR("com.github.phaedrus1992.adiumy.htmllog");
 		}
 	}
     return contentTypeUTI;
@@ -94,9 +94,9 @@ NSData *CopyDataForURL(CFStringRef contentTypeUTI, NSURL *urlToFile) {
 	NSData			*content;
 	contentTypeUTI = ResolveUTI(contentTypeUTI, urlToFile);
     
-	if (CFEqual(contentTypeUTI, CFSTR("com.adiumx.htmllog"))) {
+	if (CFEqual(contentTypeUTI, CFSTR("com.github.phaedrus1992.adiumy.htmllog"))) {
 		content = [[NSData alloc] initWithContentsOfURL:urlToFile options:NSDataReadingUncached error:NULL];
-	} else if (CFEqual(contentTypeUTI, CFSTR("com.adiumx.xmllog"))) {
+	} else if (CFEqual(contentTypeUTI, CFSTR("com.github.phaedrus1992.adiumy.xmllog"))) {
 		BOOL isDir;
         NSString *path = [urlToFile path];
 		if ([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir]) {
@@ -132,9 +132,9 @@ CFStringRef CopyTextContentForFileData(CFStringRef contentTypeUTI, NSURL *urlToF
     
     NSString *result = nil;
     
-    if (CFEqual(contentTypeUTI,CFSTR("com.adiumx.htmllog"))) {
+    if (CFEqual(contentTypeUTI,CFSTR("com.github.phaedrus1992.adiumy.htmllog"))) {
         result = CopyTextContentForHTMLLogData(fileData);
-	} else if (CFEqual(contentTypeUTI, CFSTR("com.adiumx.xmllog"))) {
+	} else if (CFEqual(contentTypeUTI, CFSTR("com.github.phaedrus1992.adiumy.xmllog"))) {
         result = CopyTextContentForXMLLogData(fileData);
     }
     return (CFStringRef)result;
@@ -210,7 +210,7 @@ Boolean GetMetadataForXMLLog(NSMutableDictionary *attributes, NSString *pathToFi
 		NSString *serviceString = [[[xmlDoc rootElement] attributeForName:@"service"] objectValue];
 		if(serviceString != nil)
 			[attributes setObject:serviceString
-						   forKey:@"com_adiumX_service"];
+						   forKey:@"com_github_phaedrus1992_adiumY_service"];
 		
 		NSArray			*children = [[xmlDoc rootElement] children];
 		NSDate			*startDate = nil, *endDate = nil;
@@ -235,11 +235,11 @@ Boolean GetMetadataForXMLLog(NSMutableDictionary *attributes, NSString *pathToFi
 		NSString *accountString = [[[xmlDoc rootElement] attributeForName:@"account"] objectValue];
 		if (accountString) {
 			[attributes setObject:accountString
-						   forKey:@"com_adiumX_chatSource"];
+						   forKey:@"com_github_phaedrus1992_adiumY_chatSource"];
 			NSMutableArray *otherAuthors = [authorsArray mutableCopy];
 			[otherAuthors removeObject:accountString];
 			[attributes setObject:otherAuthors
-						   forKey:@"com_adiumX_chatDestinations"];
+						   forKey:@"com_github_phaedrus1992_adiumY_chatDestinations"];
 			//pick the first author for this.  likely a bad idea
 			if (startDate && [otherAuthors count]) {
 				NSString *toUID = [otherAuthors objectAtIndex:0];

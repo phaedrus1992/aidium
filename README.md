@@ -21,7 +21,7 @@ Adium is a free and open source instant messaging application for [OS X](https:/
 * A sophisticated events system (including [Growl notifications](https://adium.im/help/pgs/AdvancedFeatures-GrowlSupport.html))
 * [OTR Encryption](https://adium.im/help/pgs/AdvancedFeatures-OTREncryption.html)
 * [File Transfer](https://adium.im/help/pgs/AdvancedFeatures-FileTransfer.html)
-* [Xtras](https://adium.im/help/pgs/AdvancedFeatures-AdiumXtras.html) and many, many other customization options
+* [Xtras](https://adium.im/help/pgs/AdvancedFeatures-AdiumYExtras.html) and many, many other customization options
 * A beautiful icon, the "Adiumy" duck
 * Translations: Adium speaks 27 different languages
 

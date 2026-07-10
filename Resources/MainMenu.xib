@@ -488,7 +488,7 @@
                 <outlet property="menuItem_aboutAdium" destination="6474" id="7154"/>
                 <outlet property="menuItem_adiumForums" destination="7032" id="7187"/>
                 <outlet property="menuItem_adiumHelp" destination="6618" id="7184"/>
-                <outlet property="menuItem_adiumXtras" destination="7054" id="7155"/>
+                <outlet property="menuItem_adiumYExtras" destination="7054" id="7155"/>
                 <outlet property="menuItem_bigger" destination="7272" id="7277"/>
                 <outlet property="menuItem_bold" destination="6539" id="7177"/>
                 <outlet property="menuItem_bringAllToFront" destination="6508" id="7183"/>

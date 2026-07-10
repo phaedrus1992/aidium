@@ -1428,7 +1428,7 @@ Note: Adium now requires Mac OS X 10.4.0 or later.
  * Hi, LH.
 
 == Xtras ==
- * StatusItem can now be customized via .AdiumMenuBarIcons AdiumXtras (#7237)
+ * StatusItem can now be customized via .AdiumMenuBarIcons AdiumYExtras (#7237)
  * Improved Adiumy emoticon text equivalents (#6327)
  * Custom menu bar icons are now preserved when upgrading to a new version of Adium (#6972)
  * Multi-state menu bar icon options (#4905)
@@ -1540,7 +1540,7 @@ Version 1.0.4 (5/20/2007)
  * Fixed deletion of temporary images when they are no longer needed (#4711 and #6732)
  * Fixed a crash when command-dragging the message window (#6873)
  * Improved chat transcript viewer performance after finishing transcript indexing
- * Added ability for external processes to communicate with Adium via Distributed Objects (connection name: @"com.adiumX.adiumX")
+ * Added ability for external processes to communicate with Adium via Distributed Objects (connection name: @"com.github.phaedrus1992.adiumY.adiumX")
  * We now follow updates to the system time zone (#5383)
  * Norwegian update
 
@@ -2035,7 +2035,7 @@ Version 0.87 (12/15/2005)
  * Allow selection for copying of the OTR Private Key #2248
  * Improved ability of third-party service plugins to provide appropriate service images #1170
  * Improved presentation of away statuses such as {{{BRB}}} and {{{Do Not Disturb}}} in tooltips
- * Improved automatic installation from adiumxtras.com
+ * Improved automatic installation from adiumyextras.com
  * Removed the Sametime "contact list setting" option, defaulting to "Load and Save From/To Server"
  * Removed dependency on the Apple Gothic font for drawing file transfer window arrows #2300
  * Added Brazilian Portuguese translation #2284
@@ -2064,7 +2064,7 @@ Version 0.85 (10/12/2005)
  * Added %n (username), %a (alias), %m (message), and %t (time) substitution support to the Speak Text action #142
  * Updated libgaim to obtain [http://gaim.sourceforge.net/summerofcode/jonathan/blog AIM file transfer Summer of Code improvements] and other fixes
  * Speech actions now use the Adium volume level specified in the General Preferences #1607
- * Improved automatic [http://www.adiumxtras.com AdiumXtras] installation
+ * Improved automatic [http://www.adiumyextras.com AdiumYExtras] installation
  * Implemented auto-saving of the Jabber conference server #802
  * Improved message view display of right-to-left text for bi-directional languages #651
  * Improved interface for the Play Sound action #762
@@ -2098,7 +2098,7 @@ Version 0.85 (10/12/2005)
  * Fixed a leak when displaying contact tooltips
  * Removed duplicate Copy Link contextual menu item in 10.4 #1132
  * Added a "New Group..." item to the Groups menu in the Add contact window #1552
- * Applescripts whose keywords begin with {{{/}}} now only work at the beginning of a line. AdiumXtras authors should update such scripts to have keywords beginning with {{{%_}}}
+ * Applescripts whose keywords begin with {{{/}}} now only work at the beginning of a line. AdiumYExtras authors should update such scripts to have keywords beginning with {{{%_}}}
  * Improved <HR> tag handling
  * We now fallback on the default service icon to look for a service icon if the current pack does not provide one #1660
  * Added Spanish translation
@@ -2242,11 +2242,11 @@ Version 0.80 (02 May 2005)
  * Improved Log Viewer
  * Improved, expanded, and redesigned preferences and account configuration
  * Improved support for sending and receiving colors in messages
- * Added Pure Plastic message view; removed some older message views (old views are available on adiumxtras.com)
+ * Added Pure Plastic message view; removed some older message views (old views are available on adiumyextras.com)
  * Expanded toolbar buttons and improved icon art
  * Danish, Dutch, French, German, Italian, Japanese, and Traditional Chinese translations
  * Removed Tic Tac Toe; see http://mykogames.info for information on the new Myko instant messaging games project
- * Added support for custom Service Icon and Status Icon AdiumXtras packs
+ * Added support for custom Service Icon and Status Icon AdiumYExtras packs
  * Added "Contact Last Seen" information tracking
  * Certified OS X 10.4 Tiger compatible
 

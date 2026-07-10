@@ -21,7 +21,7 @@ static inline dispatch_queue_t queue() {
     static dispatch_queue_t sharedWriterQueue = nil;
 	static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedWriterQueue = dispatch_queue_create("com.adium.sharedAsyncIOQueue", 0);
+        sharedWriterQueue = dispatch_queue_create("com.github.phaedrus1992.adiumy.sharedAsyncIOQueue", 0);
     });
 	
 	return sharedWriterQueue;

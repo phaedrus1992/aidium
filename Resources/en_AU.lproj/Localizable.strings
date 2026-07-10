@@ -1097,7 +1097,7 @@
 /* No comment provided by engineer. */
 "contact list theme" = "contact list theme";
 
-/* AdiumXtras category name */
+/* AdiumYExtras category name */
 "Contact List Themes" = "Contact List Themes";
 
 /* No comment provided by engineer. */
@@ -1366,7 +1366,7 @@
 /* No comment provided by engineer. */
 "dock icon set" = "dock icon set";
 
-/* AdiumXtras category name */
+/* AdiumYExtras category name */
 "Dock Icons" = "Dock Icons";
 
 /* No comment provided by engineer. */
@@ -1420,7 +1420,7 @@
 /* No comment provided by engineer. */
 "emoticon set" = "emoticon set";
 
-/* AdiumXtras category name */
+/* AdiumYExtras category name */
 "Emoticons" = "Emoticons";
 
 /* Emoticons in <an emoticon pack name> */
@@ -2040,7 +2040,7 @@
 /* No comment provided by engineer. */
 "Mention" = "Mention";
 
-/* AdiumXtras category name */
+/* AdiumYExtras category name */
 "Menu Bar Icons" = "Menu Bar Icons";
 
 /* No comment provided by engineer. */
@@ -2082,7 +2082,7 @@
 /* No comment provided by engineer. */
 "message style" = "message style";
 
-/* AdiumXtras category name */
+/* AdiumYExtras category name */
 "Message Styles" = "Message Styles";
 
 /* No comment provided by engineer. */
@@ -2388,7 +2388,7 @@
 /* No comment provided by engineer. */
 "Please wait" = "Please wait";
 
-/* AdiumXtras category name */
+/* AdiumYExtras category name */
 "Plugins" = "Plugins";
 
 /* No comment provided by engineer. */
@@ -2613,7 +2613,7 @@
 /* Background image display preference: The image will be increased or decreased in size to fit the window */
 "Scaled" = "Scaled";
 
-/* AdiumXtras category name */
+/* AdiumYExtras category name */
 "Scripts" = "Scripts";
 
 /* No comment provided by engineer. */
@@ -2745,7 +2745,7 @@
 /* No comment provided by engineer. */
 "Server:" = "Server:";
 
-/* AdiumXtras category name */
+/* AdiumYExtras category name */
 "Service Icons" = "Service Icons";
 
 /* No comment provided by engineer. */
@@ -2898,7 +2898,7 @@
 /* No comment provided by engineer. */
 "Sound set:" = "Sound set:";
 
-/* AdiumXtras category name */
+/* AdiumYExtras category name */
 "Sound Sets" = "Sound Sets";
 
 /* No comment provided by engineer. */
@@ -2955,7 +2955,7 @@
 /* No comment provided by engineer. */
 "status icons" = "status icons";
 
-/* AdiumXtras category name */
+/* AdiumYExtras category name */
 "Status Icons" = "Status Icons";
 
 /* In the 'reply to tweet' window, this is the field for the ID of the status (numerical). */

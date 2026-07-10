@@ -314,19 +314,19 @@
 		NSDictionary *conversionDict = 
 		[NSDictionary dictionaryWithObjectsAndKeys:
 		 /* complete style changes */
-		 @"im.adium.Gone Dark.style",	@"com.adiumx.eclipse.style",
-		 @"im.adium.Stockholm.style",	@"com.adiumx.plastic.style",
-		 @"im.adium.minimal_mod.style", @"com.adiumx.minimal_2.0.style",
-		 @"im.adium.Renkoo.style",		@"com.adiumx.renkooNaked.style",
-		 @"im.adium.minimal_mod.style",	@"com.adiumx.minimal.style",
+		 @"im.adium.Gone Dark.style",	@"com.github.phaedrus1992.adiumy.eclipse.style",
+		 @"im.adium.Stockholm.style",	@"com.github.phaedrus1992.adiumy.plastic.style",
+		 @"im.adium.minimal_mod.style", @"com.github.phaedrus1992.adiumy.minimal_2.0.style",
+		 @"im.adium.Renkoo.style",		@"com.github.phaedrus1992.adiumy.renkooNaked.style",
+		 @"im.adium.minimal_mod.style",	@"com.github.phaedrus1992.adiumy.minimal.style",
 		 
 		 /* bundle identifier changes */
-		 @"im.adium.Gone Dark.style",	@"com.adiumx.gonedark.style",
-		 @"im.adium.minimal_mod.style",	@"com.adiumx.minimal_mod.style",
-		 @"im.adium.Mockie.style",		@"com.adiumx.mockie.style",
-		 @"im.adium.Renkoo.style",		@"com.adiumx.renkoo.style",
-		 @"im.adium.Smooth Operator.style",		@"com.adiumx.smooth.operator.style",
-		 @"im.adium.Stockholm.style",	@"com.adiumx.stockholm.style",
+		 @"im.adium.Gone Dark.style",	@"com.github.phaedrus1992.adiumy.gonedark.style",
+		 @"im.adium.minimal_mod.style",	@"com.github.phaedrus1992.adiumy.minimal_mod.style",
+		 @"im.adium.Mockie.style",		@"com.github.phaedrus1992.adiumy.mockie.style",
+		 @"im.adium.Renkoo.style",		@"com.github.phaedrus1992.adiumy.renkoo.style",
+		 @"im.adium.Smooth Operator.style",		@"com.github.phaedrus1992.adiumy.smooth.operator.style",
+		 @"im.adium.Stockholm.style",	@"com.github.phaedrus1992.adiumy.stockholm.style",
 		 @"im.adium.yMous.style",		@"mathuaerknedam.yMous.style",
 		 nil];
 		

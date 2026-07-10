@@ -28,7 +28,7 @@
 
 #define ADIUM_XTRAS_PAGE		AILocalizedString(@"http://xtras.adium.im/","Adium xtras page. Localized only if a translated version exists.")
 #define DELETE					AILocalizedStringFromTable(@"Delete", @"Buttons", nil)
-#define GET_MORE_XTRAS			AILocalizedStringFromTable(@"Get More Xtras", @"Buttons", "Button in the Xtras Manager to go to xtras.adium.im to get more adiumxtras")
+#define GET_MORE_XTRAS			AILocalizedStringFromTable(@"Get More Xtras", @"Buttons", "Button in the Xtras Manager to go to xtras.adium.im to get more adiumyextras")
 
 #define MINIMUM_SOURCE_LIST_WIDTH 40
 
@@ -139,53 +139,53 @@ NSInteger categorySort(id categoryA, id categoryB, void * context)
 	
 	[categories addObject:[NSDictionary dictionaryWithObjectsAndKeys:
 		[NSNumber numberWithInteger:AIMessageStylesDirectory], @"Directory",
-		AILocalizedString(@"Message Styles", "AdiumXtras category name"), @"Name",
+		AILocalizedString(@"Message Styles", "AdiumYExtras category name"), @"Name",
 		[NSImage imageNamed:@"AdiumMessageStyle"], @"Image", nil]];
 
 	[categories addObject:[NSDictionary dictionaryWithObjectsAndKeys:
 		[NSNumber numberWithInteger:AIContactListDirectory], @"Directory",
-		AILocalizedString(@"Contact List Themes", "AdiumXtras category name"), @"Name",
+		AILocalizedString(@"Contact List Themes", "AdiumYExtras category name"), @"Name",
 		[NSImage imageNamed:@"AdiumListTheme"], @"Image", nil]];
 	
 
 	[categories addObject:[NSDictionary dictionaryWithObjectsAndKeys:
 		[NSNumber numberWithInteger:AIStatusIconsDirectory], @"Directory",
-		AILocalizedString(@"Status Icons", "AdiumXtras category name"), @"Name",
+		AILocalizedString(@"Status Icons", "AdiumYExtras category name"), @"Name",
 		[NSImage imageNamed:@"AdiumStatusIcons"], @"Image", nil]];
 	
 	[categories addObject:[NSDictionary dictionaryWithObjectsAndKeys:
 		[NSNumber numberWithInteger:AISoundsDirectory], @"Directory",
-		AILocalizedString(@"Sound Sets", "AdiumXtras category name"), @"Name",
+		AILocalizedString(@"Sound Sets", "AdiumYExtras category name"), @"Name",
 		[NSImage imageNamed:@"AdiumSoundset"], @"Image", nil]];
 	
 	[categories addObject:[NSDictionary dictionaryWithObjectsAndKeys:
 		[NSNumber numberWithInteger:AIDockIconsDirectory], @"Directory",
-		AILocalizedString(@"Dock Icons", "AdiumXtras category name"), @"Name",
+		AILocalizedString(@"Dock Icons", "AdiumYExtras category name"), @"Name",
 		[NSImage imageNamed:@"AdiumIcon"], @"Image", nil]];
 	
 	[categories addObject:[NSDictionary dictionaryWithObjectsAndKeys:
 		[NSNumber numberWithInteger:AIEmoticonsDirectory], @"Directory",
-		AILocalizedString(@"Emoticons", "AdiumXtras category name"), @"Name",
+		AILocalizedString(@"Emoticons", "AdiumYExtras category name"), @"Name",
 		[NSImage imageNamed:@"AdiumEmoticonset"], @"Image", nil]];
 	
 	[categories addObject:[NSDictionary dictionaryWithObjectsAndKeys:
 		[NSNumber numberWithInteger:AIScriptsDirectory], @"Directory",
-		AILocalizedString(@"Scripts", "AdiumXtras category name"), @"Name",
+		AILocalizedString(@"Scripts", "AdiumYExtras category name"), @"Name",
 		[NSImage imageNamed:@"AdiumScripts"], @"Image", nil]];
 
 	[categories addObject:[NSDictionary dictionaryWithObjectsAndKeys:
 		[NSNumber numberWithInteger:AIServiceIconsDirectory], @"Directory",
-		AILocalizedString(@"Service Icons", "AdiumXtras category name"), @"Name",
+		AILocalizedString(@"Service Icons", "AdiumYExtras category name"), @"Name",
 		[NSImage imageNamed:@"AdiumServiceIcons"], @"Image", nil]];
 	
 	[categories addObject:[NSDictionary dictionaryWithObjectsAndKeys:
 		[NSNumber numberWithInteger:AIMenuBarIconsDirectory], @"Directory",
-		AILocalizedString(@"Menu Bar Icons", "AdiumXtras category name"), @"Name",
+		AILocalizedString(@"Menu Bar Icons", "AdiumYExtras category name"), @"Name",
 		[NSImage imageNamed:@"AdiumMenuBarIcons"], @"Image", nil]];
 
 	[categories addObject:[NSDictionary dictionaryWithObjectsAndKeys:
 						   [NSNumber numberWithInteger:AIPluginsDirectory], @"Directory",
-						   AILocalizedString(@"Plugins", "AdiumXtras category name"), @"Name",
+						   AILocalizedString(@"Plugins", "AdiumYExtras category name"), @"Name",
 						   [NSImage imageNamed:@"AdiumPlugin"], @"Image", nil]];
 
 	
@@ -386,7 +386,7 @@ NSInteger categorySort(id categoryA, id categoryB, void * context)
 			@"English", kCFBundleDevelopmentRegionKey,
 			name, kCFBundleNameKey,
 			@"AdIM", @"CFBundlePackageType",
-			[@"com.adiumx." stringByAppendingString:name], kCFBundleIdentifierKey,
+			[@"com.github.phaedrus1992.adiumy." stringByAppendingString:name], kCFBundleIdentifierKey,
 			[NSNumber numberWithInteger:1], @"XtraBundleVersion",
 			@"1.0", kCFBundleInfoDictionaryVersionKey,
 			nil] writeToFile:infoPlistPath atomically:YES];

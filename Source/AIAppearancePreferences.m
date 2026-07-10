@@ -124,33 +124,33 @@ typedef enum {
 																					   (CFStringRef)filenameExtension,
 																					   /*inConformingToUTI*/ NULL) autorelease];
 
-	if (!type || UTTypeEqual(type, CFSTR("com.adiumx.emoticonset"))) {
+	if (!type || UTTypeEqual(type, CFSTR("com.github.phaedrus1992.adiumy.emoticonset"))) {
 		[self _rebuildEmoticonMenuAndSelectActivePack];
 	}
 	
-	if (!type || UTTypeEqual(type, CFSTR("com.adiumx.dockicon"))) {
+	if (!type || UTTypeEqual(type, CFSTR("com.github.phaedrus1992.adiumy.dockicon"))) {
 		[self configureDockIconMenu];
 	}
 	
-	if (!type || UTTypeEqual(type, CFSTR("com.adiumx.serviceicons"))) {
+	if (!type || UTTypeEqual(type, CFSTR("com.github.phaedrus1992.adiumy.serviceicons"))) {
 		[self configureServiceIconsMenu];
 	}
 	
-	if (!type || UTTypeEqual(type, CFSTR("com.adiumx.statusicons"))) {
+	if (!type || UTTypeEqual(type, CFSTR("com.github.phaedrus1992.adiumy.statusicons"))) {
 		[self configureStatusIconsMenu];
 	}
 	
-	if (!type || UTTypeEqual(type, CFSTR("com.adiumx.menubaricons"))) {
+	if (!type || UTTypeEqual(type, CFSTR("com.github.phaedrus1992.adiumy.menubaricons"))) {
 		[self configureMenuBarIconsMenu];
 	}
 	
-	if (!type || UTTypeEqual(type, CFSTR("com.adiumx.contactlisttheme"))) {
+	if (!type || UTTypeEqual(type, CFSTR("com.github.phaedrus1992.adiumy.contactlisttheme"))) {
 		[popUp_colorTheme setMenu:[self _colorThemeMenu]];
 		[popUp_colorTheme selectItemWithRepresentedObject:[adium.preferenceController preferenceForKey:KEY_LIST_THEME_NAME
 																								   group:PREF_GROUP_APPEARANCE]];
 	}
 
-	if (!type || UTTypeEqual(type, CFSTR("com.adiumx.contactlistlayout"))) {
+	if (!type || UTTypeEqual(type, CFSTR("com.github.phaedrus1992.adiumy.contactlistlayout"))) {
 		[popUp_listLayout setMenu:[self _listLayoutMenu]];
 		[popUp_listLayout selectItemWithRepresentedObject:[adium.preferenceController preferenceForKey:KEY_LIST_LAYOUT_NAME
 																								   group:PREF_GROUP_APPEARANCE]];
