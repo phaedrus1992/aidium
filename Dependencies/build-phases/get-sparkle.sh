@@ -68,4 +68,4 @@ else
     cp "$EXTRACTED_BIN_DIR/generate_keys" "$CLI_DIR/generate_keys"
     cp "$EXTRACTED_BIN_DIR/sign_update" "$CLI_DIR/sign_update"
     echo "Sparkle CLI tools installed to $CLI_DIR"
-fi"
+fi

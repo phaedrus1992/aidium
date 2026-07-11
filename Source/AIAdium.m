@@ -1141,7 +1141,7 @@ static NSString *prefsCategory;
 	// Sparkle 1.5 has a different defaults key, do a one time migration of the value
 	if ([defaults boolForKey:@"SUIncludeProfile"]) {
 		[defaults setBool:YES forKey:@"SUSendProfileInfo"];
-		sendProfileInfo = YES;
+		sendingProfile = YES;
 		[defaults setBool:NO forKey:@"SUIncludeProfile"]; // make sure this only runs once
 	}
 
@@ -1162,7 +1162,7 @@ static NSString *prefsCategory;
 	[profileInfo addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"branch", @"key", nightlyBranch, @"value", nil]];
 #endif
 
-	if (sendProfileInfo) {
+	if (sendingProfile) {
 		NSString *value = ([defaults boolForKey:@"AIHasSentSparkleProfileInfo"]) ? @"no" : @"yes";
 
 		NSDictionary *entry =
