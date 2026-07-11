@@ -37,13 +37,13 @@ FILES=$(find . \( "${EXCLUDE_PATTERNS[@]}" \) -o \( \
   -name '*.m' -o -name '*.mm' -o -name '*.h' -o -name '*.c' -o -name '*.cc' -o -name '*.cpp' \
 \) -print | sort)
 
-FILE_COUNT=$(echo "$FILES" | wc -l | tr -d ' ')
+FILE_COUNT=$(echo "$FILES" | grep -c . || true)
 echo "Found $FILE_COUNT source files"
 
 # Run clang-format in dry-run mode — diff against original
 FAILED=0
 while IFS= read -r f; do
-  if ! "$CLANG_FORMAT" --dry-run --Werror "$f" 2>/dev/null; then
+  if ! "$CLANG_FORMAT" --dry-run --Werror "$f"; then
     echo "FAIL: $f does not match style"
     FAILED=1
   fi

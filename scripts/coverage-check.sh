@@ -9,6 +9,11 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 cd "$PROJECT_DIR"
 
 THRESHOLD="${COVERAGE_THRESHOLD:-50}"
+# Validate threshold is numeric
+if ! [[ "$THRESHOLD" =~ ^[0-9]+$ ]]; then
+  echo "ERROR: COVERAGE_THRESHOLD must be a positive integer, got: '$THRESHOLD'" >&2
+  exit 1
+fi
 XCRUN="${XCRUN:-xcrun}"
 
 # Derive data path from build dir or explicit DERIVED_DATA
@@ -53,9 +58,9 @@ while IFS= read -r line; do
     TARGET="${BASH_REMATCH[1]}"
     PCT="${BASH_REMATCH[2]}"
 
-    # Skip test targets and frameworks we don't own
+    # Skip test targets (suffixed with Test/Tests) and frameworks we don't own
     case "$TARGET" in
-      *Tests*|*Test*|AutoHyperlinks*|MMTabBarView*) continue ;;
+      *Tests|*Test|AutoHyperlinks|MMTabBarView) continue ;;
     esac
 
     # Compare as integer
