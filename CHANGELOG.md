@@ -16,7 +16,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
   scaffolding that never worked on macOS)
 - libmeanwhile.framework and json-glib dependencies from build
 
+### Added
+- EdDSA (Ed25519) appcast signing tooling: `generate_appcast`, `generate_keys`,
+  `sign_update` CLI tools extracted from Sparkle 2.9.4 distribution
+- `Utilities/README-appcast.md` documenting the release signing workflow
+
 ### Changed
 - Purple Service now only supports XMPP (Jabber), IRC, and SIMPLE protocols
 - Build system: removed reference to libmeanwhile and json-glib in Xcode project
 - Vendored Sparkle framework updated from 1.17.0 to 2.9.4
+- Migrate update checker from Sparkle 1.x SUUpdater to Sparkle 2.x
+  SPUStandardUpdaterController and SPUUpdaterDelegate
+- Remove SUStatusChecker delegate conformance from AICrashReporter (removed in
+  Sparkle 2.x — version comparison handled by Sparkle delegate API)
+
+### Removed
+- `Utilities/AppcastReplaceItem.py` (Python 2, md5Sum-based signing, dead
+  signing URLs — replaced by Sparkle 2 EdDSA CLI tools)
