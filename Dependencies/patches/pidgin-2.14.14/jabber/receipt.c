@@ -29,7 +29,7 @@ static jabber_receipt_cb receipt_cb = NULL;
 
 void jabber_set_receipt_cb(jabber_receipt_cb cb)
 {
-    receipt_cb = cb;
+	receipt_cb = cb;
 }
 
 gboolean jabber_receipt_parse(JabberStream *js, const char *from, xmlnode *child)

@@ -452,14 +452,7 @@ jabber_chat_marker_received_cb(PurpleConnection *gc, const char *from, const cha
 	AIChat *chat = [adium.chatController existingChatWithContact:contact];
 
 	if (chat && marker_type) {
-		NSString *markerLabel = @"";
-		if (g_strcmp0(marker_type, "displayed") == 0) {
-			markerLabel = @"displayed";
-		} else if (g_strcmp0(marker_type, "acknowledged") == 0) {
-			markerLabel = @"acknowledged";
-		}
-
-		NSString *message = [NSString stringWithFormat:@"Message %@ (%s)", markerLabel, message_id ? message_id : "?"];
+		NSString *message = [NSString stringWithFormat:@"Message %s (%s)", marker_type, message_id ? message_id : "?"];
 		[cbaccount receivedEventForChat:chat
 								message:message
 								   date:[NSDate date]

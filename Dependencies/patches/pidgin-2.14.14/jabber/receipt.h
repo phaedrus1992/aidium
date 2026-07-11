@@ -1,5 +1,5 @@
-/**
- * @file receipt.h XEP-0184: Message Delivery Receipts
+/*
+ * purple - Jabber Protocol Plugin
  *
  * purple
  *

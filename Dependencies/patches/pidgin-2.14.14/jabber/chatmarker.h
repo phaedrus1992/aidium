@@ -1,5 +1,5 @@
-/**
- * @file chatmarker.h XEP-0333: Chat Markers
+/*
+ * purple - Jabber Protocol Plugin
  *
  * purple
  *
