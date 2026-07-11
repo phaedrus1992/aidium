@@ -28,26 +28,22 @@
 static gboolean carbons_connected = FALSE;
 
 /* jabber-receiving-xmlnode: unwrap carbon wrappers */
-static void xmlnode_received_cb(PurpleConnection *gc, xmlnode **packet,
-								gpointer data)
+static void xmlnode_received_cb(PurpleConnection *gc, xmlnode **packet, gpointer data)
 {
 	if (!packet || !*packet)
 		return;
 
 	PurpleAccount *account = purple_connection_get_account(gc);
-	const char *pref = purple_account_get_string(account,
-						 "Jabber:Enable Carbons", "yes");
+	const char *pref = purple_account_get_string(account, "Jabber:Enable Carbons", "yes");
 	if (strcmp(pref, "yes") != 0)
 		return;
 
 	/* Step 1: Check if this is a carbon-wrapped message */
-	xmlnode *received = xmlnode_get_child_with_namespace(*packet, "received",
-							 NS_CARBONS);
-	xmlnode *sent = received ? NULL : xmlnode_get_child_with_namespace(*packet,
-							 "sent", NS_CARBONS);
+	xmlnode *received = xmlnode_get_child_with_namespace(*packet, "received", NS_CARBONS);
+	xmlnode *sent = received ? NULL : xmlnode_get_child_with_namespace(*packet, "sent", NS_CARBONS);
 
 	if (!received && !sent)
-		return;  /* Not a carbon — let normal processing handle it */
+		return; /* Not a carbon — let normal processing handle it */
 
 	/* Step 2: Spoofing guard — only accept carbons from our own bare JID */
 	const char *own_jid = purple_account_get_username(account);
@@ -64,19 +60,15 @@ static void xmlnode_received_cb(PurpleConnection *gc, xmlnode **packet,
 	}
 
 	/* Step 3: Unwrap forwarded message */
-	xmlnode *forwarded = xmlnode_get_child_with_namespace(
-							 received ? received : sent, "forwarded",
-							 NS_FORWARD);
+	xmlnode *forwarded = xmlnode_get_child_with_namespace(received ? received : sent, "forwarded", NS_FORWARD);
 	if (!forwarded) {
-		purple_debug_warning("carbons",
-							 "Carbon without forwarded element\n");
+		purple_debug_warning("carbons", "Carbon without forwarded element\n");
 		return;
 	}
 
 	xmlnode *inner = xmlnode_get_child(forwarded, "message");
 	if (!inner) {
-		purple_debug_warning("carbons",
-							 "Forwarded element without message\n");
+		purple_debug_warning("carbons", "Forwarded element without message\n");
 		return;
 	}
 
@@ -94,14 +86,10 @@ static void xmlnode_received_cb(PurpleConnection *gc, xmlnode **packet,
 			if (body) {
 				const char *to = xmlnode_get_attrib(inner, "to");
 				if (to) {
-					PurpleConversation *conv =
-						purple_find_conversation_with_account(
-							PURPLE_CONV_TYPE_IM, to, account);
+					PurpleConversation *conv = purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM, to, account);
 					if (conv) {
-						purple_conversation_write(
-							conv,
-							purple_account_get_username(account),
-							body, PURPLE_MESSAGE_SEND, 0);
+						purple_conversation_write(conv, purple_account_get_username(account), body, PURPLE_MESSAGE_SEND,
+												  0);
 					}
 				}
 				g_free(body);
@@ -129,20 +117,16 @@ static void signed_on_cb(PurpleConnection *gc, gpointer data)
 		if (jabber) {
 			/* The 'data' parameter is the plugin handle from plugin_load
 			 * — ensures all signals disconnect atomically on unload. */
-			purple_signal_connect(jabber, "jabber-receiving-xmlnode", data,
-								  PURPLE_CALLBACK(xmlnode_received_cb), NULL);
+			purple_signal_connect(jabber, "jabber-receiving-xmlnode", data, PURPLE_CALLBACK(xmlnode_received_cb), NULL);
 			carbons_connected = TRUE;
 		} else {
-			purple_debug_warning("carbons",
-								 "prpl-jabber not found at sign-on\n");
+			purple_debug_warning("carbons", "prpl-jabber not found at sign-on\n");
 		}
 	}
 
-	const char *pref = purple_account_get_string(account,
-						 "Jabber:Enable Carbons", "yes");
+	const char *pref = purple_account_get_string(account, "Jabber:Enable Carbons", "yes");
 	if (strcmp(pref, "yes") != 0) {
-		purple_debug_info("carbons",
-						  "Carbons disabled by account preference\n");
+		purple_debug_info("carbons", "Carbons disabled by account preference\n");
 		return;
 	}
 
@@ -161,8 +145,7 @@ static gboolean plugin_load(PurplePlugin *plugin)
 	 * user_data so the jabber-receiving-xmlnode connection made inside
 	 * signed_on_cb shares the same handle — this guarantees all signals
 	 * disconnect on unload. */
-	purple_signal_connect(purple_connections_get_handle(), "signed-on",
-						  plugin, PURPLE_CALLBACK(signed_on_cb), plugin);
+	purple_signal_connect(purple_connections_get_handle(), "signed-on", plugin, PURPLE_CALLBACK(signed_on_cb), plugin);
 
 	return TRUE;
 }
@@ -175,8 +158,7 @@ static gboolean plugin_unload(PurplePlugin *plugin)
 	return TRUE;
 }
 
-static PurplePluginInfo info = {PURPLE_PLUGIN_MAGIC, PURPLE_MAJOR_VERSION,
-								PURPLE_MINOR_VERSION,
+static PurplePluginInfo info = {PURPLE_PLUGIN_MAGIC, PURPLE_MAJOR_VERSION, PURPLE_MINOR_VERSION,
 								PURPLE_PLUGIN_STANDARD,       /* type */
 								NULL,                         /* ui_req */
 								PURPLE_PLUGIN_FLAG_INVISIBLE, /* flags */
@@ -188,15 +170,15 @@ static PurplePluginInfo info = {PURPLE_PLUGIN_MAGIC, PURPLE_MAJOR_VERSION,
 								"XEP-0280 Message Carbons",   /* summary */
 								"Implements XEP-0280 message carbons for "
 								"multi-device message sync",
-								"AdiumY Contributors",         /* author */
-								"https://adium.im",            /* homepage */
-								plugin_load,                   /* load */
-								plugin_unload,                 /* unload */
-								NULL,                          /* destroy */
-								NULL,                          /* ui_info */
-								NULL,                          /* extra_info */
-								NULL,                          /* prefs_info */
-								NULL,                          /* actions */
+								"AdiumY Contributors", /* author */
+								"https://adium.im",    /* homepage */
+								plugin_load,           /* load */
+								plugin_unload,         /* unload */
+								NULL,                  /* destroy */
+								NULL,                  /* ui_info */
+								NULL,                  /* extra_info */
+								NULL,                  /* prefs_info */
+								NULL,                  /* actions */
 								/* _purple_reserved 1-4 */
 								NULL, NULL, NULL, NULL};
 
