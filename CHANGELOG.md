@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - libmeanwhile.framework and json-glib dependencies from build
 
 ### Added
+- XEP-0184: Message Delivery Receipts for XMPP (Jabber) — received receipts with `<request/>`/`<received/>` stanzas
+- XEP-0333: Chat Markers for XMPP (Jabber) — displayed/acknowledged/received/active message markers
 - EdDSA (Ed25519) appcast signing tooling: `generate_appcast`, `generate_keys`,
   `sign_update` CLI tools extracted from Sparkle 2.9.4 distribution
 - `Utilities/README-appcast.md` documenting the release signing workflow

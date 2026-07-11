@@ -26,6 +26,14 @@ static void buddy_status_changed_cb(PurpleBuddy *buddy, PurpleStatus *oldstatus,
 									PurpleBuddyEvent event);
 static void buddy_idle_changed_cb(PurpleBuddy *buddy, gboolean old_idle, gboolean idle, PurpleBuddyEvent event);
 
+// Forward declarations for XEP-0184 (Message Delivery Receipts) and XEP-0333 (Chat Markers)
+// Can't include receipt.h/chatmarker.h — no include path from this target to the jabber protocol sources
+typedef void (*jabber_receipt_cb)(PurpleConnection *gc, const char *from, const char *message_id);
+void jabber_set_receipt_cb(jabber_receipt_cb cb);
+typedef void (*jabber_chat_marker_cb)(PurpleConnection *gc, const char *from, const char *message_id,
+									  const char *marker_type);
+void jabber_set_chat_marker_cb(jabber_chat_marker_cb cb);
+
 static void buddy_event_cb(PurpleBuddy *buddy, PurpleBuddyEvent event)
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -409,6 +417,45 @@ static void file_recv_request_cb(PurpleXfer *xfer)
 	[pool release];
 }
 
+#pragma mark - XEP-0184 / XEP-0333 bridge callbacks
+
+static void jabber_receipt_received_cb(PurpleConnection *gc, const char *from, const char *message_id)
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
+	PurpleAccount *purpleAccount = purple_connection_get_account(gc);
+	CBPurpleAccount *cbaccount = accountLookup(purpleAccount);
+	PurpleBuddy *buddy = purple_find_buddy(purpleAccount, from);
+	AIListContact *contact = contactLookupFromBuddy(buddy);
+	AIChat *chat = [adium.chatController existingChatWithContact:contact];
+
+	if (chat) {
+		NSString *message = [NSString stringWithFormat:@"Message delivered (%s)", message_id ? message_id : "?"];
+		[cbaccount receivedEventForChat:chat message:message date:[NSDate date] flags:@(0)];
+	}
+
+	[pool release];
+}
+
+static void jabber_chat_marker_received_cb(PurpleConnection *gc, const char *from, const char *message_id,
+										   const char *marker_type)
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
+	PurpleAccount *purpleAccount = purple_connection_get_account(gc);
+	CBPurpleAccount *cbaccount = accountLookup(purpleAccount);
+	PurpleBuddy *buddy = purple_find_buddy(purpleAccount, from);
+	AIListContact *contact = contactLookupFromBuddy(buddy);
+	AIChat *chat = [adium.chatController existingChatWithContact:contact];
+
+	if (chat && marker_type) {
+		NSString *message = [NSString stringWithFormat:@"Message %s (%s)", marker_type, message_id ? message_id : "?"];
+		[cbaccount receivedEventForChat:chat message:message date:[NSDate date] flags:@(0)];
+	}
+
+	[pool release];
+}
+
 void configureAdiumPurpleSignals(void)
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -465,6 +512,10 @@ void configureAdiumPurpleSignals(void)
 
 	purple_signal_connect(purple_xfers_get_handle(), "file-recv-request", handle, PURPLE_CALLBACK(file_recv_request_cb),
 						  NULL);
+
+	// Register XEP-0184 and XEP-0333 callbacks
+	jabber_set_receipt_cb(jabber_receipt_received_cb);
+	jabber_set_chat_marker_cb(jabber_chat_marker_received_cb);
 
 	[pool release];
 }
