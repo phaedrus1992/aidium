@@ -27,22 +27,6 @@
 
 static gboolean carbons_connected = FALSE;
 
-/* Send carbons enable IQ */
-static gboolean enable_carbons_cb(gpointer data)
-{
-	PurpleConnection *gc = (PurpleConnection *)data;
-	/* ponytail: skip server disco — send enable IQ directly. Server returns
-	 * harmless error if unsupported. Full disco would check capabilities
-	 * first; add if any server proves to misbehave on unknown features. */
-	const char *iq = "<iq type='set' id='carbons-enable-1'>"
-					 "<enable xmlns='" NS_CARBONS "'/></iq>";
-
-	purple_debug_info("carbons", "Sending carbons enable IQ\n");
-	jabber_prpl_send_raw(gc, iq, -1);
-
-	return FALSE;
-}
-
 /* jabber-receiving-xmlnode: unwrap carbon wrappers */
 static void xmlnode_received_cb(PurpleConnection *gc, xmlnode **packet,
 								gpointer data)
@@ -73,7 +57,7 @@ static void xmlnode_received_cb(PurpleConnection *gc, xmlnode **packet,
 		purple_debug_warning("carbons",
 							 "Dropped spoofed carbon: from '%s' != own JID "
 							 "'%s'\n",
-							 outer_from ? outer_from : "(null)", own_jid);
+							 outer_from, own_jid);
 		xmlnode_free(*packet);
 		*packet = NULL;
 		return;
@@ -162,9 +146,13 @@ static void signed_on_cb(PurpleConnection *gc, gpointer data)
 		return;
 	}
 
-	/* Send enable IQ synchronously — no need for timeout deferral since
-	 * the signal handler runs in the main event loop context. */
-	enable_carbons_cb(gc);
+	/* Send enable IQ directly - skip disco; server returns harmless error
+	 * if unsupported. Add capability check only if any server proves to
+	 * misbehave on unknown features. */
+	const char *iq = "<iq type='set' id='carbons-enable-1'>"
+					 "<enable xmlns='" NS_CARBONS "'/></iq>";
+	purple_debug_info("carbons", "Sending carbons enable IQ\n");
+	jabber_prpl_send_raw(gc, iq, -1);
 }
 
 static gboolean plugin_load(PurplePlugin *plugin)
