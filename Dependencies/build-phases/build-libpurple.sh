@@ -72,6 +72,7 @@ build_libpurple_phase() {
        "$src/protocols/jabber/chat.h" \
        "$src/protocols/jabber/jutil.h" "$src/protocols/jabber/presence.h" \
        "$src/protocols/jabber/si.h" "$src/protocols/jabber/jabber.h" \
+       "$src/protocols/jabber/stream_management.h" \
        "$src/protocols/jabber/iq.h" "$src/protocols/jabber/namespaces.h" \
        "$hdr/"
     cp "$src/protocols/irc/irc.h" "$hdr/"
