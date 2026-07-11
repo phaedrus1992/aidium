@@ -13,12 +13,11 @@ The issue body says this depends on "AdiumLibpurple ARC (Issue #6)". That is
 `CLANG_ENABLE_OBJC_ARC = YES`), 2. **Adium framework (this issue)**,
 3. Source/Adium.app, 4. UI plugins, 5. Purple Service/AdiumLibpurple last.
 
-Housekeeping fact the implementer should surface, not fix silently: issue #36
-(AdiumLibpurple ARC) is closed as completed, but commit `6ded91c0` reverted
-that migration and `AdiumLibpurple.xcconfig:20` currently pins
-`CLANG_ENABLE_OBJC_ARC = NO`. #36 should be reopened or a fresh issue filed
-for spec step 5 — comment on it when starting this work so the tracking is
-honest. It does **not** block this issue.
+Housekeeping note: issue #36 (AdiumLibpurple ARC) was closed by PR #41, but
+commit `6ded91c0` reverted that migration and `AdiumLibpurple.xcconfig:20`
+currently pins `CLANG_ENABLE_OBJC_ARC = NO`. #36 has been **reopened** for
+spec step 5 (see `issue-36-adiumlibpurple-arc.md`). It does **not** block
+this issue.
 
 ## 2. Approach
 

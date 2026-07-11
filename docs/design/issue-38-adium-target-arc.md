@@ -15,8 +15,9 @@ callback surface — it is **not** a prerequisite for this issue. Actual
 prerequisites: AIUtilities (done) and Adium.framework (#37).
 
 This issue is "final target" only for the app-and-UI layer; the true final
-step is the Purple Service/AdiumLibpurple conversion (issue #36 — closed but
-its work was reverted in `6ded91c0`; see the housekeeping note in #37's doc).
+step is the Purple Service/AdiumLibpurple conversion (issue #36, reopened —
+its first attempt was reverted in `6ded91c0`; see
+`issue-36-adiumlibpurple-arc.md`).
 
 ## 2. Plan
 
@@ -79,6 +80,6 @@ pre-existing leak worth fixing gets an issue, not a silent pass).
 
 ## 4. Out of scope
 
-- Purple Service + AdiumLibpurple ARC (spec step 5; reopen #36 or file fresh).
+- Purple Service + AdiumLibpurple ARC (spec step 5; reopened #36).
 - MMTabBarView and other third-party/submodule code (spec exclusion).
 - ObjC modernization beyond ARC's requirements.
