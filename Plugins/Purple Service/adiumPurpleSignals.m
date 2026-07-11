@@ -30,7 +30,8 @@ static void buddy_idle_changed_cb(PurpleBuddy *buddy, gboolean old_idle, gboolea
 // Can't include receipt.h/chatmarker.h — no include path from this target to the jabber protocol sources
 typedef void (*jabber_receipt_cb)(PurpleConnection *gc, const char *from, const char *message_id);
 void jabber_set_receipt_cb(jabber_receipt_cb cb);
-typedef void (*jabber_chat_marker_cb)(PurpleConnection *gc, const char *from, const char *message_id, const char *marker_type);
+typedef void (*jabber_chat_marker_cb)(PurpleConnection *gc, const char *from, const char *message_id,
+									  const char *marker_type);
 void jabber_set_chat_marker_cb(jabber_chat_marker_cb cb);
 
 static void buddy_event_cb(PurpleBuddy *buddy, PurpleBuddyEvent event)
@@ -418,8 +419,7 @@ static void file_recv_request_cb(PurpleXfer *xfer)
 
 #pragma mark - XEP-0184 / XEP-0333 bridge callbacks
 
-static void
-jabber_receipt_received_cb(PurpleConnection *gc, const char *from, const char *message_id)
+static void jabber_receipt_received_cb(PurpleConnection *gc, const char *from, const char *message_id)
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
@@ -431,17 +431,14 @@ jabber_receipt_received_cb(PurpleConnection *gc, const char *from, const char *m
 
 	if (chat) {
 		NSString *message = [NSString stringWithFormat:@"Message delivered (%s)", message_id ? message_id : "?"];
-		[cbaccount receivedEventForChat:chat
-								message:message
-								   date:[NSDate date]
-								  flags:@(0)];
+		[cbaccount receivedEventForChat:chat message:message date:[NSDate date] flags:@(0)];
 	}
 
 	[pool release];
 }
 
-static void
-jabber_chat_marker_received_cb(PurpleConnection *gc, const char *from, const char *message_id, const char *marker_type)
+static void jabber_chat_marker_received_cb(PurpleConnection *gc, const char *from, const char *message_id,
+										   const char *marker_type)
 {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
@@ -453,10 +450,7 @@ jabber_chat_marker_received_cb(PurpleConnection *gc, const char *from, const cha
 
 	if (chat && marker_type) {
 		NSString *message = [NSString stringWithFormat:@"Message %s (%s)", marker_type, message_id ? message_id : "?"];
-		[cbaccount receivedEventForChat:chat
-								message:message
-								   date:[NSDate date]
-								  flags:@(0)];
+		[cbaccount receivedEventForChat:chat message:message date:[NSDate date] flags:@(0)];
 	}
 
 	[pool release];
