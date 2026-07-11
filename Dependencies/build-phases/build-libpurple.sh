@@ -53,6 +53,17 @@ build_libpurple_phase() {
     src_dir="$(vendored_extract "$BUILD_LIBPURPLE_FILE" "$BUILD_LIBPURPLE_SHA256" "pidgin-$BUILD_LIBPURPLE_VERSION")"
     LIBPURPLE_SRC="$src_dir"
 
+    # Apply AdiumY patches (XEP-0184 receipts, XEP-0333 chat markers)
+    local patches_dir="$ROOTDIR/Dependencies/patches/pidgin-2.14.14/jabber"
+    cp "$patches_dir/receipt.h" "$patches_dir/receipt.c" \
+       "$patches_dir/chatmarker.h" "$patches_dir/chatmarker.c" \
+       "$LIBPURPLE_SRC/libpurple/protocols/jabber/"
+    patch -d "$LIBPURPLE_SRC" -p1 < "$patches_dir/message.c.patch"
+    patch -d "$LIBPURPLE_SRC" -p1 < "$patches_dir/jabber.h.patch"
+    patch -d "$LIBPURPLE_SRC" -p1 < "$patches_dir/namespaces.h.patch"
+    patch -d "$LIBPURPLE_SRC" -p1 < "$patches_dir/Makefile.am.patch"
+    patch -d "$LIBPURPLE_SRC" -p1 < "$patches_dir/Makefile.in.patch"
+
     build_for_archs build_libpurple "libpurple.0.dylib"
 
     # Stage headers from sandbox so framework doesn't reference ephemeral paths
@@ -73,6 +84,7 @@ build_libpurple_phase() {
        "$src/protocols/jabber/jutil.h" "$src/protocols/jabber/presence.h" \
        "$src/protocols/jabber/si.h" "$src/protocols/jabber/jabber.h" \
        "$src/protocols/jabber/stream_management.h" \
+       "$src/protocols/jabber/receipt.h" "$src/protocols/jabber/chatmarker.h" \
        "$src/protocols/jabber/iq.h" "$src/protocols/jabber/namespaces.h" \
        "$hdr/"
     cp "$src/protocols/irc/irc.h" "$hdr/"

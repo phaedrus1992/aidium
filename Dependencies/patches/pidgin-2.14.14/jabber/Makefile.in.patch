@@ -1,0 +1,50 @@
+--- a/libpurple/protocols/jabber/Makefile.in	2026-07-11 14:49:20
++++ b/libpurple/protocols/jabber/Makefile.in	2026-07-11 14:54:46
+@@ -142,6 +142,7 @@
+ 	auth_scram.c auth_scram.h buddy.c buddy.h bosh.c bosh.h caps.c \
+ 	caps.h chat.c chat.h data.c data.h disco.c disco.h \
+ 	google/gmail.c google/gmail.h google/google.c google/google.h \
++	chatmarker.c chatmarker.h \
+ 	google/google_presence.c google/google_presence.h \
+ 	google/google_roster.c google/google_roster.h \
+ 	google/google_session.c google/google_session.h \
+@@ -155,6 +156,7 @@
+ 	namespaces.h oob.c oob.h parser.c parser.h pep.c pep.h ping.c \
+ 	ping.h presence.c presence.h roster.c roster.h si.c si.h \
+ 	stream_management.c stream_management.h useravatar.c \
++	receipt.c receipt.h \
+ 	useravatar.h usermood.c usermood.h usernick.c usernick.h \
+ 	usertune.c usertune.h xdata.c xdata.h auth_cyrus.c libxmpp.c
+ @USE_CYRUS_SASL_TRUE@am__objects_1 = libjabber_la-auth_cyrus.lo
+@@ -163,6 +165,7 @@
+ 	libjabber_la-auth_scram.lo libjabber_la-buddy.lo \
+ 	libjabber_la-bosh.lo libjabber_la-caps.lo libjabber_la-chat.lo \
+ 	libjabber_la-data.lo libjabber_la-disco.lo \
++	libjabber_la-chatmarker.lo \
+ 	libjabber_la-gmail.lo libjabber_la-google.lo \
+ 	libjabber_la-google_presence.lo libjabber_la-google_roster.lo \
+ 	libjabber_la-google_session.lo libjabber_la-jingleinfo.lo \
+@@ -175,6 +178,7 @@
+ 	libjabber_la-oob.lo libjabber_la-parser.lo libjabber_la-pep.lo \
+ 	libjabber_la-ping.lo libjabber_la-presence.lo \
+ 	libjabber_la-roster.lo libjabber_la-si.lo \
++	libjabber_la-receipt.lo \
+ 	libjabber_la-stream_management.lo libjabber_la-useravatar.lo \
+ 	libjabber_la-usermood.lo libjabber_la-usernick.lo \
+ 	libjabber_la-usertune.lo libjabber_la-xdata.lo \
+@@ -582,6 +586,7 @@
+ 	auth_scram.h buddy.c buddy.h bosh.c bosh.h caps.c caps.h \
+ 	chat.c chat.h data.c data.h disco.c disco.h google/gmail.c \
+ 	google/gmail.h google/google.c google/google.h \
++	chatmarker.c chatmarker.h \
+ 	google/google_presence.c google/google_presence.h \
+ 	google/google_roster.c google/google_roster.h \
+ 	google/google_session.c google/google_session.h \
+@@ -595,6 +600,7 @@
+ 	namespaces.h oob.c oob.h parser.c parser.h pep.c pep.h ping.c \
+ 	ping.h presence.c presence.h roster.c roster.h si.c si.h \
+ 	stream_management.c stream_management.h useravatar.c \
++	receipt.c receipt.h \
+ 	useravatar.h usermood.c usermood.h usernick.c usernick.h \
+ 	usertune.c usertune.h xdata.c xdata.h $(am__append_1)
+ AM_CFLAGS = $(st)
