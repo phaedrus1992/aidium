@@ -180,14 +180,14 @@ static NSArray *draggedTypes = nil;
 													 name:@"AICustomEmoticonUpdated"
 												   object:inChat];
 
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(messageWasCorrected:)
-												 name:@"AIMessageCorrection"
-											   object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(stanzaWasTracked:)
-												 name:@"AIMessageStanzaTracked"
-											   object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(messageWasCorrected:)
+													 name:@"AIMessageCorrection"
+												   object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self
+												 selector:@selector(stanzaWasTracked:)
+													 name:@"AIMessageStanzaTracked"
+												   object:nil];
 	}
 
 	return self;
@@ -663,7 +663,8 @@ static NSArray *draggedTypes = nil;
 		NSString *senderJID = [userInfo objectForKey:@"AICorrectionSender"];
 
 		if (domId && senderJID) {
-			NSString *chatBareJID = [[[chat listObject] UID] isKindOfClass:[NSString class]] ? [[chat listObject] UID] : nil;
+			NSString *chatBareJID =
+				[[[chat listObject] UID] isKindOfClass:[NSString class]] ? [[chat listObject] UID] : nil;
 			if ([senderJID isEqualToString:chatBareJID]) {
 				NSMutableArray *queue = [_pendingDomIdQueues objectForKey:senderJID];
 				if (!queue) {
@@ -689,21 +690,46 @@ static NSArray *draggedTypes = nil;
 		}
 
 		// Verify this correction is for our chat
-		NSString *chatBareJID = [[[chat listObject] UID] isKindOfClass:[NSString class]] ? [[chat listObject] UID] : nil;
+		NSString *chatBareJID =
+			[[[chat listObject] UID] isKindOfClass:[NSString class]] ? [[chat listObject] UID] : nil;
 		if (![senderJID isEqualToString:chatBareJID]) {
 			return;
 		}
 
 		// Escape HTML for inclusion in a JavaScript string via innerHTML
 		NSMutableString *escapedHTML = [[html mutableCopy] autorelease];
-		[escapedHTML replaceOccurrencesOfString:@"&" withString:@"&amp;" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
-		[escapedHTML replaceOccurrencesOfString:@"<" withString:@"&lt;" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
-		[escapedHTML replaceOccurrencesOfString:@">" withString:@"&gt;" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
-		[escapedHTML replaceOccurrencesOfString:@"\\" withString:@"\\\\" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
-		[escapedHTML replaceOccurrencesOfString:@"\"" withString:@"\\\"" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
-		[escapedHTML replaceOccurrencesOfString:@"\r\n" withString:@"<br>" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
-		[escapedHTML replaceOccurrencesOfString:@"\n" withString:@"<br>" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
-		[escapedHTML replaceOccurrencesOfString:@"\r" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
+		[escapedHTML replaceOccurrencesOfString:@"&"
+									 withString:@"&amp;"
+										options:NSLiteralSearch
+										  range:NSMakeRange(0, [escapedHTML length])];
+		[escapedHTML replaceOccurrencesOfString:@"<"
+									 withString:@"&lt;"
+										options:NSLiteralSearch
+										  range:NSMakeRange(0, [escapedHTML length])];
+		[escapedHTML replaceOccurrencesOfString:@">"
+									 withString:@"&gt;"
+										options:NSLiteralSearch
+										  range:NSMakeRange(0, [escapedHTML length])];
+		[escapedHTML replaceOccurrencesOfString:@"\\"
+									 withString:@"\\\\"
+										options:NSLiteralSearch
+										  range:NSMakeRange(0, [escapedHTML length])];
+		[escapedHTML replaceOccurrencesOfString:@"\""
+									 withString:@"\\\""
+										options:NSLiteralSearch
+										  range:NSMakeRange(0, [escapedHTML length])];
+		[escapedHTML replaceOccurrencesOfString:@"\r\n"
+									 withString:@"<br>"
+										options:NSLiteralSearch
+										  range:NSMakeRange(0, [escapedHTML length])];
+		[escapedHTML replaceOccurrencesOfString:@"\n"
+									 withString:@"<br>"
+										options:NSLiteralSearch
+										  range:NSMakeRange(0, [escapedHTML length])];
+		[escapedHTML replaceOccurrencesOfString:@"\r"
+									 withString:@""
+										options:NSLiteralSearch
+										  range:NSMakeRange(0, [escapedHTML length])];
 
 		// Try to correct the message in-place
 		NSString *js = [NSString stringWithFormat:@"correctMessage(\"%@\", \"%@\")", domId, escapedHTML];
@@ -937,9 +963,8 @@ static NSArray *draggedTypes = nil;
 			[_pendingDomIdQueues removeObjectForKey:senderUID];
 		}
 
-		NSString *js = [NSString stringWithFormat:
-			@"var el=document.getElementById('Chat').lastChild;if(el&&!el.id){el.id='%@';}",
-			domId];
+		NSString *js = [NSString
+			stringWithFormat:@"var el=document.getElementById('Chat').lastChild;if(el&&!el.id){el.id='%@';}", domId];
 		[webView stringByEvaluatingJavaScriptFromString:js];
 	}
 

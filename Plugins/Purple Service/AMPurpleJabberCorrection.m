@@ -83,7 +83,6 @@ static void AMPurpleJabberCorrection_received_data_cb(PurpleConnection *gc, xmln
 
 		NSString *bareJID = [AMPurpleJabberCorrection bareJIDFromString:from];
 
-
 		// Check for a <replace> element (XEP-0308 correction)
 		xmlnode *replace = xmlnode_get_child_with_namespace(node, "replace", [NS_MESSAGE_CORRECT UTF8String]);
 		if (replace) {
@@ -104,11 +103,12 @@ static void AMPurpleJabberCorrection_received_data_cb(PurpleConnection *gc, xmln
 
 				// Find the chat for this message
 				PurpleAccount *account = purple_connection_get_account(gc);
-				PurpleConversation *conv = purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM, [bareJID UTF8String], account);
+				PurpleConversation *conv =
+					purple_find_conversation_with_account(PURPLE_CONV_TYPE_IM, [bareJID UTF8String], account);
 				AIChat *chat = nil;
 				if (conv) {
 					chat = [[[AISharedAdium sharedInstance] chatController] existingChatWithName:bareJID
-																					  onAccount:self->_account];
+																					   onAccount:self->_account];
 				}
 
 				// Update tracked ID to the correction's own stanza ID for chained corrections
@@ -183,8 +183,7 @@ static void AMPurpleJabberCorrection_received_data_cb(PurpleConnection *gc, xmln
 		PurplePlugin *jabber = purple_find_prpl("prpl-jabber");
 		if (jabber) {
 			purple_signal_connect(jabber, "jabber-receiving-xmlnode", self,
-								  PURPLE_CALLBACK(AMPurpleJabberCorrection_received_data_cb),
-								  (__bridge void *)self);
+								  PURPLE_CALLBACK(AMPurpleJabberCorrection_received_data_cb), (__bridge void *)self);
 		}
 
 		AILog(@"AMPurpleJabberCorrection: initialized for %@", account.UID);
@@ -211,7 +210,8 @@ static void AMPurpleJabberCorrection_received_data_cb(PurpleConnection *gc, xmln
 
 + (NSString *)bareJIDFromString:(const char *)jidCString
 {
-	if (!jidCString) return @"";
+	if (!jidCString)
+		return @"";
 
 	NSString *jid = @(jidCString);
 	NSRange slashRange = [jid rangeOfString:@"/"];

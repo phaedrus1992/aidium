@@ -18,15 +18,15 @@
 #import "ESPurpleJabberAccount.h"
 #import <AIUtilities/AIAttributedStringAdditions.h>
 #import <Adium/AIAccount.h>
-#import <Adium/AIContentMessage.h>
 #import <Adium/AIContentControllerProtocol.h>
-#import <Adium/ESFileTransfer.h>
+#import <Adium/AIContentMessage.h>
 #import <Adium/AISharedAdium.h>
+#import <Adium/ESFileTransfer.h>
 #import <libpurple/jabber.h>
 
-#define NS_HTTP_UPLOAD		@"urn:xmpp:http:upload:0"
-#define NS_DISCO_ITEMS		@"http://jabber.org/protocol/disco#items"
-#define NS_DISCO_INFO		@"http://jabber.org/protocol/disco#info"
+#define NS_HTTP_UPLOAD @"urn:xmpp:http:upload:0"
+#define NS_DISCO_ITEMS @"http://jabber.org/protocol/disco#items"
+#define NS_DISCO_INFO @"http://jabber.org/protocol/disco#info"
 
 // ponytail: only 3 whitelisted headers per XEP-0363 §3.2
 static NSSet *AllowedSlotHeaders(void)
@@ -41,17 +41,28 @@ static NSSet *AllowedSlotHeaders(void)
 static NSString *ContentTypeForFile(NSString *path)
 {
 	NSString *ext = [[path pathExtension] lowercaseString];
-	if ([ext isEqualToString:@"png"])	return @"image/png";
-	if ([ext isEqualToString:@"jpg"] || [ext isEqualToString:@"jpeg"])	return @"image/jpeg";
-	if ([ext isEqualToString:@"gif"])	return @"image/gif";
-	if ([ext isEqualToString:@"pdf"])	return @"application/pdf";
-	if ([ext isEqualToString:@"txt"])	return @"text/plain";
-	if ([ext isEqualToString:@"html"] || [ext isEqualToString:@"htm"])	return @"text/html";
-	if ([ext isEqualToString:@"xml"])	return @"application/xml";
-	if ([ext isEqualToString:@"zip"])	return @"application/zip";
-	if ([ext isEqualToString:@"mp3"])	return @"audio/mpeg";
-	if ([ext isEqualToString:@"mp4"])	return @"video/mp4";
-	if ([ext isEqualToString:@"mov"])	return @"video/quicktime";
+	if ([ext isEqualToString:@"png"])
+		return @"image/png";
+	if ([ext isEqualToString:@"jpg"] || [ext isEqualToString:@"jpeg"])
+		return @"image/jpeg";
+	if ([ext isEqualToString:@"gif"])
+		return @"image/gif";
+	if ([ext isEqualToString:@"pdf"])
+		return @"application/pdf";
+	if ([ext isEqualToString:@"txt"])
+		return @"text/plain";
+	if ([ext isEqualToString:@"html"] || [ext isEqualToString:@"htm"])
+		return @"text/html";
+	if ([ext isEqualToString:@"xml"])
+		return @"application/xml";
+	if ([ext isEqualToString:@"zip"])
+		return @"application/zip";
+	if ([ext isEqualToString:@"mp3"])
+		return @"audio/mpeg";
+	if ([ext isEqualToString:@"mp4"])
+		return @"video/mp4";
+	if ([ext isEqualToString:@"mov"])
+		return @"video/quicktime";
 	return @"application/octet-stream";
 }
 
@@ -93,9 +104,11 @@ static void AMPurpleJabberHTTPUpload_received_data_cb(PurpleConnection *gc, xmln
 				}
 			} else if (strcmp(type, "error") == 0) {
 				AILog(@"AMPurpleJabberHTTPUpload: Discovery items query failed for id=%s", iq_id);
-				[self->_discoveryInfoIDs release]; self->_discoveryInfoIDs = nil;
+				[self->_discoveryInfoIDs release];
+				self->_discoveryInfoIDs = nil;
 			}
-			[self->_discoveryItemsID release]; self->_discoveryItemsID = nil;
+			[self->_discoveryItemsID release];
+			self->_discoveryItemsID = nil;
 			return;
 		}
 
@@ -113,7 +126,8 @@ static void AMPurpleJabberHTTPUpload_received_data_cb(PurpleConnection *gc, xmln
 			[self->_discoveryInfoIDs removeObject:idStr];
 			if ([self->_discoveryInfoIDs count] == 0) {
 				AILog(@"AMPurpleJabberHTTPUpload: No HTTP Upload service found after probing all items");
-				[self->_discoveryInfoIDs release]; self->_discoveryInfoIDs = nil;
+				[self->_discoveryInfoIDs release];
+				self->_discoveryInfoIDs = nil;
 			}
 			return;
 		}
@@ -133,7 +147,8 @@ static void AMPurpleJabberHTTPUpload_received_data_cb(PurpleConnection *gc, xmln
 				xmlnode *errorNode = xmlnode_get_child(node, "error");
 				const char *errorText = NULL;
 				if (errorNode) {
-					xmlnode *text = xmlnode_get_child_with_namespace(errorNode, "text", @"urn:ietf:params:xml:ns:xmpp-stanzas".UTF8String);
+					xmlnode *text = xmlnode_get_child_with_namespace(errorNode, "text",
+																	 @"urn:ietf:params:xml:ns:xmpp-stanzas".UTF8String);
 					if (text && text->child && (text->child->type == XMLNODE_TYPE_DATA)) {
 						errorText = text->child->data;
 					}
@@ -142,7 +157,8 @@ static void AMPurpleJabberHTTPUpload_received_data_cb(PurpleConnection *gc, xmln
 				AILog(@"AMPurpleJabberHTTPUpload: Slot request failed: %@", reason);
 				[self _handleUploadFailure:reason];
 			}
-			[self->_slotQueryID release]; self->_slotQueryID = nil;
+			[self->_slotQueryID release];
+			self->_slotQueryID = nil;
 			return;
 		}
 
@@ -265,16 +281,17 @@ static void AMPurpleJabberHTTPUpload_received_data_cb(PurpleConnection *gc, xmln
 	PurpleConnection *gc = purple_account_get_connection(pa);
 	if (!gc) {
 		AILog(@"AMPurpleJabberHTTPUpload: Connection gone, skipping discovery items");
-		[_discoveryItemsID release]; _discoveryItemsID = nil;
-		[_discoveryInfoIDs release]; _discoveryInfoIDs = nil;
+		[_discoveryItemsID release];
+		_discoveryItemsID = nil;
+		[_discoveryInfoIDs release];
+		_discoveryInfoIDs = nil;
 		return;
 	}
 
-	NSString *iq = [NSString stringWithFormat:
-		@"<iq type='get' id='%@' to='%@'>"
-		@"<query xmlns='%@'/>"
-		@"</iq>",
-		queryID, domain, NS_DISCO_ITEMS];
+	NSString *iq = [NSString stringWithFormat:@"<iq type='get' id='%@' to='%@'>"
+											  @"<query xmlns='%@'/>"
+											  @"</iq>",
+											  queryID, domain, NS_DISCO_ITEMS];
 
 	jabber_prpl_send_raw(gc, [iq UTF8String], -1);
 	AILog(@"AMPurpleJabberHTTPUpload: Sent discovery items query to %@", domain);
@@ -290,16 +307,16 @@ static void AMPurpleJabberHTTPUpload_received_data_cb(PurpleConnection *gc, xmln
 	if (!gc) {
 		[_discoveryInfoIDs removeObject:queryID];
 		if ([_discoveryInfoIDs count] == 0) {
-			[_discoveryInfoIDs release]; _discoveryInfoIDs = nil;
+			[_discoveryInfoIDs release];
+			_discoveryInfoIDs = nil;
 		}
 		return;
 	}
 
-	NSString *iq = [NSString stringWithFormat:
-		@"<iq type='get' id='%@' to='%@'>"
-		@"<query xmlns='%@'/>"
-		@"</iq>",
-		queryID, jid, NS_DISCO_INFO];
+	NSString *iq = [NSString stringWithFormat:@"<iq type='get' id='%@' to='%@'>"
+											  @"<query xmlns='%@'/>"
+											  @"</iq>",
+											  queryID, jid, NS_DISCO_INFO];
 
 	jabber_prpl_send_raw(gc, [iq UTF8String], -1);
 	AILog(@"AMPurpleJabberHTTPUpload: Sent discovery info query to %@", jid);
@@ -351,7 +368,8 @@ static void AMPurpleJabberHTTPUpload_received_data_cb(PurpleConnection *gc, xmln
 			AILog(@"AMPurpleJabberHTTPUpload: Found upload service at %@ (max size: %lld)", fromJID, _maxFileSize);
 
 			// Clean up remaining discovery state
-			[_discoveryInfoIDs release]; _discoveryInfoIDs = nil;
+			[_discoveryInfoIDs release];
+			_discoveryInfoIDs = nil;
 			return;
 		}
 	}
@@ -388,15 +406,15 @@ static void AMPurpleJabberHTTPUpload_received_data_cb(PurpleConnection *gc, xmln
 	// XML-escape the filename to prevent injection
 	NSString *escapedFilename = [self _xmlEscape:filename];
 
-	NSString *iq = [NSString stringWithFormat:
-		@"<iq type='get' id='%@' to='%@'>"
-		@"<request xmlns='%@' filename='%@' size='%llu' content-type='%@'/>"
-		@"</iq>",
-		queryID, _uploadServiceJID, NS_HTTP_UPLOAD, escapedFilename, fileSize, contentType];
+	NSString *iq =
+		[NSString stringWithFormat:@"<iq type='get' id='%@' to='%@'>"
+								   @"<request xmlns='%@' filename='%@' size='%llu' content-type='%@'/>"
+								   @"</iq>",
+								   queryID, _uploadServiceJID, NS_HTTP_UPLOAD, escapedFilename, fileSize, contentType];
 
 	jabber_prpl_send_raw(gc, [iq UTF8String], -1);
-	AILog(@"AMPurpleJabberHTTPUpload: Requested slot for %@ (%llu bytes) from %@",
-		  filename, fileSize, _uploadServiceJID);
+	AILog(@"AMPurpleJabberHTTPUpload: Requested slot for %@ (%llu bytes) from %@", filename, fileSize,
+		  _uploadServiceJID);
 }
 
 - (void)_handleSlotResult:(xmlnode *)slot
@@ -460,7 +478,8 @@ static void AMPurpleJabberHTTPUpload_received_data_cb(PurpleConnection *gc, xmln
 	AILog(@"AMPurpleJabberHTTPUpload: Got slot: PUT %@ -> GET %@", _putURL, _getURL);
 
 	// Clean up slot query state before upload
-	[_slotQueryID release]; _slotQueryID = nil;
+	[_slotQueryID release];
+	_slotQueryID = nil;
 
 	[self _doUpload];
 }
@@ -515,10 +534,10 @@ static void AMPurpleJabberHTTPUpload_received_data_cb(PurpleConnection *gc, xmln
 #pragma mark - NSURLSessionTaskDelegate
 
 - (void)URLSession:(NSURLSession *)session
-			  task:(NSURLSessionTask *)task
-   didSendBodyData:(int64_t)bytesSent
-	totalBytesSent:(int64_t)totalBytesSent
-totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
+						task:(NSURLSessionTask *)task
+			 didSendBodyData:(int64_t)bytesSent
+			  totalBytesSent:(int64_t)totalBytesSent
+	totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
 {
 	if (!_activeFileTransfer) {
 		return;
@@ -536,14 +555,11 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
 	}
 }
 
-- (void)URLSession:(NSURLSession *)session
-			  task:(NSURLSessionTask *)task
-didCompleteWithError:(nullable NSError *)error
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(nullable NSError *)error
 {
 	if (error) {
 		dispatch_async(dispatch_get_main_queue(), ^{
-			[self _handleUploadFailure:[NSString stringWithFormat:@"Upload failed: %@",
-										[error localizedDescription]]];
+			[self _handleUploadFailure:[NSString stringWithFormat:@"Upload failed: %@", [error localizedDescription]]];
 		});
 		return;
 	}
@@ -588,14 +604,12 @@ didCompleteWithError:(nullable NSError *)error
 
 	NSString *body = [_getURL absoluteString];
 
-	NSString *message = [NSString stringWithFormat:
-		@"<message to='%@' type='chat'>"
-		@"<body>%@</body>"
-		@"<x xmlns='jabber:x:oob'><url>%@</url></x>"
-		@"</message>",
-		[self _xmlEscape:bareJID],
-		[self _xmlEscape:body],
-		[self _xmlEscape:body]];
+	NSString *message =
+		[NSString stringWithFormat:@"<message to='%@' type='chat'>"
+								   @"<body>%@</body>"
+								   @"<x xmlns='jabber:x:oob'><url>%@</url></x>"
+								   @"</message>",
+								   [self _xmlEscape:bareJID], [self _xmlEscape:body], [self _xmlEscape:body]];
 
 	jabber_prpl_send_raw(gc, [message UTF8String], -1);
 	AILog(@"AMPurpleJabberHTTPUpload: Sent share message for %@", body);
@@ -621,13 +635,19 @@ didCompleteWithError:(nullable NSError *)error
 
 - (void)_cleanupUpload
 {
-	[_slotQueryID release]; _slotQueryID = nil;
-	[_activeFileTransfer release]; _activeFileTransfer = nil;
-	[_putHeaders release]; _putHeaders = nil;
-	[_getURL release]; _getURL = nil;
-	[_putURL release]; _putURL = nil;
+	[_slotQueryID release];
+	_slotQueryID = nil;
+	[_activeFileTransfer release];
+	_activeFileTransfer = nil;
+	[_putHeaders release];
+	_putHeaders = nil;
+	[_getURL release];
+	_getURL = nil;
+	[_putURL release];
+	_putURL = nil;
 	[_session invalidateAndCancel];
-	[_session release]; _session = nil;
+	[_session release];
+	_session = nil;
 }
 
 #pragma mark - Private: Helpers
@@ -638,11 +658,26 @@ didCompleteWithError:(nullable NSError *)error
 		return @"";
 	}
 	NSMutableString *result = [[str mutableCopy] autorelease];
-	[result replaceOccurrencesOfString:@"&" withString:@"&amp;" options:NSLiteralSearch range:NSMakeRange(0, [result length])];
-	[result replaceOccurrencesOfString:@"<" withString:@"&lt;" options:NSLiteralSearch range:NSMakeRange(0, [result length])];
-	[result replaceOccurrencesOfString:@">" withString:@"&gt;" options:NSLiteralSearch range:NSMakeRange(0, [result length])];
-	[result replaceOccurrencesOfString:@"'" withString:@"&apos;" options:NSLiteralSearch range:NSMakeRange(0, [result length])];
-	[result replaceOccurrencesOfString:@"\"" withString:@"&quot;" options:NSLiteralSearch range:NSMakeRange(0, [result length])];
+	[result replaceOccurrencesOfString:@"&"
+							withString:@"&amp;"
+							   options:NSLiteralSearch
+								 range:NSMakeRange(0, [result length])];
+	[result replaceOccurrencesOfString:@"<"
+							withString:@"&lt;"
+							   options:NSLiteralSearch
+								 range:NSMakeRange(0, [result length])];
+	[result replaceOccurrencesOfString:@">"
+							withString:@"&gt;"
+							   options:NSLiteralSearch
+								 range:NSMakeRange(0, [result length])];
+	[result replaceOccurrencesOfString:@"'"
+							withString:@"&apos;"
+							   options:NSLiteralSearch
+								 range:NSMakeRange(0, [result length])];
+	[result replaceOccurrencesOfString:@"\""
+							withString:@"&quot;"
+							   options:NSLiteralSearch
+								 range:NSMakeRange(0, [result length])];
 	return result;
 }
 
