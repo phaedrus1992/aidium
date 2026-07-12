@@ -30,7 +30,6 @@
 #define NS_FORWARD @"urn:xmpp:forward:0"
 #define NS_RSM @"http://jabber.org/protocol/rsm"
 #define NS_DELAY @"urn:xmpp:delay"
-#define NS_SID @"urn:xmpp:sid:0"
 
 #define KEY_MAM_ENABLED @"Jabber:Enable MAM"
 #define KEY_LAST_ARCHIVE_ID @"Jabber:lastArchiveID"
@@ -58,11 +57,6 @@ static void AMPurpleJabberMAM_received_data_cb(PurpleConnection *gc, xmlnode **p
 		xmlnode *node = *packet;
 
 		if (!node || !gc || !self) {
-			return;
-		}
-
-		// Consumed by an earlier handler
-		if (!*packet) {
 			return;
 		}
 
