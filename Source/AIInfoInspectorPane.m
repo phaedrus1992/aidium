@@ -22,7 +22,6 @@
 #import <AIUtilities/AIImageAdditions.h>
 #import <AIUtilities/AIStringAdditions.h>
 #import <AIUtilities/AITextAttributes.h>
-#import <AddressBook/AddressBook.h>
 #import <Adium/AIContactControllerProtocol.h>
 #import <Adium/AIContentControllerProtocol.h>
 #import <Adium/AIHTMLDecoder.h>
@@ -35,6 +34,7 @@
 #import <Adium/AIService.h>
 #import <Adium/AIServiceIcons.h>
 #import <Adium/AIStatusIcons.h>
+#import <Contacts/Contacts.h>
 
 #define WIDTH_PROFILE_HEADER 100.0f
 
@@ -675,172 +675,174 @@
 
 #pragma mark Address Book
 
-- (void)addMultiValue:(ABMultiValue *)value
-		  forProperty:(NSString *)property
-			   ofType:(ABPropertyType)propertyType
-	   toProfileArray:(NSMutableArray *)profileArray
-{
-	NSUInteger count = [value count];
-	NSInteger i;
-	for (i = 0; i < count; i++) {
-		NSString *label = ABLocalizedPropertyOrLabel([value labelAtIndex:i]);
-		id innerValue = [value valueAtIndex:i];
-		switch (propertyType) {
-		case kABMultiStringProperty:
-			if ([(NSString *)innerValue length]) {
-				[profileArray
-					addObject:[NSDictionary
-								  dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%@ (%@)",
-																						  ABLocalizedPropertyOrLabel(
-																							  property),
-																						  label],
-															   KEY_KEY, (NSString *)innerValue, KEY_VALUE, nil]];
-			}
-			break;
-		case kABMultiIntegerProperty:
-		case kABMultiRealProperty:
-			if ([(NSNumber *)innerValue integerValue] != 0) {
-				[profileArray
-					addObject:[NSDictionary
-								  dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%@ (%@)",
-																						  ABLocalizedPropertyOrLabel(
-																							  property),
-																						  label],
-															   KEY_KEY, [(NSNumber *)innerValue stringValue], KEY_VALUE,
-															   nil]];
-			}
-			break;
-		case kABMultiDateProperty:
-			if (innerValue) {
-				[NSDateFormatter withLocalizedDateFormatterPerform:^(NSDateFormatter *dateFormatter) {
-					[profileArray
-						addObject:[NSDictionary
-									  dictionaryWithObjectsAndKeys:[NSString
-																	   stringWithFormat:@"%@ (%@)",
-																						ABLocalizedPropertyOrLabel(
-																							property),
-																						label],
-																   KEY_KEY,
-																   [dateFormatter stringFromDate:(NSDate *)innerValue],
-																   KEY_VALUE, nil]];
-				}];
-			}
-			break;
-		case kABMultiArrayProperty:
-		case kABMultiDictionaryProperty:
-		case kABMultiDataProperty:
-		default:
-			/* Ignore Array, Dictionary, and Data properties */
-			break;
-		}
-	}
-}
-
 - (void)addAddressBookInfoToProfileArray:(NSMutableArray *)profileArray forContact:(AIListContact *)inContact
 {
-	ABPerson *person = [inContact addressBookPerson];
-	if (!person)
+	CNContact *person = [inContact contactPerson];
+	if (person == nil) {
 		return;
+	}
 
-	NSString *title = [person valueForProperty:kABTitleProperty];
-	NSString *firstName = [person valueForProperty:kABFirstNameProperty];
-	NSString *middleName = [person valueForProperty:kABMiddleNameProperty];
-	NSString *lastName = [person valueForProperty:kABLastNameProperty];
-	NSString *suffix = [person valueForProperty:kABSuffixProperty];
+	// Fetch the contact with keys needed for profile display
+	CNContactStore *store = [[CNContactStore alloc] init];
+	NSArray *keys = @[
+		CNContactNamePrefixKey, CNContactGivenNameKey, CNContactMiddleNameKey, CNContactFamilyNameKey,
+		CNContactNameSuffixKey, CNContactJobTitleKey, CNContactDepartmentNameKey, CNContactOrganizationNameKey,
+		CNContactUrlAddressesKey, CNContactEmailAddressesKey, CNContactPhoneNumbersKey, CNContactPostalAddressesKey,
+		CNContactBirthdayKey, CNContactDatesKey, CNContactRelatedNamesKey
+	];
 
+	NSError *error = nil;
+	CNContact *fullPerson = [store unifiedContactWithIdentifier:person.identifier keysToFetch:keys error:&error];
+	if (fullPerson == nil) {
+		AILogWithSignature(@"Error fetching contact for profile: %@", error);
+		[store release];
+		return;
+	}
+
+	// Build full name from components
 	NSMutableString *name = [NSMutableString string];
-	if (title) {
-		[name appendString:title];
-		if (firstName || middleName || lastName)
+	if ([fullPerson.namePrefix length] > 0) {
+		[name appendString:fullPerson.namePrefix];
+		if ([fullPerson.givenName length] > 0 || [fullPerson.middleName length] > 0 ||
+			[fullPerson.familyName length] > 0) {
 			[name appendString:@" "];
+		}
 	}
-	if (firstName) {
-		[name appendString:firstName];
-		if (middleName || lastName)
+	if ([fullPerson.givenName length] > 0) {
+		[name appendString:fullPerson.givenName];
+		if ([fullPerson.middleName length] > 0 || [fullPerson.familyName length] > 0) {
 			[name appendString:@" "];
+		}
 	}
-	if (middleName) {
-		[name appendString:middleName];
-		if (lastName)
+	if ([fullPerson.middleName length] > 0) {
+		[name appendString:fullPerson.middleName];
+		if ([fullPerson.familyName length] > 0) {
 			[name appendString:@" "];
+		}
 	}
-	if (lastName) {
-		[name appendString:lastName];
+	if ([fullPerson.familyName length] > 0) {
+		[name appendString:fullPerson.familyName];
 	}
-	if (suffix) {
-		if ([name length])
+	if ([fullPerson.nameSuffix length] > 0) {
+		if ([name length] > 0) {
 			[name appendString:@", "];
-		[name appendString:suffix];
+		}
+		[name appendString:fullPerson.nameSuffix];
 	}
 
-	if ([name length]) {
+	if ([name length] > 0) {
 		[profileArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:AILocalizedString(@"Full Name", nil),
 																		   KEY_KEY, name, KEY_VALUE, nil]];
 	}
 
-	NSString *property;
-	NSArray *propertiesToInclude;
-
-	propertiesToInclude =
-		[NSArray arrayWithObjects:kABJobTitleProperty, kABDepartmentProperty, kABOrganizationProperty, /* Work info */
-								  kABHomePageProperty, kABURLsProperty,                                /* Web sites */
-								  kABEmailProperty, kABPhoneProperty, kABAddressProperty, /* Contact info */
-								  kABBirthdayProperty, kABOtherDatesProperty,             /* Dates */
-								  kABRelatedNamesProperty,                                /* Relationships */
-								  kABNoteProperty,                                        /* Notes */
-								  nil];
-
-	for (property in propertiesToInclude) {
-		if ([person valueForProperty:property]) {
-			id value = [person valueForProperty:property];
-			ABPropertyType propertyType = [ABPerson typeOfProperty:property];
-			switch (propertyType) {
-			case kABErrorInProperty:
-				/* Ignore errors */
-				break;
-			case kABStringProperty:
-				if ([value length]) {
-					[profileArray
-						addObject:[NSDictionary dictionaryWithObjectsAndKeys:ABLocalizedPropertyOrLabel(property),
-																			 KEY_KEY, (NSString *)value, KEY_VALUE,
-																			 nil]];
-				}
-				break;
-			case kABIntegerProperty:
-			case kABRealProperty:
-				if ([value integerValue] != 0) {
-					[profileArray
-						addObject:[NSDictionary dictionaryWithObjectsAndKeys:ABLocalizedPropertyOrLabel(property),
-																			 KEY_KEY, [(NSNumber *)value stringValue],
-																			 KEY_VALUE, nil]];
-				}
-			case kABDateProperty:
-				if (value) {
-					[NSDateFormatter withLocalizedDateFormatterPerform:^(NSDateFormatter *dateFormatter) {
-						[profileArray
-							addObject:[NSDictionary
-										  dictionaryWithObjectsAndKeys:ABLocalizedPropertyOrLabel(property), KEY_KEY,
-																	   [dateFormatter stringFromDate:(NSDate *)value],
-																	   KEY_VALUE, nil]];
-					}];
-				}
-			case kABArrayProperty:
-			case kABDictionaryProperty:
-			case kABDataProperty:
-				/* Ignore arrays, dictionaries, and data */
-				break;
-			case kABMultiStringProperty:
-			case kABMultiIntegerProperty:
-			case kABMultiRealProperty:
-			case kABMultiDateProperty:
-			case kABMultiArrayProperty:
-			case kABMultiDictionaryProperty:
-			case kABMultiDataProperty:
-				[self addMultiValue:value forProperty:property ofType:propertyType toProfileArray:profileArray];
-				break;
-			}
+	// Single-value properties
+	NSDictionary *labelMap = [[NSDictionary alloc]
+		initWithObjectsAndKeys:AILocalizedString(@"Job Title", nil), CNContactJobTitleKey,
+							   AILocalizedString(@"Department", nil), CNContactDepartmentNameKey,
+							   AILocalizedString(@"Organization", nil), CNContactOrganizationNameKey, nil];
+	for (NSString *key in labelMap) {
+		NSString *value = [fullPerson valueForKey:key];
+		if ([value length] > 0) {
+			[profileArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:[labelMap objectForKey:key], KEY_KEY,
+																			   value, KEY_VALUE, nil]];
 		}
 	}
+	[labelMap release];
+
+	// Email addresses
+	for (CNLabeledValue *labeledValue in fullPerson.emailAddresses) {
+		NSString *label = [labeledValue label];
+		NSString *value = (NSString *)[labeledValue value];
+		if ([value length] > 0) {
+			NSString *propertyName = AILocalizedString(@"Email", nil);
+			NSString *key = (label != nil) ? [NSString stringWithFormat:@"%@ (%@)", propertyName, label] : propertyName;
+			[profileArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:key, KEY_KEY, value, KEY_VALUE, nil]];
+		}
+	}
+
+	// Phone numbers
+	for (CNLabeledValue *labeledValue in fullPerson.phoneNumbers) {
+		NSString *label = [labeledValue label];
+		NSString *value = [(CNPhoneNumber *)[labeledValue value] stringValue];
+		if ([value length] > 0) {
+			NSString *propertyName = AILocalizedString(@"Phone", nil);
+			NSString *key = (label != nil) ? [NSString stringWithFormat:@"%@ (%@)", propertyName, label] : propertyName;
+			[profileArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:key, KEY_KEY, value, KEY_VALUE, nil]];
+		}
+	}
+
+	// URLs
+	for (CNLabeledValue *labeledValue in fullPerson.urlAddresses) {
+		NSString *label = [labeledValue label];
+		NSString *value = (NSString *)[labeledValue value];
+		if ([value length] > 0) {
+			NSString *propertyName = AILocalizedString(@"Home Page", nil);
+			NSString *key = (label != nil) ? [NSString stringWithFormat:@"%@ (%@)", propertyName, label] : propertyName;
+			[profileArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:key, KEY_KEY, value, KEY_VALUE, nil]];
+		}
+	}
+
+	// Postal addresses
+	for (CNLabeledValue *labeledValue in fullPerson.postalAddresses) {
+		NSString *label = [labeledValue label];
+		NSString *value =
+			[CNPostalAddressFormatter stringFromPostalAddress:(CNPostalAddress *)[labeledValue value]
+														style:CNPostalAddressFormatterStyleMailingAddress];
+		if ([value length] > 0) {
+			NSString *propertyName = AILocalizedString(@"Address", nil);
+			NSString *key = (label != nil) ? [NSString stringWithFormat:@"%@ (%@)", propertyName, label] : propertyName;
+			[profileArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:key, KEY_KEY, value, KEY_VALUE, nil]];
+		}
+	}
+
+	// Birthday
+	if (fullPerson.birthday != nil) {
+		NSDateComponents *components = fullPerson.birthday;
+		NSCalendar *calendar =
+			[NSCalendar calendarWithIdentifier:([components calendar] ?: NSCalendarIdentifierGregorian)];
+		NSDate *birthdayDate = [calendar dateFromComponents:components];
+		if (birthdayDate != nil) {
+			NSString *formattedDate = [NSDateFormatter localizedStringFromDate:birthdayDate
+																	 dateStyle:NSDateFormatterMediumStyle
+																	 timeStyle:NSDateFormatterNoStyle];
+			[profileArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:AILocalizedString(@"Birthday", nil),
+																			   KEY_KEY, formattedDate, KEY_VALUE, nil]];
+		}
+	}
+
+	// Other dates
+	for (CNLabeledValue *labeledValue in fullPerson.dates) {
+		NSString *label = [labeledValue label];
+		NSDateComponents *components = (NSDateComponents *)[labeledValue value];
+		NSCalendar *calendar =
+			[NSCalendar calendarWithIdentifier:([components calendar] ?: NSCalendarIdentifierGregorian)];
+		NSDate *date = [calendar dateFromComponents:components];
+		if (date != nil) {
+			NSString *formattedDate = [NSDateFormatter localizedStringFromDate:date
+																	 dateStyle:NSDateFormatterMediumStyle
+																	 timeStyle:NSDateFormatterNoStyle];
+			NSString *propertyName = AILocalizedString(@"Date", nil);
+			NSString *key = (label != nil) ? [NSString stringWithFormat:@"%@ (%@)", propertyName, label] : propertyName;
+			[profileArray
+				addObject:[NSDictionary dictionaryWithObjectsAndKeys:key, KEY_KEY, formattedDate, KEY_VALUE, nil]];
+		}
+	}
+
+	// Related names
+	for (CNLabeledValue *labeledValue in fullPerson.relatedNames) {
+		NSString *label = [labeledValue label];
+		NSString *value = (NSString *)[labeledValue value];
+		if ([value length] > 0) {
+			NSString *propertyName = AILocalizedString(@"Related Name", nil);
+			NSString *key = (label != nil) ? [NSString stringWithFormat:@"%@ (%@)", propertyName, label] : propertyName;
+			[profileArray addObject:[NSDictionary dictionaryWithObjectsAndKeys:key, KEY_KEY, value, KEY_VALUE, nil]];
+		}
+	}
+
+	// Note: CNContactNoteKey requires restricted entitlement — intentionally excluded
+	// per Contacts.framework migration spec (§3.5)
+
+	[store release];
 }
 
 - (void)addTooltipEntriesToProfileArray:(NSMutableArray *)profileArray forContact:(AIListContact *)inContact

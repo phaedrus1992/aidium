@@ -21,12 +21,11 @@
 #import <AIUtilities/AIImageViewWithImagePicker.h>
 #import <AIUtilities/AIMenuAdditions.h>
 #import <AIUtilities/AIPopUpButtonAdditions.h>
-#import <AddressBook/ABPeoplePickerView.h>
-#import <AddressBook/ABPerson.h>
-#import <AddressBook/AddressBook.h>
 #import <Adium/AIService.h>
 #import <Adium/AIServiceIcons.h>
 #import <Adium/AIServiceMenu.h>
+#import <Contacts/Contacts.h>
+#import <ContactsUI/ContactsUI.h>
 
 #define AB_SEARCH_NIB @"ABSearch"
 
@@ -34,7 +33,9 @@
 - (void)OWABSearchWindowControllerDidSelectPerson:(OWABSearchWindowController *)controller;
 @end
 
-@interface OWABSearchWindowController ()
+@interface OWABSearchWindowController () {
+	IBOutlet id peoplePicker; // Kept for nib compatibility — unused after Contacts.framework migration
+}
 - (id)initWithWindowNibName:(NSString *)windowNibName initialService:(AIService *)inService;
 - (void)_configurePeoplePicker;
 - (void)_setCarryingWindow:(NSWindow *)inWindow;
@@ -44,7 +45,7 @@
 - (void)configureForCurrentServiceType;
 - (IBAction)selectServiceType:(id)sender;
 - (void)_setService:(AIService *)inService;
-- (void)_setPerson:(ABPerson *)inPerson;
+- (void)_setPerson:(CNContact *)inPerson;
 - (void)_setScreenName:(NSString *)inName;
 @end
 
@@ -53,8 +54,6 @@
  * @brief Window controller for searching people in the Address Book database.
  */
 @implementation OWABSearchWindowController
-
-static ABAddressBook *sharedAddressBook = nil;
 
 /*!
  * @brief Prompt for searching a person within the AB database.
@@ -96,9 +95,6 @@ static ABAddressBook *sharedAddressBook = nil;
 		carryingWindow = nil;
 		contactImage = nil;
 		service = [inService retain];
-
-		if (!sharedAddressBook)
-			sharedAddressBook = [[ABAddressBook sharedAddressBook] retain];
 	}
 
 	return self;
@@ -115,8 +111,6 @@ static ABAddressBook *sharedAddressBook = nil;
 	[service release];
 	[carryingWindow release];
 	[contactImage release];
-	[sharedAddressBook release];
-	sharedAddressBook = nil;
 	[super dealloc];
 }
 
@@ -151,50 +145,18 @@ static ABAddressBook *sharedAddressBook = nil;
 	[imageView_contactIcon setMaxSize:NSMakeSize(256, 256)];
 
 	[self _configurePeoplePicker];
-
-	[[self window] selectKeyViewFollowingView:peoplePicker];
 }
 
 /*!
- * @brief Setup our ABPeoplePickerView
+ * @brief Present a CNContactPickerViewController as a sheet
  */
 - (void)_configurePeoplePicker
 {
-	NSTextField *accessoryView = [[[NSTextField alloc] init] autorelease];
-	NSString *property;
-
-	// Create a small explanation text
-	[accessoryView
-		setStringValue:AILocalizedString(@"Select an entry from your address book, or add a new person.", nil)];
-	[accessoryView setFont:[NSFont systemFontOfSize:10.0f]];
-	[accessoryView setDrawsBackground:NO];
-	[accessoryView setEnabled:NO];
-	[accessoryView setBezeled:NO];
-	[accessoryView sizeToFit];
-	// And attach it to our people picker view
-	[peoplePicker setAccessoryView:accessoryView];
-
-	// Configure our people picker
-	[peoplePicker setAllowsGroupSelection:NO];
-	[peoplePicker setAllowsMultipleSelection:NO];
-	[peoplePicker setValueSelectionBehavior:ABSingleValueSelection];
-	[peoplePicker setTarget:self];
-	[peoplePicker setNameDoubleAction:@selector(select:)];
-
-	// We show only the active services
-	for (AIService *aService in [adium.accountController activeServicesIncludingCompatibleServices:YES]) {
-		property = [AIAddressBookController propertyFromService:aService];
-		if (property && ![[peoplePicker properties] containsObject:property])
-			[peoplePicker addProperty:property];
-	}
-
-	// Display our initial service if we were passed one
-	if (service) {
-		property = [AIAddressBookController propertyFromService:service];
-		if (property && [[peoplePicker properties] containsObject:property]) {
-			[peoplePicker setDisplayedProperty:property];
-		}
-	}
+	CNContactPickerViewController *picker = [[[CNContactPickerViewController alloc] init] autorelease];
+	picker.delegate = self;
+	picker.displayedKeys = @[ CNContactInstantMessageAddressesKey ];
+	picker.prompt = AILocalizedString(@"Select an entry from your address book, or add a new person.", nil);
+	[picker beginSheetModalForWindow:[self window] completionHandler:nil];
 }
 
 /*!
@@ -224,19 +186,12 @@ static ABAddressBook *sharedAddressBook = nil;
 
 /*!
  * @brief Select a person
+ *
+ * With CNContactPickerViewController, the selection is handled via the delegate callback.
+ * This IBAction simply closes the window when the user clicks the Select button.
  */
 - (IBAction)select:(id)sender
 {
-	NSArray *selectedValues = [peoplePicker selectedValues];
-
-	// Set the selected screen name
-	if ([selectedValues count] > 0)
-		[self _setScreenName:[selectedValues objectAtIndex:0]];
-	// Set the selected service
-	[self _setService:[AIAddressBookController serviceFromProperty:[peoplePicker displayedProperty]]];
-	// Set the selected person
-	[self _setPerson:[[peoplePicker selectedRecords] objectAtIndex:0]];
-
 	// Close our window
 	if ([self windowShouldClose:self.window]) {
 		if ([[self window] isSheet]) {
@@ -246,6 +201,30 @@ static ABAddressBook *sharedAddressBook = nil;
 			if (delegate)
 				[delegate absearchWindowControllerDidSelectPerson:self];
 		}
+	}
+}
+
+#pragma mark CNContactPickerDelegate
+
+- (void)contactPicker:(CNContactPickerViewController *)picker
+	didSelectContactProperty:(CNContactProperty *)contactProperty
+{
+	CNContact *selectedContact = contactProperty.contact;
+	CNInstantMessageAddress *imAddress = contactProperty.value;
+
+	if ([imAddress isKindOfClass:[CNInstantMessageAddress class]]) {
+		[self _setScreenName:imAddress.username];
+		[self _setService:[AIAddressBookController serviceFromProperty:imAddress.service]];
+	}
+	[self _setPerson:selectedContact];
+
+	// Close our window
+	if ([[self window] isSheet]) {
+		[NSApp endSheet:[self window] returnCode:NSOKButton];
+	} else {
+		[[self window] close];
+		if (delegate)
+			[delegate absearchWindowControllerDidSelectPerson:self];
 	}
 }
 
@@ -283,48 +262,48 @@ static ABAddressBook *sharedAddressBook = nil;
  */
 - (IBAction)addPerson:(id)sender
 {
-	ABPerson *newPerson = [[[ABPerson alloc] init] autorelease];
+	CNMutableContact *newPerson = [[[CNMutableContact alloc] init] autorelease];
 	NSString *contactID = [[textField_contactID stringValue]
 		stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
 	// Create the new contact
 	if (![contactID isEqualToString:@""]) {
-		ABMutableMultiValue *value = [[ABMutableMultiValue alloc] init];
-		NSString *identifier = nil;
-		NSString *serviceIndentifier = [AIAddressBookController propertyFromService:service];
+		NSString *serviceIdentifier = [AIAddressBookController propertyFromService:service];
 
-		identifier = [value addValue:contactID withLabel:serviceIndentifier];
-		if (identifier) {
+		if (serviceIdentifier) {
 			NSString *email = [[textField_email stringValue]
 				stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
 
-			// Set the person's IM id
-			[newPerson setValue:value forProperty:serviceIndentifier];
-
-			// Clean our multi value
-			[value removeValueAndLabelAtIndex:[value indexForIdentifier:identifier]];
+			// Set the person's instant message address
+			CNInstantMessageAddress *imAddress = [[CNInstantMessageAddress alloc] initWithUsername:contactID
+																						   service:serviceIdentifier];
+			CNLabeledValue *labeledIM = [CNLabeledValue labeledValueWithLabel:CNLabelInstantMessage value:imAddress];
+			newPerson.instantMessageAddresses = @[ labeledIM ];
+			[imAddress release];
 
 			// Set the person's email address
 			if (![email isEqualToString:@""]) {
-				identifier = [value addValue:[textField_email stringValue] withLabel:kABEmailProperty];
-
-				if (identifier) {
-					[newPerson setValue:value forProperty:kABEmailProperty];
-				}
+				CNLabeledValue *labeledEmail = [CNLabeledValue labeledValueWithLabel:CNLabelEmail value:email];
+				newPerson.emailAddresses = @[ labeledEmail ];
 			}
 
 			// Set the person's first name
-			[newPerson setValue:[textField_firstName stringValue] forProperty:kABFirstNameProperty];
+			newPerson.givenName = [textField_firstName stringValue];
 			// Set the person's last name
-			[newPerson setValue:[textField_lastName stringValue] forProperty:kABLastNameProperty];
+			newPerson.familyName = [textField_lastName stringValue];
 			// Set the person's nickname
-			[newPerson setValue:[textField_nickname stringValue] forProperty:kABNicknameProperty];
+			newPerson.nickname = [textField_nickname stringValue];
 			// Set the person's image
 			if (contactImage)
-				[newPerson setImageData:contactImage];
+				newPerson.imageData = contactImage;
 
-			// Add our newly created person to the AB database
-			if ([sharedAddressBook addRecord:newPerson] && [sharedAddressBook save]) {
+			// Add our newly created person to the Contacts database
+			CNContactStore *store = [[CNContactStore alloc] init];
+			CNSaveRequest *saveRequest = [[CNSaveRequest alloc] init];
+			[saveRequest addContact:newPerson toContainerWithIdentifier:nil];
+
+			NSError *error = nil;
+			if ([store executeSaveRequest:saveRequest error:&error]) {
 				[self _setPerson:newPerson];
 				[self _setScreenName:contactID];
 
@@ -339,14 +318,16 @@ static ABAddressBook *sharedAddressBook = nil;
 					}
 				}
 			} else {
-				// Cancel if we can't add our person to the AB database.
+				// Cancel if we can't add our person to the Contacts database.
 				[self cancel:nil];
 			}
+
+			[saveRequest release];
+			[store release];
+		} else {
+			// Unknown service type
+			[self cancel:nil];
 		}
-
-		// Clean up
-		[value release];
-
 	} else {
 		// We didn't get a contact id.
 		// This is equal to pressing the cancel button.
@@ -389,7 +370,7 @@ static ABAddressBook *sharedAddressBook = nil;
 /*!
  * @brief Returns the selected person.
  */
-- (ABPerson *)selectedPerson
+- (CNContact *)selectedPerson
 {
 	return person;
 }
@@ -407,22 +388,7 @@ static ABAddressBook *sharedAddressBook = nil;
  */
 - (NSString *)selectedName
 {
-	NSString *result = nil;
-	NSString *firstName = [person valueForProperty:kABFirstNameProperty];
-	NSString *lastName = [person valueForProperty:kABLastNameProperty];
-
-	// Make sure we don't get "(null)" in our result
-	if (firstName && lastName) {
-		if ([sharedAddressBook defaultNameOrdering] == kABFirstNameFirst)
-			result = [firstName stringByAppendingFormat:@" %@", lastName];
-		else
-			result = [lastName stringByAppendingFormat:@" %@", firstName];
-	} else if (firstName)
-		result = firstName;
-	else if (lastName)
-		result = lastName;
-
-	return result;
+	return [CNContactFormatter stringFromContact:person style:CNContactFormatterStyleFullName];
 }
 
 /*!
@@ -430,7 +396,7 @@ static ABAddressBook *sharedAddressBook = nil;
  */
 - (NSString *)selectedAlias
 {
-	return [person valueForProperty:kABNicknameProperty];
+	return person.nickname;
 }
 
 /*!
@@ -537,7 +503,7 @@ static ABAddressBook *sharedAddressBook = nil;
 /*!
  * @brief Set the current person
  */
-- (void)_setPerson:(ABPerson *)inPerson
+- (void)_setPerson:(CNContact *)inPerson
 {
 	if (inPerson != person) {
 		[person release];

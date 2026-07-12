@@ -14,19 +14,15 @@
  * write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#import <AddressBook/AddressBook.h>
 #import <Adium/AIUserIcons.h>
+#import <Contacts/Contacts.h>
 
-@interface AIAddressBookUserIconSource : NSObject <AIUserIconSource, ABImageClient> {
+@interface AIAddressBookUserIconSource : NSObject <AIUserIconSource> {
 	AIUserIconPriority priority;
 	BOOL preferAddressBookImages;
 	BOOL useABImages;
-
-	NSMutableDictionary *trackingDictPersonToTagNumber;
-	NSMutableDictionary *trackingDictTagNumberToPerson;
-	NSMutableDictionary *trackingDict;
 }
 
-- (BOOL)queueDelayedFetchOfImageFromAnySourceForPerson:(ABPerson *)person object:(AIListObject *)inObject;
+- (BOOL)updateFromLocalImageForPerson:(CNContact *)person object:(AIListObject *)inObject;
 
 @end

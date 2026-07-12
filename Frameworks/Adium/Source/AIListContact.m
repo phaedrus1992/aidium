@@ -853,13 +853,13 @@
 }
 
 #pragma mark Address Book
-- (ABPerson *)addressBookPerson
+- (CNContact *)contactPerson
 {
 	return [AIAddressBookController personForListObject:self.parentContact];
 }
-- (void)setAddressBookPerson:(ABPerson *)inPerson
+- (void)setContactPerson:(CNContact *)inPerson
 {
-	[self.parentContact setPreference:[inPerson uniqueId] forKey:KEY_AB_UNIQUE_ID group:PREF_GROUP_ADDRESSBOOK];
+	[self.parentContact setPreference:[inPerson identifier] forKey:KEY_AB_UNIQUE_ID group:PREF_GROUP_ADDRESSBOOK];
 }
 
 #pragma mark Applescript
