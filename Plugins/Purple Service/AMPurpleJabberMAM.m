@@ -43,7 +43,7 @@
 - (void)_handleFin:(xmlnode *)fin;
 - (void)_saveLastArchiveID:(NSString *)archiveID;
 - (NSString *)_loadLastArchiveID;
-- (void)_displayMessage:(NSString *)body from:(NSString *)fromJID date:(NSDate *)date;
+- (void)_displayMessage:(NSString *)body from:(NSString *)fromJID to:(NSString *)toJID date:(NSDate *)date;
 - (NSDate *)_parseStamp:(const char *)stamp;
 @end
 
@@ -261,6 +261,8 @@ static void AMPurpleJabberMAM_received_data_cb(PurpleConnection *gc, xmlnode **p
 
 	const char *from = xmlnode_get_attrib(msg, "from");
 	NSString *fromJID = from ? @(from) : nil;
+	const char *to = xmlnode_get_attrib(msg, "to");
+	NSString *toJID = to ? @(to) : nil;
 
 	// Extract body
 	xmlnode *body = xmlnode_get_child(msg, "body");
@@ -273,7 +275,7 @@ static void AMPurpleJabberMAM_received_data_cb(PurpleConnection *gc, xmlnode **p
 		return;
 	}
 
-	[self _displayMessage:messageBody from:fromJID date:timestamp];
+	[self _displayMessage:messageBody from:fromJID to:toJID date:timestamp];
 
 	// Save archive ID for watermark tracking
 	if (archiveID) {
@@ -335,17 +337,35 @@ static void AMPurpleJabberMAM_received_data_cb(PurpleConnection *gc, xmlnode **p
 
 #pragma mark - Private: Display
 
-- (void)_displayMessage:(NSString *)body from:(NSString *)fromJID date:(NSDate *)date
+- (void)_displayMessage:(NSString *)body from:(NSString *)fromJID to:(NSString *)toJID date:(NSDate *)date
 {
-	if (!body || !fromJID) {
+	if (!body) {
+		return;
+	}
+	if (!fromJID && !toJID) {
+		return;
+	}
+
+	// Determine direction: sentByMe when the from JID is the account's own JID
+	NSString *userJID = [_account UID];
+	NSString *fromBare = fromJID;
+	NSRange slashRange = [fromJID rangeOfString:@"/"];
+	if (slashRange.location != NSNotFound) {
+		fromBare = [fromJID substringToIndex:slashRange.location];
+	}
+	BOOL sentByMe = (fromJID != nil && [fromBare isEqualToString:userJID]);
+
+	// The chat partner is the other party (recipient for outgoing, sender for incoming)
+	NSString *partnerJID = sentByMe ? toJID : fromJID;
+	if (!partnerJID) {
 		return;
 	}
 
 	// Strip resource from JID to get bare JID
-	NSString *bareJID = fromJID;
-	NSRange slashRange = [fromJID rangeOfString:@"/"];
+	NSString *bareJID = partnerJID;
+	slashRange = [partnerJID rangeOfString:@"/"];
 	if (slashRange.location != NSNotFound) {
-		bareJID = [fromJID substringToIndex:slashRange.location];
+		bareJID = [partnerJID substringToIndex:slashRange.location];
 	}
 
 	// Only display in existing chats - don't create new ones
@@ -353,9 +373,6 @@ static void AMPurpleJabberMAM_received_data_cb(PurpleConnection *gc, xmlnode **p
 	if (!chat) {
 		return;
 	}
-
-	// Determine direction
-	BOOL sentByMe = [bareJID isEqualToString:[_account UID]];
 
 	AIListContact *source = sentByMe ? (AIListContact *)_account : nil;
 	AIListContact *dest = sentByMe ? nil : (AIListContact *)_account;
