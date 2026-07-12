@@ -19,6 +19,7 @@
 #import "AMPurpleJabberAdHocPing.h"
 #import "AMPurpleJabberAdHocServer.h"
 #import "AMPurpleJabberMAM.h"
+#import "AMPurpleJabberHTTPUpload.h"
 #import "AMPurpleJabberServiceDiscoveryBrowsing.h"
 #import "AMXMLConsoleController.h"
 #import "ESPurpleJabberAccountViewController.h"
@@ -108,6 +109,7 @@
 	[xmlConsoleController release];
 	[adhocServer release];
 	[mamController release];
+	[httpUploadController release];
 	[gateways release];
 
 	[super dealloc];
@@ -212,6 +214,9 @@
 
 	if (!mamController)
 		mamController = [[AMPurpleJabberMAM alloc] initWithAccount:self];
+
+	if (!httpUploadController)
+		httpUploadController = [[AMPurpleJabberHTTPUpload alloc] initWithAccount:self];
 }
 
 - (NSString *)serverSuffix
@@ -544,6 +549,15 @@
 
 - (void)beginSendOfFileTransfer:(ESFileTransfer *)fileTransfer
 {
+	// Try HTTP Upload path first (XEP-0363)
+	if ([httpUploadController isUploadAvailableForFileSize:[fileTransfer size]]) {
+		if ([httpUploadController sendFileTransfer:fileTransfer]) {
+			AILog(@"ESPurpleJabberAccount: Using HTTP Upload for file transfer %@", fileTransfer);
+			return;
+		}
+	}
+
+	// Fall back to legacy SI/IBB transfer
 	[super _beginSendOfFileTransfer:fileTransfer];
 }
 
@@ -876,6 +890,7 @@
 		[[AMPurpleJabberServiceDiscoveryBrowsing alloc] initWithAccount:self
 													   purpleConnection:purple_account_get_connection(account)];
 	[mamController startSync];
+	[httpUploadController startDiscovery];
 }
 
 - (void)didDisconnect
@@ -888,6 +903,8 @@
 	adhocServer = nil;
 	[mamController release];
 	mamController = nil;
+	[httpUploadController release];
+	httpUploadController = nil;
 
 	[super didDisconnect];
 

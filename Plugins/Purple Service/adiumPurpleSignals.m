@@ -522,5 +522,8 @@ void configureAdiumPurpleSignals(void)
 	jabber_add_feature(NS_RECEIPTS, NULL);
 	jabber_add_feature(NS_CHAT_MARKERS, NULL);
 
+	// Advertise XEP-0363 HTTP File Upload
+	jabber_add_feature("urn:xmpp:http:upload:0", NULL);
+
 	[pool release];
 }

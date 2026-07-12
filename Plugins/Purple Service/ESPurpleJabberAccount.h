@@ -32,7 +32,7 @@
 
 #define PURPLE_SSL_CDSA_BUGGY_TLS_WORKAROUND "ssl_cdsa_buggy_tls_workaround"
 
-@class AMXMLConsoleController, AMPurpleJabberServiceDiscoveryBrowsing, AMPurpleJabberAdHocServer, AMPurpleJabberMAM;
+@class AMXMLConsoleController, AMPurpleJabberServiceDiscoveryBrowsing, AMPurpleJabberAdHocServer, AMPurpleJabberMAM, AMPurpleJabberHTTPUpload;
 
 @interface ESPurpleJabberAccount : CBPurpleAccount <AIAccount_Files> {
 	AMXMLConsoleController *xmlConsoleController;
@@ -40,6 +40,7 @@
 
 	AMPurpleJabberAdHocServer *adhocServer;
 	AMPurpleJabberMAM *mamController;
+	AMPurpleJabberHTTPUpload *httpUploadController;
 
 	NSMutableArray *gateways;
 }
