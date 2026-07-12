@@ -85,7 +85,7 @@ static void AMPurpleJabberCorrection_received_data_cb(PurpleConnection *gc, xmln
 
 
 		// Check for a <replace> element (XEP-0308 correction)
-		xmlnode *replace = xmlnode_get_child_with_namespace(node, "replace", NS_MESSAGE_CORRECT);
+		xmlnode *replace = xmlnode_get_child_with_namespace(node, "replace", [NS_MESSAGE_CORRECT UTF8String]);
 		if (replace) {
 			const char *replaceID = xmlnode_get_attrib(replace, "id");
 			if (!replaceID) {
@@ -169,14 +169,14 @@ static void AMPurpleJabberCorrection_received_data_cb(PurpleConnection *gc, xmln
 + (void)initialize
 {
 	if (self == [AMPurpleJabberCorrection class]) {
-		jabber_add_feature(NS_MESSAGE_CORRECT, NULL);
+		jabber_add_feature([NS_MESSAGE_CORRECT UTF8String], NULL);
 	}
 }
 
 - (id)initWithAccount:(ESPurpleJabberAccount *)account
 {
 	if ((self = [super init])) {
-		_account = [account retain];
+		_account = account;
 		_trackedStanzaIDs = [[NSMutableDictionary alloc] init];
 
 		// Connect to jabber-receiving-xmlnode to intercept message stanzas
@@ -197,7 +197,6 @@ static void AMPurpleJabberCorrection_received_data_cb(PurpleConnection *gc, xmln
 {
 	purple_signals_disconnect_by_handle((__bridge void *)self);
 
-	[_account release];
 	[_trackedStanzaIDs release];
 
 	[super dealloc];
