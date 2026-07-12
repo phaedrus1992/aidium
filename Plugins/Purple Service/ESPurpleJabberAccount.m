@@ -20,6 +20,7 @@
 #import "AMPurpleJabberAdHocServer.h"
 #import "AMPurpleJabberMAM.h"
 #import "AMPurpleJabberHTTPUpload.h"
+#import "AMPurpleJabberCorrection.h"
 #import "AMPurpleJabberServiceDiscoveryBrowsing.h"
 #import "AMXMLConsoleController.h"
 #import "ESPurpleJabberAccountViewController.h"
@@ -110,6 +111,7 @@
 	[adhocServer release];
 	[mamController release];
 	[httpUploadController release];
+	[correctionController release];
 	[gateways release];
 
 	[super dealloc];
@@ -217,6 +219,9 @@
 
 	if (!httpUploadController)
 		httpUploadController = [[AMPurpleJabberHTTPUpload alloc] initWithAccount:self];
+
+	if (!correctionController)
+		correctionController = [[AMPurpleJabberCorrection alloc] initWithAccount:self];
 }
 
 - (NSString *)serverSuffix
@@ -905,6 +910,8 @@
 	mamController = nil;
 	[httpUploadController release];
 	httpUploadController = nil;
+	[correctionController release];
+	correctionController = nil;
 
 	[super didDisconnect];
 

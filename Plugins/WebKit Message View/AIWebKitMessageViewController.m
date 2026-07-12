@@ -38,6 +38,7 @@
 #import <Adium/AIContentContext.h>
 #import <Adium/AIContentControllerProtocol.h>
 #import <Adium/AIContentEvent.h>
+#import <Adium/AIContentMessage.h>
 #import <Adium/AIContentObject.h>
 #import <Adium/AIContentTopic.h>
 #import <Adium/AIEmoticon.h>
@@ -58,7 +59,10 @@
 
 #define TEMPORARY_FILE_PREFIX @"TEMP"
 
-@interface AIWebKitMessageViewController ()
+@interface AIWebKitMessageViewController () {
+	NSString *_pendingStanzaID;
+	NSString *_pendingSenderJID;
+}
 - (id)initForChat:(AIChat *)inChat withPlugin:(AIWebKitMessageViewPlugin *)inPlugin;
 - (void)_initWebView;
 - (void)_primeWebViewAndReprocessContent:(BOOL)reprocessContent;
@@ -100,6 +104,8 @@
 - (void)customEmoticonUpdated:(NSNotification *)inNotification;
 - (void)listObjectAttributesChanged:(NSNotification *)notification;
 - (BOOL)zoomImage:(DOMHTMLImageElement *)img;
+- (void)messageWasCorrected:(NSNotification *)notification;
+- (void)stanzaWasTracked:(NSNotification *)notification;
 @end
 
 static NSArray *draggedTypes = nil;
@@ -171,6 +177,15 @@ static NSArray *draggedTypes = nil;
 												 selector:@selector(customEmoticonUpdated:)
 													 name:@"AICustomEmoticonUpdated"
 												   object:inChat];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(messageWasCorrected:)
+												 name:@"AIMessageCorrection"
+											   object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(stanzaWasTracked:)
+												 name:@"AIMessageStanzaTracked"
+											   object:nil];
 	}
 
 	return self;
@@ -229,6 +244,10 @@ static NSArray *draggedTypes = nil;
 	storedContentObjects = nil;
 	[previousContent release];
 	previousContent = nil;
+
+	// Release XEP-0308 pending state
+	[_pendingStanzaID release];
+	[_pendingSenderJID release];
 
 	// Release the chat
 	[chat release];
@@ -633,6 +652,78 @@ static NSArray *draggedTypes = nil;
 	[self processQueuedContent];
 }
 
+#pragma mark XEP-0308 Message Correction
+
+- (void)stanzaWasTracked:(NSNotification *)notification
+{
+	NSDictionary *userInfo = [notification userInfo];
+	NSString *domId = [userInfo objectForKey:@"AICorrectionDOMId"];
+	NSString *senderJID = [userInfo objectForKey:@"AICorrectionSender"];
+
+	if (domId && senderJID) {
+		NSString *chatBareJID = [[[chat listObject] UID] isKindOfClass:[NSString class]] ? [[chat listObject] UID] : nil;
+		if ([senderJID isEqualToString:chatBareJID]) {
+			[_pendingStanzaID release];
+			_pendingStanzaID = [domId retain];
+			[_pendingSenderJID release];
+			_pendingSenderJID = [senderJID retain];
+		}
+	}
+}
+
+- (void)messageWasCorrected:(NSNotification *)notification
+{
+	NSDictionary *userInfo = [notification userInfo];
+	NSString *senderJID = [userInfo objectForKey:@"AICorrectionSender"];
+	NSString *domId = [userInfo objectForKey:@"AICorrectionDOMId"];
+	NSString *html = [userInfo objectForKey:@"AICorrectionHTML"];
+
+	if (!senderJID || !domId || !html) {
+		return;
+	}
+
+	// Verify this correction is for our chat
+	NSString *chatBareJID = [[[chat listObject] UID] isKindOfClass:[NSString class]] ? [[chat listObject] UID] : nil;
+	if (![senderJID isEqualToString:chatBareJID]) {
+		return;
+	}
+
+	// Escape HTML for inclusion in a JavaScript string
+	NSMutableString *escapedHTML = [[html mutableCopy] autorelease];
+	[escapedHTML replaceOccurrencesOfString:@"\\" withString:@"\\\\" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
+	[escapedHTML replaceOccurrencesOfString:@"\"" withString:@"\\\"" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
+	[escapedHTML replaceOccurrencesOfString:@"\n" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
+	[escapedHTML replaceOccurrencesOfString:@"\r" withString:@"<br>" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
+
+	// Try to correct the message in-place
+	NSString *js = [NSString stringWithFormat:@"correctMessage(\"%@\", \"%@\")", domId, escapedHTML];
+	NSString *result = [webView stringByEvaluatingJavaScriptFromString:js];
+
+	if (result != nil && [result length] > 0 && ![result isEqualToString:@"false"]) {
+		return; // Correction applied successfully
+	}
+
+	// Fallback: message not in loaded view, append as a new message
+	AIListContact *contact = (AIListContact *)[[adium contactController] contactWithService:[[chat account] service]
+																						UID:senderJID
+																					account:[chat account]];
+	if (!contact) {
+		contact = (AIListContact *)[chat listObject];
+	}
+
+	NSAttributedString *msgAttr = [[NSAttributedString alloc] initWithString:html];
+	AIContentMessage *content = [[AIContentMessage alloc] initWithChat:chat
+																source:contact
+														   destination:nil
+																  date:[NSDate date]
+															   message:msgAttr];
+	[msgAttr release];
+
+	[content setDisplayContentImmediately:YES];
+	[self enqueueContentObject:content];
+	[content release];
+}
+
 /*!
  * @brief Append new content to our processing queueProcess any content in the queuee
  */
@@ -824,6 +915,22 @@ static NSArray *draggedTypes = nil;
 																					similar:contentIsSimilar
 																  willAddMoreContentObjects:willAddMoreContentObjects
 																		 replaceLastContent:replaceLastContent]];
+
+	// XEP-0308: Set DOM id on the last message element for message correction support
+	if (_pendingStanzaID && _pendingSenderJID) {
+		NSString *senderUID = [[content source] UID];
+		if ([senderUID isEqualToString:_pendingSenderJID]) {
+			NSString *js = [NSString stringWithFormat:
+				@"var el=document.getElementById('%@');if(!el){el=document.getElementById('Chat').lastChild;}if(el&&!el.id){el.id='%@';}",
+				_pendingStanzaID, _pendingStanzaID];
+			[webView stringByEvaluatingJavaScriptFromString:js];
+
+			[_pendingStanzaID release];
+			_pendingStanzaID = nil;
+			[_pendingSenderJID release];
+			_pendingSenderJID = nil;
+		}
+	}
 
 	NSAccessibilityPostNotification(webView, NSAccessibilityValueChangedNotification);
 }
