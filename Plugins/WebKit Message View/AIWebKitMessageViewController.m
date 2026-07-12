@@ -60,8 +60,9 @@
 #define TEMPORARY_FILE_PREFIX @"TEMP"
 
 @interface AIWebKitMessageViewController () {
-	NSString *_pendingStanzaID;
-	NSString *_pendingSenderJID;
+	/// Per-sender FIFO queue of pending DOM ids for XEP-0308 message correction.
+	/// Key: bare JID (NSString). Value: NSMutableArray of NSString (FIFO order).
+	NSMutableDictionary *_pendingDomIdQueues;
 }
 - (id)initForChat:(AIChat *)inChat withPlugin:(AIWebKitMessageViewPlugin *)inPlugin;
 - (void)_initWebView;
@@ -246,8 +247,7 @@ static NSArray *draggedTypes = nil;
 	previousContent = nil;
 
 	// Release XEP-0308 pending state
-	[_pendingStanzaID release];
-	[_pendingSenderJID release];
+	[_pendingDomIdQueues release];
 
 	// Release the chat
 	[chat release];
@@ -663,10 +663,12 @@ static NSArray *draggedTypes = nil;
 	if (domId && senderJID) {
 		NSString *chatBareJID = [[[chat listObject] UID] isKindOfClass:[NSString class]] ? [[chat listObject] UID] : nil;
 		if ([senderJID isEqualToString:chatBareJID]) {
-			[_pendingStanzaID release];
-			_pendingStanzaID = [domId retain];
-			[_pendingSenderJID release];
-			_pendingSenderJID = [senderJID retain];
+			NSMutableArray *queue = [_pendingDomIdQueues objectForKey:senderJID];
+			if (!queue) {
+				queue = [NSMutableArray array];
+				[_pendingDomIdQueues setObject:queue forKey:senderJID];
+			}
+			[queue addObject:domId];
 		}
 	}
 }
@@ -688,12 +690,16 @@ static NSArray *draggedTypes = nil;
 		return;
 	}
 
-	// Escape HTML for inclusion in a JavaScript string
+	// Escape HTML for inclusion in a JavaScript string via innerHTML
 	NSMutableString *escapedHTML = [[html mutableCopy] autorelease];
+	[escapedHTML replaceOccurrencesOfString:@"&" withString:@"&amp;" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
+	[escapedHTML replaceOccurrencesOfString:@"<" withString:@"&lt;" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
+	[escapedHTML replaceOccurrencesOfString:@">" withString:@"&gt;" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
 	[escapedHTML replaceOccurrencesOfString:@"\\" withString:@"\\\\" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
 	[escapedHTML replaceOccurrencesOfString:@"\"" withString:@"\\\"" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
-	[escapedHTML replaceOccurrencesOfString:@"\n" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
-	[escapedHTML replaceOccurrencesOfString:@"\r" withString:@"<br>" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
+	[escapedHTML replaceOccurrencesOfString:@"\r\n" withString:@"<br>" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
+	[escapedHTML replaceOccurrencesOfString:@"\n" withString:@"<br>" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
+	[escapedHTML replaceOccurrencesOfString:@"\r" withString:@"" options:NSLiteralSearch range:NSMakeRange(0, [escapedHTML length])];
 
 	// Try to correct the message in-place
 	NSString *js = [NSString stringWithFormat:@"correctMessage(\"%@\", \"%@\")", domId, escapedHTML];
@@ -917,19 +923,19 @@ static NSArray *draggedTypes = nil;
 																		 replaceLastContent:replaceLastContent]];
 
 	// XEP-0308: Set DOM id on the last message element for message correction support
-	if (_pendingStanzaID && _pendingSenderJID) {
-		NSString *senderUID = [[content source] UID];
-		if ([senderUID isEqualToString:_pendingSenderJID]) {
-			NSString *js = [NSString stringWithFormat:
-				@"var el=document.getElementById('%@');if(!el){el=document.getElementById('Chat').lastChild;}if(el&&!el.id){el.id='%@';}",
-				_pendingStanzaID, _pendingStanzaID];
-			[webView stringByEvaluatingJavaScriptFromString:js];
-
-			[_pendingStanzaID release];
-			_pendingStanzaID = nil;
-			[_pendingSenderJID release];
-			_pendingSenderJID = nil;
+	NSString *senderUID = [[content source] UID];
+	NSMutableArray *queue = [_pendingDomIdQueues objectForKey:senderUID];
+	if (queue && [queue count] > 0) {
+		NSString *domId = [queue objectAtIndex:0];
+		[queue removeObjectAtIndex:0];
+		if ([queue count] == 0) {
+			[_pendingDomIdQueues removeObjectForKey:senderUID];
 		}
+
+		NSString *js = [NSString stringWithFormat:
+			@"var el=document.getElementById('Chat').lastChild;if(el&&!el.id){el.id='%@';}",
+			domId];
+		[webView stringByEvaluatingJavaScriptFromString:js];
 	}
 
 	NSAccessibilityPostNotification(webView, NSAccessibilityValueChangedNotification);
