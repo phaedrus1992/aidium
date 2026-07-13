@@ -18,7 +18,9 @@
 #import "AIMessageViewController.h"
 #import "AMPurpleJabberAdHocPing.h"
 #import "AMPurpleJabberAdHocServer.h"
+#import "AMPurpleJabberBookmarks.h"
 #import "AMPurpleJabberCorrection.h"
+#import "AMPurpleJabberPubsubBookmarks.h"
 #import "AMPurpleJabberCSI.h"
 #import "AMPurpleJabberHTTPUpload.h"
 #import "AMPurpleJabberMAM.h"
@@ -229,6 +231,9 @@
 
 	if (!bookmarksController)
 		bookmarksController = [[AMPurpleJabberBookmarks alloc] initWithAccount:self];
+
+	if (!pubsubBookmarksController)
+		pubsubBookmarksController = [[AMPurpleJabberPubsubBookmarks alloc] initWithAccount:self];
 
 }
 

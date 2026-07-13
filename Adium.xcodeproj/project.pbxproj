@@ -141,6 +141,7 @@
 		319B29800CE8EC6F00C65398 /* TestDateAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 319B297F0CE8EC6E00C65398 /* TestDateAdditions.m */; };
 		9858838df7e42b9d5c05909d /* TestAMPurpleJabberCSI.m in Sources */ = {isa = PBXBuildFile; fileRef = d4ad6c5d409eefa6dd85dc61 /* TestAMPurpleJabberCSI.m */; };
 		2c71da7d5ad6ce00ce647de0 /* TestAMPurpleJabberBookmarks.m in Sources */ = {isa = PBXBuildFile; fileRef = d9d48abda867a48fe49abcc1 /* TestAMPurpleJabberBookmarks.m */; };
+		a7e68c9a819b4d7fa5e17522 /* TestAMPurpleJabberPubsubBookmarks.m in Sources */ = {isa = PBXBuildFile; fileRef = c820184e283f43b6924f38e8 /* TestAMPurpleJabberPubsubBookmarks.m */; };
 		31E0CD810C5EEF5200271DB1 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 31E0CD800C5EEF5200271DB1 /* CoreAudio.framework */; };
 		31FA804C0D4A8EB200ABE634 /* Adium.sdef in Resources */ = {isa = PBXBuildFile; fileRef = 0CAC6A130C0C657A0090AE95 /* Adium.sdef */; };
 		3402D5A5080DBC91004E50B4 /* SortConfiguration.nib in Resources */ = {isa = PBXBuildFile; fileRef = 347E791D07CAA52300350507 /* SortConfiguration.nib */; };
@@ -1090,8 +1091,10 @@
 		b845e7c0bdf6f5e029ad1a42 /* AMPurpleJabberCorrection.m in Sources */ = {isa = PBXBuildFile; fileRef = c1d96bef06e28c437c53b38c /* AMPurpleJabberCorrection.m */; };
 		7fb10c1d3c753b37a9e93dfb /* AMPurpleJabberCSI.h in Headers */ = {isa = PBXBuildFile; fileRef = 3548c7e983a3f6c1e6bd45b2 /* AMPurpleJabberCSI.h */; };
 		6d189bbf5a4058ccbef7d440 /* AMPurpleJabberBookmarks.h in Headers */ = {isa = PBXBuildFile; fileRef = 167ad47d543eef7f5145488e /* AMPurpleJabberBookmarks.h */; };
+		8a9df287b03e4582b712fb8e /* AMPurpleJabberPubsubBookmarks.h in Headers */ = {isa = PBXBuildFile; fileRef = 0be34d8e1b7645fcb34381b6 /* AMPurpleJabberPubsubBookmarks.h */; };
 		b145460884c3dc3167b5dfc7 /* AMPurpleJabberCSI.m in Sources */ = {isa = PBXBuildFile; fileRef = b3df72969146e56023fe2d1d /* AMPurpleJabberCSI.m */; };
 		bb31528491625bffe411cb8d /* AMPurpleJabberBookmarks.m in Sources */ = {isa = PBXBuildFile; fileRef = 2c39ee7096ee94625901d949 /* AMPurpleJabberBookmarks.m */; };
+		40a996e5df5a46c5899f9ed7 /* AMPurpleJabberPubsubBookmarks.m in Sources */ = {isa = PBXBuildFile; fileRef = 23857b605e3e4d8b8485f931 /* AMPurpleJabberPubsubBookmarks.m */; };
 		818E96A30C16D443007623BD /* AMXMLConsoleController.h in Headers */ = {isa = PBXBuildFile; fileRef = 818E96A10C16D443007623BD /* AMXMLConsoleController.h */; };
 		818E96A40C16D443007623BD /* AMXMLConsoleController.m in Sources */ = {isa = PBXBuildFile; fileRef = 818E96A20C16D443007623BD /* AMXMLConsoleController.m */; };
 		81DAE8720C261E8A00780E4C /* AMPurpleTuneTooltip.h in Headers */ = {isa = PBXBuildFile; fileRef = 81DAE8700C261E8A00780E4C /* AMPurpleTuneTooltip.h */; };
@@ -1552,6 +1555,8 @@
 		d4ad6c5d409eefa6dd85dc61 /* TestAMPurpleJabberCSI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestAMPurpleJabberCSI.m; path = UnitTests/TestAMPurpleJabberCSI.m; sourceTree = "<group>"; };
 		1ca62324c887da666122f327 /* TestAMPurpleJabberBookmarks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestAMPurpleJabberBookmarks.h; path = UnitTests/TestAMPurpleJabberBookmarks.h; sourceTree = "<group>"; };
 		d9d48abda867a48fe49abcc1 /* TestAMPurpleJabberBookmarks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestAMPurpleJabberBookmarks.m; path = UnitTests/TestAMPurpleJabberBookmarks.m; sourceTree = "<group>"; };
+		75a50f6bea6140059238579e /* TestAMPurpleJabberPubsubBookmarks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestAMPurpleJabberPubsubBookmarks.h; path = UnitTests/TestAMPurpleJabberPubsubBookmarks.h; sourceTree = "<group>"; };
+		c820184e283f43b6924f38e8 /* TestAMPurpleJabberPubsubBookmarks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestAMPurpleJabberPubsubBookmarks.m; path = UnitTests/TestAMPurpleJabberPubsubBookmarks.m; sourceTree = "<group>"; };
 		3402E01807CB0CE40044F818 /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = Resources/en.lproj/ESFileTransferProgressView.nib; sourceTree = "<group>"; };
 		3402E01F07CB0D150044F818 /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = Resources/en.lproj/ProxyPasswordPrompt.nib; sourceTree = "<group>"; };
 		3402E02007CB0D150044F818 /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = Resources/en.lproj/PasswordPrompt.nib; sourceTree = "<group>"; };
@@ -3450,6 +3455,8 @@
 		b3df72969146e56023fe2d1d /* AMPurpleJabberCSI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AMPurpleJabberCSI.m; path = "Plugins/Purple Service/AMPurpleJabberCSI.m"; sourceTree = "<group>"; };
 		167ad47d543eef7f5145488e /* AMPurpleJabberBookmarks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AMPurpleJabberBookmarks.h; path = "Plugins/Purple Service/AMPurpleJabberBookmarks.h"; sourceTree = "<group>"; };
 		2c39ee7096ee94625901d949 /* AMPurpleJabberBookmarks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AMPurpleJabberBookmarks.m; path = "Plugins/Purple Service/AMPurpleJabberBookmarks.m"; sourceTree = "<group>"; };
+			0be34d8e1b7645fcb34381b6 /* AMPurpleJabberPubsubBookmarks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AMPurpleJabberPubsubBookmarks.h; path = "Plugins/Purple Service/AMPurpleJabberPubsubBookmarks.h"; sourceTree = "<group>"; };
+		23857b605e3e4d8b8485f931 /* AMPurpleJabberPubsubBookmarks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AMPurpleJabberPubsubBookmarks.m; path = "Plugins/Purple Service/AMPurpleJabberPubsubBookmarks.m"; sourceTree = "<group>"; };
 		818E96A10C16D443007623BD /* AMXMLConsoleController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AMXMLConsoleController.h; path = "Plugins/Purple Service/AMXMLConsoleController.h"; sourceTree = "<group>"; };
 		818E96A20C16D443007623BD /* AMXMLConsoleController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AMXMLConsoleController.m; path = "Plugins/Purple Service/AMXMLConsoleController.m"; sourceTree = "<group>"; };
 		81DAE8700C261E8A00780E4C /* AMPurpleTuneTooltip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AMPurpleTuneTooltip.h; path = "Plugins/Purple Service/AMPurpleTuneTooltip.h"; sourceTree = "<group>"; };
@@ -3862,6 +3869,8 @@
 				d4ad6c5d409eefa6dd85dc61 /* TestAMPurpleJabberCSI.m */,
 				1ca62324c887da666122f327 /* TestAMPurpleJabberBookmarks.h */,
 				d9d48abda867a48fe49abcc1 /* TestAMPurpleJabberBookmarks.m */,
+				75a50f6bea6140059238579e /* TestAMPurpleJabberPubsubBookmarks.h */,
+				c820184e283f43b6924f38e8 /* TestAMPurpleJabberPubsubBookmarks.m */,
 				318EA69A0D7A659900EDB105 /* TestColorAdditions.h */,
 				318EA69B0D7A659900EDB105 /* TestColorAdditions.m */,
 				31455C980CC353F800D231A0 /* TestDataAdditions.h */,
@@ -4109,6 +4118,8 @@
 				b3df72969146e56023fe2d1d /* AMPurpleJabberCSI.m */,
 			167ad47d543eef7f5145488e /* AMPurpleJabberBookmarks.h */,
 			2c39ee7096ee94625901d949 /* AMPurpleJabberBookmarks.m */,
+				0be34d8e1b7645fcb34381b6 /* AMPurpleJabberPubsubBookmarks.h */,
+				23857b605e3e4d8b8485f931 /* AMPurpleJabberPubsubBookmarks.m */,
 			8173C5750C4C3DB800C9E64E /* downloadprogress.png */,
 			);
 			name = Jabber;
@@ -6885,6 +6896,7 @@
 				5ad3b8ddd46e1ac8a51b5350 /* AMPurpleJabberCorrection.h in Headers */,
 				7fb10c1d3c753b37a9e93dfb /* AMPurpleJabberCSI.h in Headers */,
 				6d189bbf5a4058ccbef7d440 /* AMPurpleJabberBookmarks.h in Headers */,
+				8a9df287b03e4582b712fb8e /* AMPurpleJabberPubsubBookmarks.h in Headers */,
 				8181F88E0C35B70F00E802F7 /* AMPurpleJabberAdHocServer.h in Headers */,
 				3465451C0C8F6A670046ED68 /* AMPurpleJabberServiceDiscoveryBrowserController.h in Headers */,
 				346545250C8F6AAD0046ED68 /* AMPurpleJabberNode.h in Headers */,
@@ -7715,6 +7727,7 @@
 				6B4D8A2012345678ABCD0006 /* TestLMXParser.m in Sources */,
 				9858838df7e42b9d5c05909d /* TestAMPurpleJabberCSI.m in Sources */,
 			2c71da7d5ad6ce00ce647de0 /* TestAMPurpleJabberBookmarks.m in Sources */,
+				a7e68c9a819b4d7fa5e17522 /* TestAMPurpleJabberPubsubBookmarks.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7795,6 +7808,7 @@
 				b845e7c0bdf6f5e029ad1a42 /* AMPurpleJabberCorrection.m in Sources */,
 				b145460884c3dc3167b5dfc7 /* AMPurpleJabberCSI.m in Sources */,
 				bb31528491625bffe411cb8d /* AMPurpleJabberBookmarks.m in Sources */,
+				40a996e5df5a46c5899f9ed7 /* AMPurpleJabberPubsubBookmarks.m in Sources */,
 				81DAE8730C261E8A00780E4C /* AMPurpleTuneTooltip.m in Sources */,
 				81DAED530C26F4F700780E4C /* AMPurpleJabberServiceDiscoveryBrowsing.m in Sources */,
 				8181EEC40C3067B500E802F7 /* AMPurpleSearchResultsController.m in Sources */,
