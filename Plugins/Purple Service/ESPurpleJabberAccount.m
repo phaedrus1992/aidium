@@ -227,6 +227,9 @@
 	if (!csiController)
 		csiController = [[AMPurpleJabberCSI alloc] initWithAccount:self];
 
+	if (!bookmarksController)
+		bookmarksController = [[AMPurpleJabberBookmarks alloc] initWithAccount:self];
+
 }
 
 - (NSString *)serverSuffix
