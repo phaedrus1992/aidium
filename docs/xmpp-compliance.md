@@ -2,7 +2,7 @@
 
 Last audited against: **XEP-0479 v0.1.0 (2023-05-04)** — XMPP Compliance Suites 2023
 Base client: **libpurple 2.14.14** (vendored, with fork patches applied)
-AdiumY fork commit: `main@311afb5f` (2026-07-12)
+AdiumY fork commit: `feat/108-xmpp-compliance@0ce2fd1a` (2026-07-13)
 
 ## Legend
 
@@ -40,9 +40,9 @@ AdiumY fork commit: `main@311afb5f` (2026-07-12)
 
 | XEP/Norm | Name | Level | Status | Location | Issue |
 |----------|------|-------|--------|----------|-------|
-| XEP-0048 | Bookmarks | A | **no** | — | [#104](https://github.com/phaedrus1992/AdiumY/issues/104) (needed for Advanced Group Chat) |
+| XEP-0048 | Bookmarks | A | **yes** | `Plugins/Purple Service/AMPurpleJabberBookmarks.h/m` | — |
 | XEP-0313 | Message Archive Management | A | yes | `Plugins/Purple Service/AMPurpleJabberMAM.m` (fork) | — |
-| XEP-0402 | PubSub Bookmarks | A | **no** | — | [#105](https://github.com/phaedrus1992/AdiumY/issues/105) (PEP-based, supersedes XEP-0048 v1) |
+| XEP-0402 | PubSub Bookmarks | A | **yes** | `Plugins/Purple Service/AMPurpleJabberPubsubBookmarks.h/m` | — |
 | XEP-0198 | Stream Management | A | yes | libpurple `stream_management.c` | — |
 | XEP-0363 | HTTP File Upload | A | yes | `Plugins/Purple Service/AMPurpleJabberHTTPUpload.h/m` (fork) | — |
 
@@ -52,7 +52,7 @@ AdiumY fork commit: `main@311afb5f` (2026-07-12)
 |----------|------|-------|--------|----------|-------|
 | (Core requirements) | — | R | yes | — | — |
 | XEP-0198 | Stream Management | R | yes | libpurple `stream_management.c` | — |
-| XEP-0352 | Client State Indication | R | **no** | — | [#103](https://github.com/phaedrus1992/AdiumY/issues/103) |
+| XEP-0352 | Client State Indication | R | **yes** | `Plugins/Purple Service/AMPurpleJabberCSI.h/m` | — |
 
 ## Other XEPs Present in the Codebase
 
@@ -90,7 +90,7 @@ These are commonly expected extensions that AdiumY does not yet support.
 | XEP | Name | Notes | Issue |
 |-----|------|-------|-------|
 | 0384 | OMEMO Encryption | Requires signal protocol library, key management UI | [#27](https://github.com/phaedrus1992/adium/issues/27) |
-| 0393 | Message Styling | Successor to XEP-0071 XHTML-IM; modern rich text | [#106](https://github.com/phaedrus1992/AdiumY/issues/106) |
+| 0393 | Message Styling | **yes** | `Plugins/Purple Service/AMPurpleJabberMessageStyling.h/m`, `AMPurpleJabberMessageStylingParser.h/m` | Successor to XEP-0071 XHTML-IM |
 | 0380 | Explicit Message Encryption | OMEMO dependency | Not yet filed |
 | 0420 | SCE (Stanza Content Encryption) | OMEMO dependency | Not yet filed |
 | 0385 | Stateless Media Sharing | Media sharing via HTTP | Not yet filed |
@@ -134,8 +134,8 @@ The following compliance requirements are not met and need tracking issues if th
 | Gap | Has Issue? |
 |-----|-----------|
 | XEP-0368 Direct TLS | [#31](https://github.com/phaedrus1992/adium/issues/31) |
-| XEP-0352 Client State Indication | [#103](https://github.com/phaedrus1992/AdiumY/issues/103) |
-| XEP-0048 Bookmarks | [#104](https://github.com/phaedrus1992/AdiumY/issues/104) |
-| XEP-0402 PubSub Bookmarks | [#105](https://github.com/phaedrus1992/AdiumY/issues/105) |
+| XEP-0352 Client State Indication | ✅ resolved (#103 — shipped in PR #109) |
+| XEP-0048 Bookmarks | ✅ resolved (#104 — shipped in PR #109) |
+| XEP-0402 PubSub Bookmarks | ✅ resolved (#105 — shipped in PR #109) |
+| XEP-0393 Message Styling | ✅ resolved (#106 — shipped in PR #109) |
 | SCRAM-SHA-256+ / SASL2 | [#32](https://github.com/phaedrus1992/adium/issues/32) |
-| XEP-0393 Message Styling | [#106](https://github.com/phaedrus1992/AdiumY/issues/106) |
