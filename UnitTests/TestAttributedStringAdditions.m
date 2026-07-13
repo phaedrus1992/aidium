@@ -225,7 +225,8 @@
 					@"-attributedStringByConvertingLinksToStrings threw an exception");
 	STAssertNotNil(result, @"-attributedStringByConvertingLinksToStrings returned nil");
 
-	STAssertEqualObjects([result string], @"Adium (https://github.com/phaedrus1992/adiumy/) requires Growl (http://growl.info/).",
+	STAssertEqualObjects([result string],
+						 @"Adium (https://github.com/phaedrus1992/adiumy/) requires Growl (http://growl.info/).",
 						 @"-attributedStringByConvertingLinksToStrings did not correctly expand the links");
 }
 

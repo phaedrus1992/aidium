@@ -122,7 +122,8 @@
 	if (countdown-- == 0 ||
 		[self reportCrashForLogAtPath:[@"~/Library/Logs/CrashReporter/AdiumY.real.crash.log"
 										  stringByExpandingTildeInPath]] ||
-		[self reportCrashForLogAtPath:[@"~/Library/Logs/CrashReporter/AdiumY.crash.log" stringByExpandingTildeInPath]]) {
+		[self
+			reportCrashForLogAtPath:[@"~/Library/Logs/CrashReporter/AdiumY.crash.log" stringByExpandingTildeInPath]]) {
 		[inTimer invalidate];
 	}
 }

@@ -30,7 +30,7 @@
 	[@"Contents" stringByAppendingPathComponent:@"PlugIns"]   // Path to the internal plugins
 #define EXTERNAL_PLUGIN_FOLDER @"PlugIns"                     // Folder name of external plugins
 #define EXTERNAL_DISABLED_PLUGIN_FOLDER @"PlugIns (Disabled)" // Folder name for disabled external plugins
-#define EXTENSION_ADIUM_PLUGIN @"AdiumYPlugin"                 // File extension of a plugin
+#define EXTENSION_ADIUM_PLUGIN @"AdiumYPlugin"                // File extension of a plugin
 
 #define CONFIRMED_PLUGINS @"AdiumY Confirmed Plugins"
 #define CONFIRMED_PLUGINS_VERSION @"AdiumY Confirmed Plugin Version"
@@ -309,14 +309,16 @@ static NSMutableArray *deferredPluginPaths = nil;
 	if (!minimumVersionOfPlugin) {
 		NSString *pluginName = [[pluginPath lastPathComponent] stringByDeletingPathExtension];
 
-		NSLog(@"The %@ plugin is not compatible with AdiumY %@. Please check github.com/phaedrus1992/adiumy to see if an update is "
+		NSLog(@"The %@ plugin is not compatible with AdiumY %@. Please check github.com/phaedrus1992/adiumy to see if "
+			  @"an update is "
 			  @"available.",
 			  pluginName, [NSApp applicationVersion]);
 
-		NSRunAlertPanel([NSString stringWithFormat:@"Could not load %@", pluginName],
-						@"The %@ plugin is not compatible with AdiumY %@. Please check github.com/phaedrus1992/adiumy to see if an "
-						@"update is available.",
-						AILocalizedString(@"Disable", nil), nil, nil, pluginName, [NSApp applicationVersion]);
+		NSRunAlertPanel(
+			[NSString stringWithFormat:@"Could not load %@", pluginName],
+			@"The %@ plugin is not compatible with AdiumY %@. Please check github.com/phaedrus1992/adiumy to see if an "
+			@"update is available.",
+			AILocalizedString(@"Disable", nil), nil, nil, pluginName, [NSApp applicationVersion]);
 		[self disablePlugin:pluginPath];
 		return NO;
 	}

@@ -58,8 +58,7 @@
 #define ADIUM_CONTRIBUTE_PAGE @"https://github.com/phaedrus1992/adiumy/blob/main/CONTRIBUTING.md"
 #define ADIUM_DONATE_PAGE @"https://github.com/sponsors/phaedrus1992"
 #define ADIUM_REPORT_BUG_PAGE @"https://github.com/phaedrus1992/adiumy/issues/new"
-#define ADIUM_FORUM_PAGE                                                                                               \
-	@"https://github.com/phaedrus1992/adiumy/discussions"
+#define ADIUM_FORUM_PAGE @"https://github.com/phaedrus1992/adiumy/discussions"
 #define ADIUM_FEEDBACK_PAGE @"https://github.com/phaedrus1992/adiumy/issues/new"
 
 #if defined(BETA_RELEASE)
@@ -1119,8 +1118,8 @@ static NSString *prefsCategory;
 // For a release, use the beta appcast if AIAlwaysUpdateToBetas is enabled; otherwise, use the release appcast
 #else
 #define UPDATE_TYPE_DICT                                                                                               \
-	([[NSUserDefaults standardUserDefaults] boolForKey:@"AdiumYAlwaysUpdateToBetas"] ? BETA_UPDATE_DICT                    \
-																				 : RELEASE_UPDATE_DICT)
+	([[NSUserDefaults standardUserDefaults] boolForKey:@"AdiumYAlwaysUpdateToBetas"] ? BETA_UPDATE_DICT                \
+																					 : RELEASE_UPDATE_DICT)
 #endif
 
 // The first generation ended with 1.0.5 and 1.1. Our Sparkle Plus up to that point had a bug that left it unable to

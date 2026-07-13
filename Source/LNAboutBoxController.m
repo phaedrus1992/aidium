@@ -23,7 +23,7 @@
 
 #define ABOUT_BOX_NIB @"AboutBox"
 #define ADIUM_SITE_LINK                                                                                                \
-	AILocalizedString(@"https://github.com/phaedrus1992/adiumy",                                                                          \
+	AILocalizedString(@"https://github.com/phaedrus1992/adiumy",                                                       \
 					  "Adium homepage. Only localize if a translated version of the page exists.")
 
 @interface LNAboutBoxController ()
