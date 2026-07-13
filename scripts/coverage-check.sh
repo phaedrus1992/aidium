@@ -30,7 +30,7 @@ echo "--- Coverage check (default threshold: ${DEFAULT_THRESHOLD}%) ---"
 COV_FILE=""
 for d in "${DERIVED_DATA}/Build/ProfileData" "${DERIVED_DATA}/Logs/Test"; do
   if [ -d "$d" ]; then
-    COV_FILE=$(find "$d" -name '*.profdata' -maxdepth 1 -print -quit 2>/dev/null || true)
+    COV_FILE=$(find "$d" -name '*.profdata' -maxdepth 4 -print -quit 2>/dev/null || true)
     [ -n "$COV_FILE" ] && break
   fi
 done
@@ -39,9 +39,8 @@ if [ -z "$COV_FILE" ]; then
   echo "WARNING: No coverage profile data found in ${DERIVED_DATA}."
   echo "SKIPPED — no coverage data to check."
   echo ""
-  echo "To generate coverage data, run tests with GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES"
-  echo "and GCC_GENERATE_TEST_COVERAGE_FILES=YES, or enable 'Gather coverage data'"
-  echo "in the Xcode test scheme."
+  echo "To generate coverage data, run tests with -enableCodeCoverage YES and build"
+  echo "targets with CLANG_COVERAGE_MAPPING=YES CLANG_PROFILE_INSTRUMENTATION=YES."
   exit 0
 fi
 
@@ -81,28 +80,73 @@ resolve_threshold() {
 REPORT_JSON=$($XCRUN xccov view --report --json "$COV_FILE" 2>/dev/null || true)
 
 if [ -z "$REPORT_JSON" ]; then
-  echo "WARNING: xccov report is empty — no test coverage data generated."
-  echo "SKIPPED — no coverage data to check."
-  exit 0
+  echo "INFO: xccov report is empty — no test-run targets in profdata. Pre-built framework check follows."
 fi
 
 FAILED=0
-# Parse JSON with jq — extract name, lineCoverage (as integer percentage)
-while IFS=$'\t' read -r TARGET PCT_INT; do
-  # Skip test targets (suffixed with Test/Tests) and vendored frameworks
-  case "$TARGET" in
-    *Tests|*Test|AutoHyperlinks|MMTabBarView) continue ;;
-  esac
 
-  TARGET_THRESHOLD=$(resolve_threshold "$TARGET")
+# Parse JSON with jq — extract name and lineCoverage (as integer percentage)
+# Only parse if xccov actually returned data
+if [ -n "$REPORT_JSON" ]; then
+  while IFS=$'\t' read -r TARGET PCT_INT; do
+    # Skip test targets (suffixed with Test/Tests) and vendored frameworks
+    case "$TARGET" in
+      *Tests|*Test|AutoHyperlinks|MMTabBarView) continue ;;
+    esac
 
-  if [ "$PCT_INT" -lt "$TARGET_THRESHOLD" ]; then
-    echo "FAIL: $TARGET coverage ${PCT_INT}% < ${TARGET_THRESHOLD}%"
-    FAILED=1
-  else
-    echo "OK:   $TARGET coverage ${PCT_INT}% >= ${TARGET_THRESHOLD}%"
-  fi
-done < <(echo "$REPORT_JSON" | jq -r '.targets[] | [.name, (.lineCoverage * 100 | floor)] | @tsv')
+    TARGET_THRESHOLD=$(resolve_threshold "$TARGET")
+
+    if [ "$PCT_INT" -lt "$TARGET_THRESHOLD" ]; then
+      echo "FAIL: $TARGET coverage ${PCT_INT}% < ${TARGET_THRESHOLD}%"
+      FAILED=1
+    else
+      echo "OK:   $TARGET coverage ${PCT_INT}% >= ${TARGET_THRESHOLD}%"
+    fi
+  done < <(echo "$REPORT_JSON" | jq -r '.targets[] | [.name, (.lineCoverage * 100 | floor)] | @tsv')
+fi
+
+# ---- llvm-cov check for pre-built frameworks ----
+# xccov only reports targets compiled during `xcodebuild test`. Frameworks
+# built separately with CLANG_COVERAGE_MAPPING/CLANG_PROFILE_INSTRUMENTATION
+# must be checked via llvm-cov against their binary and the merged profdata.
+BUILD_PRODUCTS="${DERIVED_DATA}/Build/Products/Debug"
+if [ -d "$BUILD_PRODUCTS" ]; then
+  echo ""
+  echo "--- Pre-built framework coverage (llvm-cov) ---"
+  for fw_dir in "$BUILD_PRODUCTS"/*.framework; do
+    [ -d "$fw_dir" ] || continue
+    fw_name="$(basename "$fw_dir" .framework)"
+    # Skip vendored frameworks
+    case "$fw_name" in
+      AutoHyperlinks|MMTabBarView) continue ;;
+    esac
+    fw_binary="$fw_dir/Versions/A/$fw_name"
+    [ -f "$fw_binary" ] || fw_binary="$fw_dir/$fw_name"
+    [ -f "$fw_binary" ] || continue
+
+    # Pass native arch for universal (fat) binaries — llvm-cov needs it
+    native_arch=$(uname -m)
+
+    cov_pct=$(xcrun llvm-cov report -arch "$native_arch" \
+      --instr-profile="$COV_FILE" --object="$fw_binary" 2>/dev/null \
+      | awk '$1 == "TOTAL" {gsub(/%/, "", $10); print $10}')
+
+    if [ -z "$cov_pct" ] || [ "$cov_pct" = "-" ] || [ "$cov_pct" = "0.00" ]; then
+      echo "WARN: $fw_name — no coverage data (not instrumented or not exercised)"
+      continue
+    fi
+
+    pct_int=$(printf "%.0f" "$cov_pct" 2>/dev/null || echo 0)
+    TARGET_THRESHOLD=$(resolve_threshold "$fw_name")
+
+    if [ "$pct_int" -lt "$TARGET_THRESHOLD" ]; then
+      echo "FAIL: $fw_name line coverage ${cov_pct}% < ${TARGET_THRESHOLD}%"
+      FAILED=1
+    else
+      echo "OK:   $fw_name line coverage ${cov_pct}% >= ${TARGET_THRESHOLD}%"
+    fi
+  done
+fi
 
 # --- Branch coverage report (non-gating, per §2.5) ---
 # xccov view --report --json only gives line coverage. Branch coverage
@@ -132,4 +176,5 @@ if [ "$FAILED" -eq 1 ]; then
   exit 1
 fi
 
+echo ""
 echo "All targets meet or exceed their coverage thresholds."

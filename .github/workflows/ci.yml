@@ -110,30 +110,36 @@ jobs:
           done
           nm -gU Frameworks/libpurple.framework/Versions/A/libpurple | grep -q ' _purple_core_init'
 
-      - name: Build AIUtilities.framework
+      - name: Build AIUtilities.framework (with coverage instrumentation)
         run: |
           set -o pipefail
           xcodebuild -project Frameworks/AIUtilities/AIUtilities.xcodeproj \
                      -target AIUtilities.framework \
                      -configuration Debug \
                      -sdk macosx \
+                     SYMROOT="$PWD/build/DerivedData/Build/Products" \
+                     OBJROOT="$PWD/build/DerivedData/Build/Intermediates" \
                      CODE_SIGNING_ALLOWED=NO \
+                     CLANG_COVERAGE_MAPPING=YES \
+                     CLANG_PROFILE_INSTRUMENTATION=YES \
                      build 2>&1 | xcpretty
 
-      # AdiumLibpurple, Purple Service, and Adium targets compile
-      # against the vendored frameworks. Upstream libpurple 2.14.14
-      # is configured with --with-static-prpls=jabber,irc,simple and
-      # --disable-plugins. The universal deps pipeline, MMTabBarView,
-      # and AIUtilities are built first so they are available.
+      - name: Run smoke tests (CoverageHost)
+        run: |
+          set -o pipefail
+          xcodebuild test \
+                     -project Tests/CoverageHost/CoverageHost.xcodeproj \
+                     -scheme CoverageHost \
+                     -configuration Debug \
+                     -sdk macosx \
+                     -derivedDataPath build/DerivedData \
+                     -enableCodeCoverage YES \
+                     CODE_SIGNING_ALLOWED=NO \
+                     2>&1 | xcpretty
 
-      # Coverage check — runs tests with coverage and verifies threshold.
-      # Currently a no-op (no profile data = skipped). Enable once tests
-      # are running by adding the test command before this step, e.g.:
-      #   xcodebuild -project Adium.xcodeproj \
-      #              -configuration Debug \
-      #              -sdk macosx \
-      #              -enableCodeCoverage YES \
-      #              test 2>&1 | xcpretty
       - name: Check code coverage threshold
+        env:
+          COVERAGE_THRESHOLD: 0
+          DERIVED_DATA_DIR: build/DerivedData
         run: |
           make coverage-check
