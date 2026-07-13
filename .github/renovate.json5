@@ -9,7 +9,6 @@
   assigneesFromCodeOwners: true,
   baseBranchPatterns: ["main"],
   branchConcurrentLimit: 5,
-  internalChecksFilter: "strict",
   labels: ["dependencies"],
   minimumReleaseAge: "7 days",
   prCreation: "not-pending",
@@ -27,6 +26,7 @@
       groupSlug: "github-actions-non-major",
       matchManagers: ["github-actions"],
       matchUpdateTypes: ["minor", "patch", "pin", "digest"],
+      automerge: false,
     },
     // vendored C deps: never automerge — a bump requires a successful
     // Dependencies/build-universal-deps.sh run and new tarball committed,
