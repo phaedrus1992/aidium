@@ -1,6 +1,11 @@
-#import <AIUtilities/AIArrayAdditions.h>
-#import <AIUtilities/AIStringAdditions.h>
+// clang-format off
+// Foundation must be imported before ObjC category headers that use
+// NSString/NSArray but do not themselves import Foundation.
+#import <Foundation/Foundation.h>
 #import <XCTest/XCTest.h>
+#import <AIUtilities/AIStringAdditions.h>
+#import <AIUtilities/AIArrayAdditions.h>
+// clang-format on
 
 @interface AIUtilitiesCoverageSmokeTest : XCTestCase
 @end
