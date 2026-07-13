@@ -164,21 +164,21 @@ static NSString *attributedStringToSimpleHTML(NSAttributedString *attrStr)
 		NSParagraphStyle *paraStyle = [attrs objectForKey:NSParagraphStyleAttributeName];
 		BOOL isBlockquote = (paraStyle != nil && [paraStyle headIndent] > 0.0);
 
-		// Open tags in nesting-safe order
+		// Open tags — blockquote first (block-level must surround inline)
+		if (isBlockquote) [html appendString:@"<blockquote>"];
 		if (hasStrike) [html appendString:@"<s>"];
 		if (isMono) [html appendString:@"<font face=\"Monaco\">"];
 		if (isItalic) [html appendString:@"<i>"];
 		if (isBold) [html appendString:@"<b>"];
-		if (isBlockquote) [html appendString:@"<blockquote>"];
 
 		[html appendString:escaped];
 
 		// Close tags in reverse order
-		if (isBlockquote) [html appendString:@"</blockquote>"];
 		if (isBold) [html appendString:@"</b>"];
 		if (isItalic) [html appendString:@"</i>"];
 		if (isMono) [html appendString:@"</font>"];
 		if (hasStrike) [html appendString:@"</s>"];
+		if (isBlockquote) [html appendString:@"</blockquote>"];
 
 		pos = NSMaxRange(range);
 	}
