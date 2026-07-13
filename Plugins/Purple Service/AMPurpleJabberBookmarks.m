@@ -190,22 +190,22 @@ static void AMPurpleJabberBookmarks_received_xmlnode_cb(PurpleConnection *gc, xm
 
 - (NSString *)_xmlForRetrieve
 {
-	return [NSString stringWithFormat:
-			@"<iq type='get' id='%@'>"
-			@"<query xmlns='%@'>"
-			@"<storage xmlns='%@'/>"
-			@"</query>"
-			@"</iq>", AMPurpleJabberBookmarksIQRetrieveId, NS_PRIVATE_XML, NS_BOOKMARKS];
+	return [NSString stringWithFormat:@"<iq type='get' id='%@'>"
+									  @"<query xmlns='%@'>"
+									  @"<storage xmlns='%@'/>"
+									  @"</query>"
+									  @"</iq>",
+									  AMPurpleJabberBookmarksIQRetrieveId, NS_PRIVATE_XML, NS_BOOKMARKS];
 }
 
 - (NSString *)_xmlForStoreWithBookmarksXML:(NSString *)bookmarksXML
 {
-	return [NSString stringWithFormat:
-			@"<iq type='set' id='bookmarks-store-1'>"
-			@"<query xmlns='%@'>"
-			@"%@"
-			@"</query>"
-			@"</iq>", NS_PRIVATE_XML, bookmarksXML];
+	return [NSString stringWithFormat:@"<iq type='set' id='bookmarks-store-1'>"
+									  @"<query xmlns='%@'>"
+									  @"%@"
+									  @"</query>"
+									  @"</iq>",
+									  NS_PRIVATE_XML, bookmarksXML];
 }
 
 @end

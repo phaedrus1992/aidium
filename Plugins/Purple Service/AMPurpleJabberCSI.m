@@ -15,8 +15,8 @@
  */
 
 #import "AMPurpleJabberCSI.h"
-#import "ESPurpleJabberAccount.h"
 #import "CBPurpleAccount.h"
+#import "ESPurpleJabberAccount.h"
 #import <Adium/AIAdiumProtocol.h>
 #import <libpurple/jabber.h>
 
@@ -26,8 +26,7 @@
 #define AMPurpleJabberCSIStateActive 1
 #define AMPurpleJabberCSIStateInactive 2
 
-@interface AMPurpleJabberCSI ()
-{
+@interface AMPurpleJabberCSI () {
 	BOOL _csiEnabled;
 }
 

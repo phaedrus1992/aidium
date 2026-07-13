@@ -35,35 +35,35 @@
 /// @param data The AMPurpleJabberMessageStyling instance (as void*)
 static void AMPurpleJabberMessageStyling_received_xmlnode_cb(PurpleConnection *gc, xmlnode **packet, gpointer data)
 {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
-    @try {
-        AMPurpleJabberMessageStyling *self = (__bridge AMPurpleJabberMessageStyling *)data;
-        xmlnode *node = *packet;
+	@try {
+		AMPurpleJabberMessageStyling *self = (__bridge AMPurpleJabberMessageStyling *)data;
+		xmlnode *node = *packet;
 
-        if (node == NULL || gc == NULL || self == nil) {
-            [pool release];
-            return;
-        }
+		if (node == NULL || gc == NULL || self == nil) {
+			[pool release];
+			return;
+		}
 
-        // Only process message stanzas
-        if (strcmp(node->name, "message") != 0) {
-            [pool release];
-            return;
-        }
+		// Only process message stanzas
+		if (strcmp(node->name, "message") != 0) {
+			[pool release];
+			return;
+		}
 
-        // Look for <unstyled xmlns="urn:xmpp:styling:0"/> child
-        xmlnode *unstyled = xmlnode_get_child_with_namespace(node, "unstyled", [NS_MESSAGE_STYLING UTF8String]);
-        if (unstyled != NULL) {
-            self->_lastMessageHadUnstyled = YES;
-            AILog(@"AMPurpleJabberMessageStyling: Detected <unstyled/> in message");
-        }
+		// Look for <unstyled xmlns="urn:xmpp:styling:0"/> child
+		xmlnode *unstyled = xmlnode_get_child_with_namespace(node, "unstyled", [NS_MESSAGE_STYLING UTF8String]);
+		if (unstyled != NULL) {
+			self->_lastMessageHadUnstyled = YES;
+			AILog(@"AMPurpleJabberMessageStyling: Detected <unstyled/> in message");
+		}
 
-    } @catch (NSException *exception) {
-        AILog(@"AMPurpleJabberMessageStyling: exception handling stanza: %@", exception);
-    }
+	} @catch (NSException *exception) {
+		AILog(@"AMPurpleJabberMessageStyling: exception handling stanza: %@", exception);
+	}
 
-    [pool release];
+	[pool release];
 }
 
 #pragma mark -
@@ -72,45 +72,45 @@ static void AMPurpleJabberMessageStyling_received_xmlnode_cb(PurpleConnection *g
 
 + (void)initialize
 {
-    if (self == [AMPurpleJabberMessageStyling class]) {
-        jabber_add_feature([NS_MESSAGE_STYLING UTF8String], NULL);
-    }
+	if (self == [AMPurpleJabberMessageStyling class]) {
+		jabber_add_feature([NS_MESSAGE_STYLING UTF8String], NULL);
+	}
 }
 
 - (id)initWithAccount:(ESPurpleJabberAccount *)account
 {
-    if ((self = [super init])) {
-        _account = account;
-        _lastMessageHadUnstyled = NO;
+	if ((self = [super init])) {
+		_account = account;
+		_lastMessageHadUnstyled = NO;
 
-        // Connect to jabber-receiving-xmlnode to detect <unstyled/> elements
-        PurplePlugin *jabber = purple_find_prpl("prpl-jabber");
-        if (jabber != NULL) {
-            purple_signal_connect(jabber, "jabber-receiving-xmlnode", self,
-                                  PURPLE_CALLBACK(AMPurpleJabberMessageStyling_received_xmlnode_cb),
-                                  (__bridge void *)self);
-        }
+		// Connect to jabber-receiving-xmlnode to detect <unstyled/> elements
+		PurplePlugin *jabber = purple_find_prpl("prpl-jabber");
+		if (jabber != NULL) {
+			purple_signal_connect(jabber, "jabber-receiving-xmlnode", self,
+								  PURPLE_CALLBACK(AMPurpleJabberMessageStyling_received_xmlnode_cb),
+								  (__bridge void *)self);
+		}
 
-        AILog(@"AMPurpleJabberMessageStyling: initialized for %@", [account UID]);
-    }
+		AILog(@"AMPurpleJabberMessageStyling: initialized for %@", [account UID]);
+	}
 
-    return self;
+	return self;
 }
 
 - (void)dealloc
 {
-    purple_signals_disconnect_by_handle((__bridge void *)self);
+	purple_signals_disconnect_by_handle((__bridge void *)self);
 
-    [super dealloc];
+	[super dealloc];
 }
 
 #pragma mark - Public
 
 - (BOOL)lastMessageHadUnstyled
 {
-    BOOL hadIt = _lastMessageHadUnstyled;
-    _lastMessageHadUnstyled = NO; // One-shot: clear after reading
-    return hadIt;
+	BOOL hadIt = _lastMessageHadUnstyled;
+	_lastMessageHadUnstyled = NO; // One-shot: clear after reading
+	return hadIt;
 }
 
 @end

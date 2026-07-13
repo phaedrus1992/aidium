@@ -28,8 +28,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// The companion class AMPurpleJabberMessageStylingParser provides the parsing
 /// logic that converts message body text with styling markers into NSAttributedString.
 @interface AMPurpleJabberMessageStyling : NSObject {
-    ESPurpleJabberAccount *_account;
-    BOOL _lastMessageHadUnstyled;
+	ESPurpleJabberAccount *_account;
+	BOOL _lastMessageHadUnstyled;
 }
 
 /// Initialize with the owning Jabber account.

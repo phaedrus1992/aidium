@@ -36,8 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// @param body The raw message body text with styling markers
 /// @param baseFont The base font to use for unstyled text; traits are applied as deltas
 /// @return An NSAttributedString with formatting attributes applied, or an empty string if body is nil/empty
-+ (NSAttributedString *)attributedStringFromStyledBody:(nullable NSString *)body
-                                                  font:(NSFont *)baseFont;
++ (NSAttributedString *)attributedStringFromStyledBody:(nullable NSString *)body font:(NSFont *)baseFont;
 
 @end
 

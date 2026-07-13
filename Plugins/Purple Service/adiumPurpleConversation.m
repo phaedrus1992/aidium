@@ -123,7 +123,8 @@ static void adiumPurpleConvWriteChat(PurpleConversation *conv, const char *who, 
 /// @return An HTML string with <b>, <i>, <s>, <font> tags
 static NSString *attributedStringToSimpleHTML(NSAttributedString *attrStr)
 {
-	if ([attrStr length] == 0) return @"";
+	if ([attrStr length] == 0)
+		return @"";
 
 	NSMutableString *html = [NSMutableString string];
 	NSString *plainText = [attrStr string];
@@ -135,16 +136,26 @@ static NSString *attributedStringToSimpleHTML(NSAttributedString *attrStr)
 		NSDictionary *attrs = [attrStr attributesAtIndex:pos effectiveRange:&effectiveRange];
 
 		NSUInteger endPos = MIN(NSMaxRange(effectiveRange), length);
-		if (endPos <= pos) break;
+		if (endPos <= pos)
+			break;
 		NSRange range = NSMakeRange(pos, endPos - pos);
 
 		NSString *content = [plainText substringWithRange:range];
 
 		// HTML-escape the text content
 		NSMutableString *escaped = [[content mutableCopy] autorelease];
-		[escaped replaceOccurrencesOfString:@"&" withString:@"&amp;" options:NSLiteralSearch range:NSMakeRange(0, [escaped length])];
-		[escaped replaceOccurrencesOfString:@"<" withString:@"&lt;" options:NSLiteralSearch range:NSMakeRange(0, [escaped length])];
-		[escaped replaceOccurrencesOfString:@">" withString:@"&gt;" options:NSLiteralSearch range:NSMakeRange(0, [escaped length])];
+		[escaped replaceOccurrencesOfString:@"&"
+								 withString:@"&amp;"
+									options:NSLiteralSearch
+									  range:NSMakeRange(0, [escaped length])];
+		[escaped replaceOccurrencesOfString:@"<"
+								 withString:@"&lt;"
+									options:NSLiteralSearch
+									  range:NSMakeRange(0, [escaped length])];
+		[escaped replaceOccurrencesOfString:@">"
+								 withString:@"&gt;"
+									options:NSLiteralSearch
+									  range:NSMakeRange(0, [escaped length])];
 
 		// Check font traits
 		NSFont *font = [attrs objectForKey:NSFontAttributeName];
@@ -165,20 +176,30 @@ static NSString *attributedStringToSimpleHTML(NSAttributedString *attrStr)
 		BOOL isBlockquote = (paraStyle != nil && [paraStyle headIndent] > 0.0);
 
 		// Open tags — blockquote first (block-level must surround inline)
-		if (isBlockquote) [html appendString:@"<blockquote>"];
-		if (hasStrike) [html appendString:@"<s>"];
-		if (isMono) [html appendString:@"<font face=\"Monaco\">"];
-		if (isItalic) [html appendString:@"<i>"];
-		if (isBold) [html appendString:@"<b>"];
+		if (isBlockquote)
+			[html appendString:@"<blockquote>"];
+		if (hasStrike)
+			[html appendString:@"<s>"];
+		if (isMono)
+			[html appendString:@"<font face=\"Monaco\">"];
+		if (isItalic)
+			[html appendString:@"<i>"];
+		if (isBold)
+			[html appendString:@"<b>"];
 
 		[html appendString:escaped];
 
 		// Close tags in reverse order
-		if (isBold) [html appendString:@"</b>"];
-		if (isItalic) [html appendString:@"</i>"];
-		if (isMono) [html appendString:@"</font>"];
-		if (hasStrike) [html appendString:@"</s>"];
-		if (isBlockquote) [html appendString:@"</blockquote>"];
+		if (isBold)
+			[html appendString:@"</b>"];
+		if (isItalic)
+			[html appendString:@"</i>"];
+		if (isMono)
+			[html appendString:@"</font>"];
+		if (hasStrike)
+			[html appendString:@"</s>"];
+		if (isBlockquote)
+			[html appendString:@"</blockquote>"];
 
 		pos = NSMaxRange(range);
 	}
@@ -230,7 +251,8 @@ static void adiumPurpleConvWriteIm(PurpleConversation *conv, const char *who, co
 				ESPurpleJabberAccount *jabberAccount = (ESPurpleJabberAccount *)adiumAccount;
 				if (![jabberAccount.messageStylingController lastMessageHadUnstyled]) {
 					NSFont *baseFont = [NSFont systemFontOfSize:12.0];
-					NSAttributedString *styledBody = [AMPurpleJabberMessageStylingParser attributedStringFromStyledBody:messageString font:baseFont];
+					NSAttributedString *styledBody =
+						[AMPurpleJabberMessageStylingParser attributedStringFromStyledBody:messageString font:baseFont];
 					messageString = attributedStringToSimpleHTML(styledBody);
 				}
 			}
