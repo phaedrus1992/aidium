@@ -176,16 +176,16 @@ ifeq ($(OFFICIAL_BUILD),TRUE)
 	fi
 	
 	@# One approach would be to sign each framework and other bundle individually....
-	@# codesign --verbose --force --sign $(SIGNING_CERT_NAME) --deep --requirements $(SIGNING_REQUIREMENTS) $(ADIUM_DIR)/Adium.app/Contents/Frameworks/*.framework
-	@# codesign --verbose --force --sign $(SIGNING_CERT_NAME) --requirements $(SIGNING_REQUIREMENTS) $(ADIUM_DIR)/Adium.app/Contents/Library/Spotlight/*.mdimporter
-	@# codesign --verbose --force --sign $(SIGNING_CERT_NAME) --requirements $(SIGNING_REQUIREMENTS) $(ADIUM_DIR)/Adium.app/Contents/Resources/AdiumApplescriptRunner
-	@# codesign --verbose --force --sign $(SIGNING_CERT_NAME) --requirements $(SIGNING_REQUIREMENTS) $(ADIUM_DIR)/Adium.app
+	@# codesign --verbose --force --sign $(SIGNING_CERT_NAME) --deep --requirements $(SIGNING_REQUIREMENTS) $(ADIUM_DIR)/AdiumY.app/Contents/Frameworks/*.framework
+	@# codesign --verbose --force --sign $(SIGNING_CERT_NAME) --requirements $(SIGNING_REQUIREMENTS) $(ADIUM_DIR)/AdiumY.app/Contents/Library/Spotlight/*.mdimporter
+	@# codesign --verbose --force --sign $(SIGNING_CERT_NAME) --requirements $(SIGNING_REQUIREMENTS) $(ADIUM_DIR)/AdiumY.app/Contents/Resources/AdiumApplescriptRunner
+	@# codesign --verbose --force --sign $(SIGNING_CERT_NAME) --requirements $(SIGNING_REQUIREMENTS) $(ADIUM_DIR)/AdiumY.app
 	
 	@# However, it appears fine to use --deep and get it all recursively
-	codesign --verbose --force --deep --sign $(SIGNING_CERT_NAME) --requirements $(SIGNING_REQUIREMENTS) $(ADIUM_DIR)/Adium.app
+	codesign --verbose --force --deep --sign $(SIGNING_CERT_NAME) --requirements $(SIGNING_REQUIREMENTS) $(ADIUM_DIR)/AdiumY.app
 	
 	@# verify successful signing of the full bundle
-	codesign --verbose --verify --deep $(ADIUM_DIR)/Adium.app
+	codesign --verbose --verify --deep $(ADIUM_DIR)/AdiumY.app
 endif
 
 createfolder:
@@ -196,7 +196,7 @@ createfolder:
 	mkdir $(ADIUM_DIR)
 
 	@# copy the app
-	cp -R "$(ADIUM_BUILD_DIR)/Adium.app" $(ADIUM_DIR)
+	cp -R "$(ADIUM_BUILD_DIR)/AdiumY.app" $(ADIUM_DIR)
 
 	@# copy the text files
 	cp $(SRC_DIR)/ChangeLogs/Changes.txt $(ADIUM_DIR)

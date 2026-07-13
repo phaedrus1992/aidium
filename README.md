@@ -1,16 +1,16 @@
-[Adium](https://adium.im)
-========================
+[AdiumY](https://github.com/phaedrus1992/adium)
+===============================================
 
 [![Adiumy](https://adium.im/images/logo.png)](https://adiumx.cachefly.net/Adium_1.5.10.4.dmg)
 
 [Download Adium 1.5.10.4](https://adiumx.cachefly.net/Adium_1.5.10.4.dmg)
 
-## About Adium ##
+## About AdiumY ##
 
-Adium is a free and open source instant messaging application for [OS X](https://www.apple.com/osx/), written using OS X's Cocoa API, released under the [GNU GPL](https://www.gnu.org/licenses/licenses.html#GPL) and developed by the Adium team. Based on the [libpurple](https://developer.pidgin.im/wiki/WhatIsLibpurple) protocol library, Adium can connect you to any number of messaging accounts on any combination of supported messaging services and then chat with other people using those services.
+AdiumY is a fork of [Adium](https://adium.im), a free and open source instant messaging application for [OS X](https://www.apple.com/osx/), written using OS X's Cocoa API, released under the [GNU GPL](https://www.gnu.org/licenses/licenses.html#GPL). Based on the [libpurple](https://developer.pidgin.im/wiki/WhatIsLibpurple) protocol library, AdiumY can connect you to any number of messaging accounts on any combination of supported messaging services and then chat with other people using those services.
 
 ## Notable Features ##
-* Open Source, so everyone can see how Adium works and help improve it.
+* Open Source, so everyone can see how AdiumY works and help improve it.
 * Support for a wide range of different Instant Messaging services (see the [full list](https://adium.im/help/pgs/Accounts-ListOfServices.html))
 * A delightful UI
   * [Tabbed chat windows](https://adium.im/help/pgs/Messaging-TabbedMessaging.html)
@@ -23,7 +23,7 @@ Adium is a free and open source instant messaging application for [OS X](https:/
 * [File Transfer](https://adium.im/help/pgs/AdvancedFeatures-FileTransfer.html)
 * [Xtras](https://adium.im/help/pgs/AdvancedFeatures-AdiumYExtras.html) and many, many other customization options
 * A beautiful icon, the "Adiumy" duck
-* Translations: Adium speaks 27 different languages
+* Translations: AdiumY speaks 27 different languages
 
 ## Development Tooling ##
 
