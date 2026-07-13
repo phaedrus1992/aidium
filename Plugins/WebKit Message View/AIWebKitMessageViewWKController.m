@@ -62,8 +62,7 @@ static NSArray *draggedTypes = nil;
 /// Weak proxy that forwards WKScriptMessageHandler messages without retaining the target.
 /// Breaks the retain cycle caused by -[WKUserContentController addScriptMessageHandler:name:].
 /// Uses assign (MRC) — caller must remove the handler before dealloc, same as any delegate pattern.
-@interface _AIWKScriptMessageHandlerWeakProxy : NSObject <WKScriptMessageHandler>
-{
+@interface _AIWKScriptMessageHandlerWeakProxy : NSObject <WKScriptMessageHandler> {
 	id<WKScriptMessageHandler> _target; // assign (MRC idiom for weak)
 }
 - (instancetype)initWithTarget:(id<WKScriptMessageHandler>)target;
@@ -342,7 +341,12 @@ static NSArray *draggedTypes = nil;
 	[_cachedChatContentSource release];
 	_cachedChatContentSource = [source copy];
 
-	[_webView evaluateJavaScript:js completionHandler:^(id result, NSError *error) { if (error) { AILogWithSignature(@"evaluateJavaScript failed: %@", error); } }];
+	[_webView evaluateJavaScript:js
+			   completionHandler:^(id result, NSError *error) {
+				   if (error) {
+					   AILogWithSignature(@"evaluateJavaScript failed: %@", error);
+				   }
+			   }];
 }
 
 - (NSString *)chatContentSource
@@ -554,96 +558,95 @@ static NSArray *draggedTypes = nil;
 	_activeStyle = [[[_messageStyle bundle] bundleIdentifier] retain];
 	_preferenceGroup = [[_plugin preferenceGroupForChat:_chat] retain];
 
-		// Get the preferred variant (or the default if a preferred is not available)
-		NSString *activeVariant;
-		activeVariant = [adium.preferenceController preferenceForKey:[_plugin styleSpecificKey:@"Variant"
-																					  forStyle:_activeStyle]
-															   group:_preferenceGroup];
-		if (!activeVariant || ![[_messageStyle availableVariants] containsObject:activeVariant]) {
-			activeVariant = [_messageStyle defaultVariant];
+	// Get the preferred variant (or the default if a preferred is not available)
+	NSString *activeVariant;
+	activeVariant = [adium.preferenceController preferenceForKey:[_plugin styleSpecificKey:@"Variant"
+																				  forStyle:_activeStyle]
+														   group:_preferenceGroup];
+	if (!activeVariant || ![[_messageStyle availableVariants] containsObject:activeVariant]) {
+		activeVariant = [_messageStyle defaultVariant];
+	}
+	if (!activeVariant || ![[_messageStyle availableVariants] containsObject:activeVariant]) {
+		NSArray *availableVariants = [_messageStyle availableVariants];
+		if ([availableVariants count]) {
+			activeVariant = [availableVariants objectAtIndex:0];
 		}
-		if (!activeVariant || ![[_messageStyle availableVariants] containsObject:activeVariant]) {
-			NSArray *availableVariants = [_messageStyle availableVariants];
-			if ([availableVariants count]) {
-				activeVariant = [availableVariants objectAtIndex:0];
-			}
-		}
-		_messageStyle.activeVariant = activeVariant;
+	}
+	_messageStyle.activeVariant = activeVariant;
 
-		NSDictionary *prefDict = [adium.preferenceController preferencesForGroup:_preferenceGroup];
+	NSDictionary *prefDict = [adium.preferenceController preferencesForGroup:_preferenceGroup];
 
-		[_messageStyle setShowUserIcons:[[prefDict objectForKey:KEY_WEBKIT_SHOW_USER_ICONS] boolValue]];
-		[_messageStyle setShowHeader:[[prefDict objectForKey:KEY_WEBKIT_SHOW_HEADER] boolValue]];
-		[_messageStyle setUseCustomNameFormat:[[prefDict objectForKey:KEY_WEBKIT_USE_NAME_FORMAT] boolValue]];
-		[_messageStyle setNameFormat:[[prefDict objectForKey:KEY_WEBKIT_NAME_FORMAT] intValue]];
-		[_messageStyle setDateFormat:[prefDict objectForKey:KEY_WEBKIT_TIME_STAMP_FORMAT]];
-		[_messageStyle setShowIncomingMessageColors:[[prefDict objectForKey:KEY_WEBKIT_SHOW_MESSAGE_COLORS] boolValue]];
-		[_messageStyle setShowIncomingMessageFonts:[[prefDict objectForKey:KEY_WEBKIT_SHOW_MESSAGE_FONTS] boolValue]];
+	[_messageStyle setShowUserIcons:[[prefDict objectForKey:KEY_WEBKIT_SHOW_USER_ICONS] boolValue]];
+	[_messageStyle setShowHeader:[[prefDict objectForKey:KEY_WEBKIT_SHOW_HEADER] boolValue]];
+	[_messageStyle setUseCustomNameFormat:[[prefDict objectForKey:KEY_WEBKIT_USE_NAME_FORMAT] boolValue]];
+	[_messageStyle setNameFormat:[[prefDict objectForKey:KEY_WEBKIT_NAME_FORMAT] intValue]];
+	[_messageStyle setDateFormat:[prefDict objectForKey:KEY_WEBKIT_TIME_STAMP_FORMAT]];
+	[_messageStyle setShowIncomingMessageColors:[[prefDict objectForKey:KEY_WEBKIT_SHOW_MESSAGE_COLORS] boolValue]];
+	[_messageStyle setShowIncomingMessageFonts:[[prefDict objectForKey:KEY_WEBKIT_SHOW_MESSAGE_FONTS] boolValue]];
 
-		// Custom background image
-		NSString *cachePath = nil;
-		if ([[adium.preferenceController preferenceForKey:[_plugin styleSpecificKey:@"UseCustomBackground"
+	// Custom background image
+	NSString *cachePath = nil;
+	if ([[adium.preferenceController preferenceForKey:[_plugin styleSpecificKey:@"UseCustomBackground"
+																	   forStyle:_activeStyle]
+												group:_preferenceGroup] boolValue]) {
+
+		cachePath = [adium.preferenceController preferenceForKey:[_plugin styleSpecificKey:@"BackgroundCachePath"
+																				  forStyle:_activeStyle]
+														   group:_preferenceGroup];
+		if (!cachePath || ![[NSFileManager defaultManager] fileExistsAtPath:cachePath]) {
+			NSData *backgroundImage = [adium.preferenceController
+				preferenceForKey:[_plugin styleSpecificKey:@"Background" forStyle:_activeStyle]
+						   group:PREF_GROUP_WEBKIT_BACKGROUND_IMAGES];
+
+			if (backgroundImage) {
+				NSInteger uniqueID = [[adium.preferenceController preferenceForKey:@"BackgroundCacheUniqueID"
+																			 group:_preferenceGroup] integerValue] +
+									 1;
+				[adium.preferenceController setPreference:[NSNumber numberWithInteger:uniqueID]
+												   forKey:@"BackgroundCacheUniqueID"
+													group:_preferenceGroup];
+
+				cachePath = [self _webKitBackgroundImagePathForUniqueID:uniqueID];
+				[backgroundImage writeToFile:cachePath atomically:YES];
+
+				[adium.preferenceController setPreference:cachePath
+												   forKey:[_plugin styleSpecificKey:@"BackgroundCachePath"
 																		   forStyle:_activeStyle]
-													group:_preferenceGroup] boolValue]) {
-
-			cachePath = [adium.preferenceController preferenceForKey:[_plugin styleSpecificKey:@"BackgroundCachePath"
-																					  forStyle:_activeStyle]
-															   group:_preferenceGroup];
-			if (!cachePath || ![[NSFileManager defaultManager] fileExistsAtPath:cachePath]) {
-				NSData *backgroundImage = [adium.preferenceController
-					preferenceForKey:[_plugin styleSpecificKey:@"Background" forStyle:_activeStyle]
-							   group:PREF_GROUP_WEBKIT_BACKGROUND_IMAGES];
-
-				if (backgroundImage) {
-					NSInteger uniqueID = [[adium.preferenceController preferenceForKey:@"BackgroundCacheUniqueID"
-																				 group:_preferenceGroup] integerValue] +
-										 1;
-					[adium.preferenceController setPreference:[NSNumber numberWithInteger:uniqueID]
-													   forKey:@"BackgroundCacheUniqueID"
-														group:_preferenceGroup];
-
-					cachePath = [self _webKitBackgroundImagePathForUniqueID:uniqueID];
-					[backgroundImage writeToFile:cachePath atomically:YES];
-
-					[adium.preferenceController setPreference:cachePath
-													   forKey:[_plugin styleSpecificKey:@"BackgroundCachePath"
-																			   forStyle:_activeStyle]
-														group:_preferenceGroup];
-				} else {
-					cachePath = @"";
-				}
+													group:_preferenceGroup];
+			} else {
+				cachePath = @"";
 			}
-
-			[_messageStyle setCustomBackgroundColor:[[adium.preferenceController
-														preferenceForKey:[_plugin styleSpecificKey:@"BackgroundColor"
-																						  forStyle:_activeStyle]
-																   group:_preferenceGroup] representedColor]];
-		} else {
-			[_messageStyle setCustomBackgroundColor:nil];
 		}
 
-		[_messageStyle setCustomBackgroundPath:cachePath];
-		[_messageStyle setCustomBackgroundType:[[adium.preferenceController
-												   preferenceForKey:[_plugin styleSpecificKey:@"BackgroundType"
-																					 forStyle:_activeStyle]
-															  group:_preferenceGroup] intValue]];
-
-		// WKWebView transparency
-		BOOL isBackgroundTransparent = [_messageStyle isBackgroundTransparent];
-		[_webView setDrawsBackground:!isBackgroundTransparent];
-		NSWindow *win = [_webView window];
-		if (win) {
-			[win setOpaque:!isBackgroundTransparent];
-		}
-
-		// Update our icons before loading
-		[self sourceOrDestinationChanged:nil];
-
-		// Prime the webview
-		[self _primeWebViewAndReprocessContent:YES];
-		_isUpdatingView = NO;
+		[_messageStyle setCustomBackgroundColor:[[adium.preferenceController
+													preferenceForKey:[_plugin styleSpecificKey:@"BackgroundColor"
+																					  forStyle:_activeStyle]
+															   group:_preferenceGroup] representedColor]];
+	} else {
+		[_messageStyle setCustomBackgroundColor:nil];
 	}
 
+	[_messageStyle setCustomBackgroundPath:cachePath];
+	[_messageStyle setCustomBackgroundType:[[adium.preferenceController
+											   preferenceForKey:[_plugin styleSpecificKey:@"BackgroundType"
+																				 forStyle:_activeStyle]
+														  group:_preferenceGroup] intValue]];
+
+	// WKWebView transparency
+	BOOL isBackgroundTransparent = [_messageStyle isBackgroundTransparent];
+	[_webView setDrawsBackground:!isBackgroundTransparent];
+	NSWindow *win = [_webView window];
+	if (win) {
+		[win setOpaque:!isBackgroundTransparent];
+	}
+
+	// Update our icons before loading
+	[self sourceOrDestinationChanged:nil];
+
+	// Prime the webview
+	[self _primeWebViewAndReprocessContent:YES];
+	_isUpdatingView = NO;
+}
 
 - (void)_updateVariantWithoutPrimingView
 {
@@ -652,7 +655,12 @@ static NSArray *draggedTypes = nil;
 
 	if (_webViewIsReady) {
 		retryCount = 0;
-		[_webView evaluateJavaScript:[_messageStyle scriptForChangingVariant] completionHandler:^(id result, NSError *error) { if (error) { AILogWithSignature(@"evaluateJavaScript failed: %@", error); } }];
+		[_webView evaluateJavaScript:[_messageStyle scriptForChangingVariant]
+				   completionHandler:^(id result, NSError *error) {
+					   if (error) {
+						   AILogWithSignature(@"evaluateJavaScript failed: %@", error);
+					   }
+				   }];
 	} else if (retryCount < kMaxRetries) {
 		retryCount++;
 		[self performSelector:@selector(_updateVariantWithoutPrimingView)
@@ -660,7 +668,8 @@ static NSArray *draggedTypes = nil;
 				   afterDelay:NEW_CONTENT_RETRY_DELAY];
 	} else {
 		retryCount = 0;
-		AILogWithSignature(@"Gave up waiting for webview to become ready after %lu attempts", (unsigned long)kMaxRetries);
+		AILogWithSignature(@"Gave up waiting for webview to become ready after %lu attempts",
+						   (unsigned long)kMaxRetries);
 	}
 }
 
@@ -727,7 +736,12 @@ static NSArray *draggedTypes = nil;
 - (void)chatDidFinishAddingUntrackedContent:(NSNotification *)notification
 {
 	// Tell the CoalescedHTML to output everything
-	[_webView evaluateJavaScript:@"if(coalescedHTML)coalescedHTML.cancel()" completionHandler:^(id result, NSError *error) { if (error) { AILogWithSignature(@"evaluateJavaScript failed: %@", error); } }];
+	[_webView evaluateJavaScript:@"if(coalescedHTML)coalescedHTML.cancel()"
+			   completionHandler:^(id result, NSError *error) {
+				   if (error) {
+					   AILogWithSignature(@"evaluateJavaScript failed: %@", error);
+				   }
+			   }];
 }
 
 #pragma mark - Notifications
@@ -769,14 +783,24 @@ static NSArray *draggedTypes = nil;
 	[updateJS appendString:@"})()"];
 
 	if (![updateJS isEqualToString:updateJSPrefix]) {
-		[_webView evaluateJavaScript:updateJS completionHandler:^(id result, NSError *error) { if (error) { AILogWithSignature(@"evaluateJavaScript failed: %@", error); } }];
+		[_webView evaluateJavaScript:updateJS
+				   completionHandler:^(id result, NSError *error) {
+					   if (error) {
+						   AILogWithSignature(@"evaluateJavaScript failed: %@", error);
+					   }
+				   }];
 	}
 }
 
 - (void)customEmoticonUpdated:(NSNotification *)inNotification
 {
 	[_messageStyle flushEmoticonCache];
-	[_webView evaluateJavaScript:@"initStyle()" completionHandler:^(id result, NSError *error) { if (error) { AILogWithSignature(@"evaluateJavaScript failed: %@", error); } }];
+	[_webView evaluateJavaScript:@"initStyle()"
+			   completionHandler:^(id result, NSError *error) {
+				   if (error) {
+					   AILogWithSignature(@"evaluateJavaScript failed: %@", error);
+				   }
+			   }];
 
 	// Re-process stored content for new emoticon rendering
 	if ([_storedContentObjects count]) {
@@ -807,7 +831,12 @@ static NSArray *draggedTypes = nil;
 	NSString *escaped = [self _jsStringLiteral:contentHTML];
 	NSString *escapedDomId = [self _jsStringLiteral:domId];
 	NSString *js = [NSString stringWithFormat:@"correctMessage(%@, %@)", escapedDomId, escaped];
-	[_webView evaluateJavaScript:js completionHandler:^(id result, NSError *error) { if (error) { AILogWithSignature(@"evaluateJavaScript failed: %@", error); } }];
+	[_webView evaluateJavaScript:js
+			   completionHandler:^(id result, NSError *error) {
+				   if (error) {
+					   AILogWithSignature(@"evaluateJavaScript failed: %@", error);
+				   }
+			   }];
 }
 
 - (void)stanzaWasTracked:(NSNotification *)notification
@@ -823,7 +852,12 @@ static NSArray *draggedTypes = nil;
 											  @" if(e&&!e.classList.contains('tracked')){e.classList.add('tracked');}"
 											  @"})()",
 											  escapedDomId];
-	[_webView evaluateJavaScript:js completionHandler:^(id result, NSError *error) { if (error) { AILogWithSignature(@"evaluateJavaScript failed: %@", error); } }];
+	[_webView evaluateJavaScript:js
+			   completionHandler:^(id result, NSError *error) {
+				   if (error) {
+					   AILogWithSignature(@"evaluateJavaScript failed: %@", error);
+				   }
+			   }];
 }
 
 - (void)updateTopic
@@ -839,7 +873,12 @@ static NSArray *draggedTypes = nil;
 											  @" if(e){e.innerHTML=%@;}"
 											  @"})()",
 											  escaped];
-	[_webView evaluateJavaScript:js completionHandler:^(id result, NSError *error) { if (error) { AILogWithSignature(@"evaluateJavaScript failed: %@", error); } }];
+	[_webView evaluateJavaScript:js
+			   completionHandler:^(id result, NSError *error) {
+				   if (error) {
+					   AILogWithSignature(@"evaluateJavaScript failed: %@", error);
+				   }
+			   }];
 }
 
 #pragma mark - Marked Scroller
@@ -1003,7 +1042,12 @@ static NSArray *draggedTypes = nil;
 	}
 
 	[js appendString:@"})()"];
-	[_webView evaluateJavaScript:js completionHandler:^(id result, NSError *error) { if (error) { AILogWithSignature(@"evaluateJavaScript failed: %@", error); } }];
+	[_webView evaluateJavaScript:js
+			   completionHandler:^(id result, NSError *error) {
+				   if (error) {
+					   AILogWithSignature(@"evaluateJavaScript failed: %@", error);
+				   }
+			   }];
 }
 
 /*!
