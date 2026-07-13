@@ -19,6 +19,7 @@
 #import "AMPurpleJabberAdHocPing.h"
 #import "AMPurpleJabberAdHocServer.h"
 #import "AMPurpleJabberCorrection.h"
+#import "AMPurpleJabberCSI.h"
 #import "AMPurpleJabberHTTPUpload.h"
 #import "AMPurpleJabberMAM.h"
 #import "AMPurpleJabberServiceDiscoveryBrowsing.h"
@@ -222,6 +223,10 @@
 
 	if (!correctionController)
 		correctionController = [[AMPurpleJabberCorrection alloc] initWithAccount:self];
+
+	if (!csiController)
+		csiController = [[AMPurpleJabberCSI alloc] initWithAccount:self];
+
 }
 
 - (NSString *)serverSuffix
