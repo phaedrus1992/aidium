@@ -234,12 +234,18 @@
             }
             NSUInteger quoteStart = [result length];
             [result appendAttributedString:quoteAttr];
-            // Apply blockquote indentation per XEP-0393 spec
+            // Compound blockquote indentation per XEP-0393 spec (nested quotes)
             NSRange quoteRange = NSMakeRange(quoteStart, [result length] - quoteStart);
-            NSMutableParagraphStyle *quotePara = [[[NSMutableParagraphStyle alloc] init] autorelease];
-            [quotePara setHeadIndent:20.0];
-            [quotePara setFirstLineHeadIndent:20.0];
-            [result addAttribute:NSParagraphStyleAttributeName value:quotePara range:quoteRange];
+            [result enumerateAttribute:NSParagraphStyleAttributeName
+                               inRange:quoteRange
+                               options:0
+                            usingBlock:^(id value, NSRange innerRange, BOOL *stop) {
+                NSMutableParagraphStyle *style = [(NSParagraphStyle *)(value ?: [NSParagraphStyle defaultParagraphStyle]) mutableCopy];
+                [style setHeadIndent:[style headIndent] + 20.0];
+                [style setFirstLineHeadIndent:[style firstLineHeadIndent] + 20.0];
+                [result addAttribute:NSParagraphStyleAttributeName value:style range:innerRange];
+                [style release];
+            }];
             continue;
         }
 
@@ -508,10 +514,18 @@
         return NO;
     }
 
-    // Opening directive must NOT be followed by whitespace
+    // Opening directive must NOT be followed by whitespace (XEP-0393 §3.3)
     if (pos + 1 < len) {
         unichar next = [s characterAtIndex:pos + 1];
         if ([[NSCharacterSet whitespaceCharacterSet] characterIsMember:next]) {
+            return NO;
+        }
+    }
+
+    // Opening directive must NOT be preceded by a letter or digit (XEP-0393 §3.3)
+    if (pos > 0) {
+        unichar prev = [s characterAtIndex:pos - 1];
+        if ([[NSCharacterSet alphanumericCharacterSet] characterIsMember:prev]) {
             return NO;
         }
     }
@@ -531,7 +545,7 @@
         return NO;
     }
 
-    // Closing directive must NOT be preceded by whitespace
+    // Closing directive must NOT be preceded by whitespace (XEP-0393 §3.3)
     if (pos == 0) {
         return NO;
     }
@@ -539,6 +553,14 @@
     unichar prev = [s characterAtIndex:pos - 1];
     if ([[NSCharacterSet whitespaceCharacterSet] characterIsMember:prev]) {
         return NO;
+    }
+
+    // Closing directive must NOT be followed by a letter or digit (XEP-0393 §3.3)
+    if (pos + 1 < len) {
+        unichar next = [s characterAtIndex:pos + 1];
+        if ([[NSCharacterSet alphanumericCharacterSet] characterIsMember:next]) {
+            return NO;
+        }
     }
 
     return YES;

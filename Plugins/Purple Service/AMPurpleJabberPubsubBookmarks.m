@@ -176,7 +176,7 @@ static void AMPurpleJabberPubsubBookmarks_received_xmlnode_cb(PurpleConnection *
 								  PURPLE_CALLBACK(AMPurpleJabberPubsubBookmarks_received_xmlnode_cb), (__bridge void *)self);
 		}
 
-		AILog(@"AMPurpleJabberPubsubBookmarks: initialized for %@", account.UID);
+		AILog(@"AMPurpleJabberPubsubBookmarks: initialized for %@", [account UID]);
 	}
 
 	return self;

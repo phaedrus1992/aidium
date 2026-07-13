@@ -146,10 +146,10 @@ void runBoldTests(NSFont *baseFont)
     result = [AMPurpleJabberMessageStylingParser attributedStringFromStyledBody:@"* hello *" font:baseFont];
     TEST(@"bold: space after opener is literal", stringAtRangeEquals(result, 0, 9, @"* hello *"));
 
-    // Adjacent text
+    // Adjacent text — opener preceded by letter is literal per XEP-0393 §3.3
     result = [AMPurpleJabberMessageStylingParser attributedStringFromStyledBody:@"foo*bar*" font:baseFont];
-    TEST(@"bold: adjacent foo*bar*", hasBoldTrait(result, 3, 3));
-    TEST(@"bold: 'bar' is bold", stringAtRangeEquals(result, 3, 3, @"bar"));
+    TEST(@"bold: adjacent foo*bar* is literal", stringAtRangeEquals(result, 0, 8, @"foo*bar*"));
+    TEST(@"bold: entire string is plain", hasPlainFont(result, 0, 8));
 }
 
 void runItalicTests(NSFont *baseFont)
