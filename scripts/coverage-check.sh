@@ -58,14 +58,18 @@ resolve_threshold() {
   local target="$1"
   local threshold_file="$PROJECT_DIR/scripts/coverage-thresholds.txt"
   if [ -f "$threshold_file" ]; then
-    local line
-    line=$(grep -E "^${target}[[:space:]]" "$threshold_file" 2>/dev/null || true)
-    if [ -n "$line" ]; then
-      local pct
-      pct=$(echo "$line" | awk '{print $NF}')
-      if [[ "$pct" =~ ^[0-9]+$ ]]; then
-        echo "$pct"
-        return
+    if [ ! -r "$threshold_file" ]; then
+      echo "WARNING: $threshold_file not readable, using defaults" >&2
+    else
+      local line
+      line=$(grep "^${target}[[:space:]]" "$threshold_file" 2>/dev/null || true)
+      if [ -n "$line" ]; then
+        local pct
+        pct=$(echo "$line" | awk '{print $NF}')
+        if [[ "$pct" =~ ^[0-9]+$ ]]; then
+          echo "$pct"
+          return
+        fi
       fi
     fi
   fi
@@ -108,14 +112,17 @@ BINARY_DIR="${DERIVED_DATA}/Build/Products/Debug"
 if [ -d "$BINARY_DIR" ]; then
   # Find a production binary to extract branch coverage from the profdata
   BINARY=$(find "$BINARY_DIR" -maxdepth 1 -type d -name '*.framework' -print -quit 2>/dev/null || true)
-  if [ -n "$BINARY" ] && command -v llvm-cov &>/dev/null; then
+  if [ -n "$BINARY" ] && $XCRUN llvm-cov --help &>/dev/null; then
+    BINARY_NAME=$(basename "$BINARY" .framework)
     BRANCH_REPORT=$($XCRUN llvm-cov export -summary-only \
-      -instr-profile "$COV_FILE" "$BINARY/$BINARY" 2>/dev/null || true)
+      -instr-profile "$COV_FILE" "$BINARY/$BINARY_NAME" 2>/dev/null || true)
     if [ -n "$BRANCH_REPORT" ]; then
       BRANCH_PCT=$(echo "$BRANCH_REPORT" | jq -r '.data[0].totals.branches.percent // 0' 2>/dev/null || echo "N/A")
       echo "Branch coverage (${BINARY##*/}): ${BRANCH_PCT}%  (informational, not gated)"
     fi
   fi
+else
+  echo "Branch coverage: ${BINARY_DIR} not found — skipped"
 fi
 
 if [ "$FAILED" -eq 1 ]; then

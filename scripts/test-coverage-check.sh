@@ -49,19 +49,23 @@ echo "=== Test: Per-target threshold lookup ==="
 PROJECT_DIR="$TEMPDIR"
 DEFAULT_THRESHOLD=50
 
-# Inline the resolve_threshold function for testing
+# resolve_threshold() duplicated from coverage-check.sh — keep in sync
 resolve_threshold() {
   local target="$1"
   local threshold_file="$PROJECT_DIR/coverage-thresholds.txt"
   if [ -f "$threshold_file" ]; then
-    local line
-    line=$(grep -E "^${target}[[:space:]]" "$threshold_file" 2>/dev/null || true)
-    if [ -n "$line" ]; then
-      local pct
-      pct=$(echo "$line" | awk '{print $NF}')
-      if [[ "$pct" =~ ^[0-9]+$ ]]; then
-        echo "$pct"
-        return
+    if [ ! -r "$threshold_file" ]; then
+      echo "WARNING: $threshold_file not readable, using defaults" >&2
+    else
+      local line
+      line=$(grep "^${target}[[:space:]]" "$threshold_file" 2>/dev/null || true)
+      if [ -n "$line" ]; then
+        local pct
+        pct=$(echo "$line" | awk '{print $NF}')
+        if [[ "$pct" =~ ^[0-9]+$ ]]; then
+          echo "$pct"
+          return
+        fi
       fi
     fi
   fi
