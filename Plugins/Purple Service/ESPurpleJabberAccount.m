@@ -117,6 +117,9 @@
 	[httpUploadController release];
 	[correctionController release];
 	[messageStylingController release];
+	[csiController release];
+	[bookmarksController release];
+	[pubsubBookmarksController release];
 	[gateways release];
 
 	[super dealloc];
