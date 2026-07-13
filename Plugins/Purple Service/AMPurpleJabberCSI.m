@@ -27,12 +27,18 @@
 #define AMPurpleJabberCSIStateInactive 2
 
 @interface AMPurpleJabberCSI ()
+{
+	BOOL _csiEnabled;
+}
 
-/// Build the CSI IQ-set stanza XML string for the given state.
+/// Build the CSI stanza XML string for the given state.
 ///
 /// @param state AMPurpleJabberCSIStateActive (1) or AMPurpleJabberCSIStateInactive (2)
 /// @return An XML string appropriate for jabber_prpl_send_raw
 - (NSString *)_xmlForState:(NSInteger)state;
+
+/// Send the CSI enable handshake element.
+- (void)_sendEnable;
 
 /// Construct and send a CSI state stanza.
 ///
@@ -55,6 +61,7 @@
 	if ((self = [super init])) {
 		_account = account;
 		_currentState = AMPurpleJabberCSIStateUnknown;
+		_csiEnabled = NO;
 
 		// Observe app foreground/background transitions
 		[[NSNotificationCenter defaultCenter] addObserver:self
@@ -66,11 +73,18 @@
 													 name:NSApplicationWillResignActiveNotification
 												   object:nil];
 
-		// Observe account connection to send initial <active/>
+		// Observe account connection
 		[[NSNotificationCenter defaultCenter] addObserver:self
 												 selector:@selector(accountConnected:)
 													 name:ACCOUNT_CONNECTED
 												   object:_account];
+
+		// Intercept CSI enable handshake response (<enabled/>)
+		PurplePlugin *jabber = purple_find_prpl("prpl-jabber");
+		if (jabber) {
+			purple_signal_connect(jabber, "jabber-receiving-xmlnode", self,
+								  PURPLE_CALLBACK(AMPurpleJabberCSI_received_xmlnode_cb), (__bridge void *)self);
+		}
 	}
 
 	return self;
@@ -98,7 +112,7 @@
 
 - (void)accountConnected:(NSNotification *)notification
 {
-	[self _sendState:AMPurpleJabberCSIStateActive];
+	[self _sendEnable];
 }
 
 #pragma mark - CSI
@@ -122,16 +136,30 @@
 - (NSString *)_xmlForState:(NSInteger)state
 {
 	NSString *childElement = (state == AMPurpleJabberCSIStateActive) ? @"active" : @"inactive";
-	return [NSString stringWithFormat:
-			@"<iq type='set' id='csi1'>"
-			@"<csi xmlns='%@'>"
-			@"<%@/>"
-			@"</csi>"
-			@"</iq>", NS_CSI, childElement];
+	return [NSString stringWithFormat:@"<%@ xmlns='%@'/>", childElement, NS_CSI];
+}
+
+/// Send the CSI enable handshake element.
+- (void)_sendEnable
+{
+	NSString *xml = [NSString stringWithFormat:@"<enable xmlns='%@'/>", NS_CSI];
+	PurpleAccount *pa = [_account purpleAccount];
+	PurpleConnection *gc = purple_account_get_connection(pa);
+	if (gc) {
+		jabber_prpl_send_raw(gc, [xml UTF8String], -1);
+		_csiEnabled = NO;
+		AILog(@"AMPurpleJabberCSI: Sent CSI enable request");
+	}
 }
 
 - (void)_sendState:(NSInteger)state
 {
+	// Per XEP-0352 §3.3: don't send <inactive/> until CSI is enabled
+	if (state == AMPurpleJabberCSIStateInactive && !_csiEnabled) {
+		AILog(@"AMPurpleJabberCSI: Skipping <inactive/> — CSI not yet enabled");
+		return;
+	}
+
 	NSString *xml = [self _xmlForState:state];
 	PurpleAccount *pa = [_account purpleAccount];
 	PurpleConnection *gc = purple_account_get_connection(pa);
@@ -139,6 +167,33 @@
 		jabber_prpl_send_raw(gc, [xml UTF8String], -1);
 		_currentState = state;
 		AILog(@"AMPurpleJabberCSI: Sent %@ state", (state == AMPurpleJabberCSIStateActive) ? @"active" : @"inactive");
+	}
+}
+
+#pragma mark - C Callbacks
+
+static void AMPurpleJabberCSI_received_xmlnode_cb(PurpleConnection *gc, xmlnode **packet, gpointer data)
+{
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	@try {
+		AMPurpleJabberCSI *self = (__bridge AMPurpleJabberCSI *)data;
+		xmlnode *node = *packet;
+		if (!node || !gc || !self) {
+			[pool release];
+			return;
+		}
+		if (strcmp(node->name, "enabled") == 0) {
+			const char *xmlns = xmlnode_get_namespace(node);
+			if (xmlns && strcmp(xmlns, [NS_CSI UTF8String]) == 0) {
+				self->_csiEnabled = YES;
+				AILog(@"AMPurpleJabberCSI: Server enabled CSI");
+				[self _sendState:AMPurpleJabberCSIStateActive];
+			}
+		}
+	} @catch (NSException *e) {
+		AILog(@"AMPurpleJabberCSI: Exception in received_xmlnode_cb: %@: %@", e.name, e.reason);
+	} @finally {
+		[pool release];
 	}
 }
 
