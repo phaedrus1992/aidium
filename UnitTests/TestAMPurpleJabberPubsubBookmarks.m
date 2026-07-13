@@ -46,7 +46,8 @@
 - (void)testPublishXML
 {
 	AMPurpleJabberPubsubBookmarks *bookmarks = [[AMPurpleJabberPubsubBookmarks alloc] init];
-	NSString *conferenceXML = @"<conference xmlns='urn:xmpp:bookmarks:1' name='Test' jid='test@conference.example.org'/>";
+	NSString *conferenceXML =
+		@"<conference xmlns='urn:xmpp:bookmarks:1' name='Test' jid='test@conference.example.org'/>";
 	NSString *xml = [bookmarks _xmlForPublishWithBookmarksXML:conferenceXML];
 	STAssertNotNil(xml, @"PubSub bookmarks publish XML should not be nil");
 	STAssertTrue([xml rangeOfString:@"http://jabber.org/protocol/pubsub"].location != NSNotFound,
@@ -65,11 +66,12 @@
 - (void)testPublishXMLWithConference
 {
 	AMPurpleJabberPubsubBookmarks *bookmarks = [[AMPurpleJabberPubsubBookmarks alloc] init];
-	NSString *conferenceXML =
-		@"<conference xmlns='urn:xmpp:bookmarks:1' name='Development Chat' autojoin='true' jid='dev@conference.example.org'>"
-		@"<nick>Phaedrus</nick>"
-		@"</conference>"
-		@"<conference xmlns='urn:xmpp:bookmarks:1' name='Support' autojoin='false' jid='support@conference.example.com'/>";
+	NSString *conferenceXML = @"<conference xmlns='urn:xmpp:bookmarks:1' name='Development Chat' autojoin='true' "
+							  @"jid='dev@conference.example.org'>"
+							  @"<nick>Phaedrus</nick>"
+							  @"</conference>"
+							  @"<conference xmlns='urn:xmpp:bookmarks:1' name='Support' autojoin='false' "
+							  @"jid='support@conference.example.com'/>";
 	NSString *xml = [bookmarks _xmlForPublishWithBookmarksXML:conferenceXML];
 	STAssertNotNil(xml, @"PubSub bookmarks publish XML should not be nil");
 	STAssertTrue([xml rangeOfString:@"dev@conference.example.org"].location != NSNotFound,

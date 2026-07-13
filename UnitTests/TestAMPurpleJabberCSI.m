@@ -36,7 +36,7 @@
 	STAssertTrue([xml rangeOfString:@"urn:xmpp:csi:0"].location != NSNotFound,
 				 @"CSI stanza should contain CSI namespace, got: %@", xml);
 	STAssertTrue([xml rangeOfString:@"<iq "].location != NSNotFound ||
-				 [xml rangeOfString:@"<iq>"].location != NSNotFound,
+					 [xml rangeOfString:@"<iq>"].location != NSNotFound,
 				 @"CSI stanza should be an IQ stanza, got: %@", xml);
 	[csi release];
 }

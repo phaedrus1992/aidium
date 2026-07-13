@@ -53,21 +53,20 @@
 				 @"Store stanza should contain private XML namespace, got: %@", xml);
 	STAssertTrue([xml rangeOfString:@"storage:bookmarks"].location != NSNotFound,
 				 @"Store stanza should contain bookmarks namespace, got: %@", xml);
-	STAssertTrue([xml rangeOfString:@"type='set'"].location != NSNotFound,
-				 @"Store stanza should be an IQ-set, got: %@", xml);
+	STAssertTrue([xml rangeOfString:@"type='set'"].location != NSNotFound, @"Store stanza should be an IQ-set, got: %@",
+				 xml);
 	[bookmarks release];
 }
 
 - (void)testStoreXMLWithConference
 {
 	AMPurpleJabberBookmarks *bookmarks = [[AMPurpleJabberBookmarks alloc] init];
-	NSString *storageXML =
-		@"<storage xmlns='storage:bookmarks'>"
-		@"<conference name='Development Chat' autojoin='true' jid='dev@conference.example.org'>"
-		@"<nick>Phaedrus</nick>"
-		@"</conference>"
-		@"<conference name='Support' autojoin='false' jid='support@conference.example.com'/>"
-		@"</storage>";
+	NSString *storageXML = @"<storage xmlns='storage:bookmarks'>"
+						   @"<conference name='Development Chat' autojoin='true' jid='dev@conference.example.org'>"
+						   @"<nick>Phaedrus</nick>"
+						   @"</conference>"
+						   @"<conference name='Support' autojoin='false' jid='support@conference.example.com'/>"
+						   @"</storage>";
 	NSString *xml = [bookmarks _xmlForStoreWithBookmarksXML:storageXML];
 	STAssertNotNil(xml, @"Bookmarks store XML should not be nil");
 	STAssertTrue([xml rangeOfString:@"dev@conference.example.org"].location != NSNotFound,
