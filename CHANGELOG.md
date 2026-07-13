@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- XEP-0352: Client State Indication for XMPP (Jabber) — send `<active/>`/`<inactive/>` on app foreground/background
+- XEP-0048: Bookmarks for XMPP (Jabber) — sync MUC bookmarks via Private XML Storage
+- XEP-0402: PubSub Bookmarks for XMPP (Jabber) — PEP-based bookmarks with automatic sync on connect
+- XEP-0393: Message Styling for XMPP (Jabber) — bold/italic/strikethrough/monospace/blockquote/preformatted text
+
 ### Removed
 - Dead protocol services: AIM/ICQ/OSCAR, MobileMe/.Mac, GTalk, LiveJournal,
   Gadu-Gadu, Novell/GroupWise, Sametime/Meanwhile, Zephyr
