@@ -16,11 +16,12 @@
 
 #import <Adium/AIWindowController.h>
 
-@class AILocalizationButton, ABPeoplePickerView, AIService, ABPerson, AIImageViewWithImagePicker;
+@class AILocalizationButton, AIService, CNContact, AIImageViewWithImagePicker;
+@class CNContactPickerViewController;
+@protocol CNContactPickerDelegate;
 
-@interface OWABSearchWindowController : AIWindowController <NSWindowDelegate> {
+@interface OWABSearchWindowController : AIWindowController <NSWindowDelegate, CNContactPickerDelegate> {
 	// Search View
-	IBOutlet ABPeoplePickerView *peoplePicker;
 
 	IBOutlet AILocalizationButton *selectButton;
 	IBOutlet AILocalizationButton *cancelButton;
@@ -54,7 +55,7 @@
 	// Other variables
 	NSWindow *carryingWindow;
 	id delegate;
-	ABPerson *person;
+	CNContact *person;
 	NSString *screenName;
 	AIService *service;
 	NSData *contactImage;
@@ -69,7 +70,7 @@
 - (id)delegate;
 - (void)setDelegate:(id)newDelegate;
 
-- (ABPerson *)selectedPerson;
+- (CNContact *)selectedPerson;
 - (NSString *)selectedScreenName;
 - (NSString *)selectedName;
 - (NSString *)selectedAlias;

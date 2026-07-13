@@ -292,7 +292,6 @@
 		347E7A9007CAF88200350507 /* AIContactAwayPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 347E7A8E07CAF88200350507 /* AIContactAwayPlugin.m */; };
 		347E7A9907CAF8AF00350507 /* ESContactClientPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 347E7A9407CAF8AE00350507 /* ESContactClientPlugin.m */; };
 		347E7A9C07CAF8AF00350507 /* AIContactIdlePlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 347E7A9707CAF8AF00350507 /* AIContactIdlePlugin.m */; };
-		347E7AA307CAF8DA00350507 /* BGContactNotesPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 347E7AA107CAF8DA00350507 /* BGContactNotesPlugin.m */; };
 		347E7AAA07CAF8EE00350507 /* SAContactOnlineForPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 347E7AA807CAF8EE00350507 /* SAContactOnlineForPlugin.m */; };
 		347E7AB307CAF93700350507 /* AIContactOnlineSincePlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 347E7AB107CAF93700350507 /* AIContactOnlineSincePlugin.m */; };
 		347E7ABC07CAF94A00350507 /* ESContactServersideDisplayName.m in Sources */ = {isa = PBXBuildFile; fileRef = 347E7ABA07CAF94A00350507 /* ESContactServersideDisplayName.m */; };
@@ -1006,9 +1005,10 @@
 		634BCD1F0DDC1542005AF1C2 /* TestMutableStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 634BCD1E0DDC1542005AF1C2 /* TestMutableStringAdditions.m */; };
 		636D8C980E4E95A500E5F558 /* AIAddressBookController.m in Sources */ = {isa = PBXBuildFile; fileRef = 636D8C970E4E95A500E5F558 /* AIAddressBookController.m */; };
 		636D92790E4E95CE00E5F558 /* AIAddressBookController.h in Headers */ = {isa = PBXBuildFile; fileRef = 34E2A2EE07B018B1006735BC /* AIAddressBookController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		636D92840E4E968A00E5F558 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 348E5ACA06D2A74C004C051C /* AddressBook.framework */; };
+		31B7AE7160D2D1EE9E400D44 /* Contacts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4497445109E25D12D66A1BAE /* Contacts.framework */; };
 		636D92BE0E4E97AA00E5F558 /* AIAddressBookUserIconSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3403F4310D2EF01D006B08FB /* AIAddressBookUserIconSource.m */; };
-		636D92CD0E4E990500E5F558 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 348E5ACA06D2A74C004C051C /* AddressBook.framework */; };
+		8034F3A38A326202948CF003 /* Contacts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4497445109E25D12D66A1BAE /* Contacts.framework */; };
+		BC19263F310A762AF5070495 /* ContactsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 918ECF064C006AA9279A3B06 /* ContactsUI.framework */; };
 		636D93400E4E9ED600E5F558 /* AB Display Format Defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4BCAC4E207B59B65006641B9 /* AB Display Format Defaults.plist */; };
 		636D93890E4EA23F00E5F558 /* AdiumAddressBookAction_Yahoo.scpt in Resources */ = {isa = PBXBuildFile; fileRef = 636D93660E4E9FD300E5F558 /* AdiumAddressBookAction_Yahoo.scpt */; };
 		636D938A0E4EA23F00E5F558 /* AdiumAddressBookAction_SMS.scpt in Resources */ = {isa = PBXBuildFile; fileRef = 636D93670E4E9FD300E5F558 /* AdiumAddressBookAction_SMS.scpt */; };
@@ -2273,8 +2273,6 @@
 		347E7A9607CAF8AF00350507 /* CBContactLastSeenPlugin.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CBContactLastSeenPlugin.h; path = Source/CBContactLastSeenPlugin.h; sourceTree = "<group>"; };
 		347E7A9707CAF8AF00350507 /* AIContactIdlePlugin.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = AIContactIdlePlugin.m; path = Source/AIContactIdlePlugin.m; sourceTree = "<group>"; };
 		347E7A9807CAF8AF00350507 /* AIContactIdlePlugin.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AIContactIdlePlugin.h; path = Source/AIContactIdlePlugin.h; sourceTree = "<group>"; };
-		347E7AA107CAF8DA00350507 /* BGContactNotesPlugin.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = BGContactNotesPlugin.m; path = Source/BGContactNotesPlugin.m; sourceTree = "<group>"; };
-		347E7AA207CAF8DA00350507 /* BGContactNotesPlugin.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = BGContactNotesPlugin.h; path = Source/BGContactNotesPlugin.h; sourceTree = "<group>"; };
 		347E7AA807CAF8EE00350507 /* SAContactOnlineForPlugin.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = SAContactOnlineForPlugin.m; path = Source/SAContactOnlineForPlugin.m; sourceTree = "<group>"; };
 		347E7AA907CAF8EE00350507 /* SAContactOnlineForPlugin.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SAContactOnlineForPlugin.h; path = Source/SAContactOnlineForPlugin.h; sourceTree = "<group>"; };
 		347E7AB107CAF93700350507 /* AIContactOnlineSincePlugin.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = AIContactOnlineSincePlugin.m; path = Source/AIContactOnlineSincePlugin.m; sourceTree = "<group>"; };
@@ -2323,7 +2321,8 @@
 		348B25C70A50FBF300B2B972 /* KNShelfSplitView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = KNShelfSplitView.h; path = Source/KNShelfSplitView.h; sourceTree = "<group>"; };
 		348C47150D3B20BE00FB6E7A /* AIMessageWindowOutgoingScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AIMessageWindowOutgoingScrollView.h; path = Source/AIMessageWindowOutgoingScrollView.h; sourceTree = "<group>"; };
 		348C47160D3B20BE00FB6E7A /* AIMessageWindowOutgoingScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AIMessageWindowOutgoingScrollView.m; path = Source/AIMessageWindowOutgoingScrollView.m; sourceTree = "<group>"; };
-		348E5ACA06D2A74C004C051C /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = /System/Library/Frameworks/AddressBook.framework; sourceTree = "<absolute>"; };
+		4497445109E25D12D66A1BAE /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = /System/Library/Frameworks/Contacts.framework; sourceTree = "<absolute>"; };
+		918ECF064C006AA9279A3B06 /* ContactsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ContactsUI.framework; path = /System/Library/Frameworks/ContactsUI.framework; sourceTree = "<absolute>"; };
 		348F50C00935317C00288E41 /* AIStatusItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AIStatusItem.h; path = Frameworks/Adium/Source/AIStatusItem.h; sourceTree = "<group>"; };
 		348F50C10935317C00288E41 /* AIStatusItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AIStatusItem.m; path = Frameworks/Adium/Source/AIStatusItem.m; sourceTree = "<group>"; };
 		348F57910936F3CC00288E41 /* ESEditStatusGroupWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ESEditStatusGroupWindowController.h; path = Source/ESEditStatusGroupWindowController.h; sourceTree = "<group>"; };
@@ -3637,7 +3636,8 @@
 				4D4B487725F3FA35000CEF01 /* libexpat.1.dylib in Frameworks */,
 				3448758E06D1EBDF00DA778C /* Cocoa.framework in Frameworks */,
 				6318DBC20F8D943A00C5E584 /* WebKit.framework in Frameworks */,
-				636D92CD0E4E990500E5F558 /* AddressBook.framework in Frameworks */,
+				8034F3A38A326202948CF003 /* Contacts.framework in Frameworks */,
+				BC19263F310A762AF5070495 /* ContactsUI.framework in Frameworks */,
 				34BD9D5A053146CC000AB133 /* Carbon.framework in Frameworks */,
 				34B588A1058D833A00E7EF0D /* ExceptionHandling.framework in Frameworks */,
 				34C18B0D06CAC95400FF5FF9 /* SystemConfiguration.framework in Frameworks */,
@@ -3664,7 +3664,7 @@
 				4DAA97BB2577C4140000D3F7 /* AutoHyperlinks.framework in Frameworks */,
 				4D4A20EE2577585E008BB8E3 /* MMTabBarView.framework in Frameworks */,
 				4DAA979F2577BEE40000D3F7 /* AIUtilities.framework in Frameworks */,
-				636D92840E4E968A00E5F558 /* AddressBook.framework in Frameworks */,
+				31B7AE7160D2D1EE9E400D44 /* Contacts.framework in Frameworks */,
 				34D836E507CBF593006466F2 /* Carbon.framework in Frameworks */,
 				3448761406D1EC0C00DA778C /* Cocoa.framework in Frameworks */,
 				157A41826D404EB05E6A696A /* FriBidi.framework in Frameworks */,);
@@ -4344,8 +4344,6 @@
 				347E7A9707CAF8AF00350507 /* AIContactIdlePlugin.m */,
 				347E7AB207CAF93700350507 /* AIContactOnlineSincePlugin.h */,
 				347E7AB107CAF93700350507 /* AIContactOnlineSincePlugin.m */,
-				347E7AA207CAF8DA00350507 /* BGContactNotesPlugin.h */,
-				347E7AA107CAF8DA00350507 /* BGContactNotesPlugin.m */,
 				347E7A9607CAF8AF00350507 /* CBContactLastSeenPlugin.h */,
 				074DDB5C07CB413F0033AFF7 /* CBContactLastSeenPlugin.m */,
 				347E7A9507CAF8AE00350507 /* ESContactClientPlugin.h */,
@@ -6169,7 +6167,8 @@
 				31E0CD800C5EEF5200271DB1 /* CoreAudio.framework */,
 				11AA1EF90BCAE9C3003DDA66 /* Quartz.framework */,
 				815D37460A765E83009338C2 /* CoreServices.framework */,
-				348E5ACA06D2A74C004C051C /* AddressBook.framework */,
+				4497445109E25D12D66A1BAE /* Contacts.framework */,
+				918ECF064C006AA9279A3B06 /* ContactsUI.framework */,
 				F5819CE9032124CE01A8010A /* AppKit.framework */,
 				F531836F019E40BB01A80165 /* Carbon.framework */,
 				3448758D06D1EBDF00DA778C /* Cocoa.framework */,
@@ -7892,7 +7891,6 @@
 				347E7A9007CAF88200350507 /* AIContactAwayPlugin.m in Sources */,
 				347E7A9907CAF8AF00350507 /* ESContactClientPlugin.m in Sources */,
 				347E7A9C07CAF8AF00350507 /* AIContactIdlePlugin.m in Sources */,
-				347E7AA307CAF8DA00350507 /* BGContactNotesPlugin.m in Sources */,
 				347E7AAA07CAF8EE00350507 /* SAContactOnlineForPlugin.m in Sources */,
 				347E7AB307CAF93700350507 /* AIContactOnlineSincePlugin.m in Sources */,
 				347E7ABC07CAF94A00350507 /* ESContactServersideDisplayName.m in Sources */,

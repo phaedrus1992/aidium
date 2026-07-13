@@ -20,7 +20,6 @@
 #import <AIUtilities/AIMenuAdditions.h>
 #import <AIUtilities/AIPopUpButtonAdditions.h>
 #import <AIUtilities/AIStringAdditions.h>
-#import <AddressBook/ABPerson.h>
 #import <Adium/AIAccount.h>
 #import <Adium/AIAccountControllerProtocol.h>
 #import <Adium/AIAddressBookController.h>
@@ -32,6 +31,7 @@
 #import <Adium/AIService.h>
 #import <Adium/AIServiceIcons.h>
 #import <Adium/AIServiceMenu.h>
+#import <Contacts/Contacts.h>
 
 #define ADD_CONTACT_PROMPT_NIB @"AddContact"
 #define DEFAULT_GROUP_NAME AILocalizedString(@"Contacts", nil)
@@ -217,9 +217,9 @@
 
 				[account addContact:contact toGroup:group];
 
-				// Remember the ABPerson's unique ID associated with this contact
+				// Remember the CNContact's unique ID associated with this contact
 				if (person)
-					[contact setAddressBookPerson:person];
+					[contact setContactPerson:person];
 
 				// Force this contact to show up on the user's list for a little bit, even if it is offline
 				// Otherwise they have no good feedback that a contact was added at all.
@@ -252,7 +252,7 @@
  */
 - (void)absearchWindowControllerDidSelectPerson:(OWABSearchWindowController *)controller
 {
-	ABPerson *selectedPerson = [controller selectedPerson];
+	CNContact *selectedPerson = [controller selectedPerson];
 
 	if (selectedPerson) {
 		NSString *selectedScreenName = [controller selectedScreenName];

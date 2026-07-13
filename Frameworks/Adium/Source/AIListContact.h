@@ -20,7 +20,7 @@
 
 #define KEY_AB_UNIQUE_ID @"ABUniqueID"
 
-@class ABPerson, AIListGroup, AIMetaContact;
+@class CNContact, AIListGroup, AIMetaContact;
 
 @interface AIListContact : AIListObject {
 	AIAccount *account;
@@ -107,7 +107,7 @@
 - (NSWritingDirection)baseWritingDirection;
 - (void)setBaseWritingDirection:(NSWritingDirection)direction;
 
-- (ABPerson *)addressBookPerson;
-- (void)setAddressBookPerson:(ABPerson *)inPerson;
+- (CNContact *)contactPerson;
+- (void)setContactPerson:(CNContact *)inPerson;
 
 @end

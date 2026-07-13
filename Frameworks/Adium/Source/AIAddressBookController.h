@@ -14,15 +14,14 @@
  * write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-#import <AddressBook/AddressBook.h>
 #import <Adium/AIContactControllerProtocol.h>
 #import <Adium/AIContactObserverManager.h>
 #import <Adium/AIUserIcons.h>
+#import <Contacts/Contacts.h>
 
 #define PREF_GROUP_ADDRESSBOOK @"Address Book"
 #define KEY_AB_ENABLE_IMPORT @"AB Enable Import"
 #define KEY_AB_DISPLAYFORMAT @"AB Display Format String"
-#define KEY_AB_NOTE_SYNC @"AB Note Sync"
 #define KEY_AB_USE_IMAGES @"AB Use AB Images"
 #define KEY_AB_IMAGE_SYNC @"AB Image Sync"
 #define KEY_AB_PREFER_ADDRESS_BOOK_IMAGES @"AB Prefer AB Images"
@@ -46,7 +45,7 @@
 
 typedef enum { AIRequiresAddressBookEntry, AIRequiresNoAddressBookEntry } AIAddressBookContextMenuTag;
 
-@interface AIAddressBookController : NSObject <AIListObjectObserver, ABImageClient> {
+@interface AIAddressBookController : NSObject <AIListObjectObserver> {
   @private
 	NSMenuItem *showInABContextualMenuItem;
 	NSMenuItem *editInABContextualMenuItem;
@@ -71,6 +70,7 @@ typedef enum { AIRequiresAddressBookEntry, AIRequiresNoAddressBookEntry } AIAddr
 
 + (AIService *)serviceFromProperty:(NSString *)property;
 + (NSString *)propertyFromService:(AIService *)service;
-+ (ABPerson *)personForListObject:(AIListObject *)inObject;
++ (CNContact *)personForListObject:(AIListObject *)inObject;
++ (BOOL)isAddressBookAccessGranted;
 
 @end

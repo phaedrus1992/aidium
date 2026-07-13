@@ -17,26 +17,18 @@
 #import "AIAddressBookUserIconSource.h"
 #import "AIAddressBookController.h"
 #import <AIUtilities/AIImageDrawingAdditions.h>
-#import <AddressBook/AddressBook.h>
 #import <Adium/AIMetaContact.h>
 #import <Adium/AIUserIcons.h>
+#import <Contacts/Contacts.h>
 
 #define KEY_AB_IMAGE_SYNC @"AB Image Sync"
 #define KEY_AB_PREFER_ADDRESS_BOOK_IMAGES @"AB Prefer AB Images"
-
-@interface AIAddressBookUserIconSource ()
-- (BOOL)updateFromLocalImageForPerson:(ABPerson *)person object:(AIListObject *)inObject;
-@end
 
 @implementation AIAddressBookUserIconSource
 
 - (id)init
 {
 	if ((self = [super init])) {
-		// Tracking dictionary for asynchronous image loads
-		trackingDict = [[NSMutableDictionary alloc] init];
-		trackingDictPersonToTagNumber = [[NSMutableDictionary alloc] init];
-		trackingDictTagNumberToPerson = [[NSMutableDictionary alloc] init];
 		priority = AIUserIconLowPriority;
 
 		[adium.preferenceController registerPreferenceObserver:self forGroup:PREF_GROUP_ADDRESSBOOK];
@@ -47,11 +39,6 @@
 
 - (void)dealloc
 {
-	[trackingDictPersonToTagNumber release];
-	trackingDictPersonToTagNumber = nil;
-	[trackingDictTagNumberToPerson release];
-	trackingDictTagNumberToPerson = nil;
-
 	[super dealloc];
 }
 
@@ -67,7 +54,7 @@
 	if (!useABImages)
 		return AIUserIconSourceDidNotFindIcon;
 
-	ABPerson *person = [AIAddressBookController personForListObject:inObject];
+	CNContact *person = [AIAddressBookController personForListObject:inObject];
 
 	if (!person)
 		return AIUserIconSourceDidNotFindIcon;
@@ -86,13 +73,9 @@
 
 	if ([self updateFromLocalImageForPerson:person object:inObject]) {
 		return AIUserIconSourceFoundIcon;
-
-	} else if ([self queueDelayedFetchOfImageFromAnySourceForPerson:person object:inObject]) {
-		return AIUserIconSourceLookingUpIconAsynchronously;
-
-	} else {
-		return AIUserIconSourceDidNotFindIcon;
 	}
+
+	return AIUserIconSourceDidNotFindIcon;
 }
 
 /*!
@@ -128,124 +111,18 @@
 	}
 }
 
-#pragma mark Address Book
+#pragma mark Contacts
 /*!
- * @brief Called when the address book completes an asynchronous image lookup
+ * @brief Synchronously fetch image data from a CNContact
  *
- * @param inData NSData representing an NSImage
- * @param tag A tag indicating the lookup with which this call is associated. We use a tracking dictionary,
- * trackingDict, to associate this int back to a usable object.
+ * CNContact imageData is loaded synchronously — no async ABImageClient needed.
+ *
+ * @param person The CNContact to fetch the image from
+ * @param inObject The AIListObject with which to associate the image
  */
-- (void)consumeImageData:(NSData *)inData forTag:(NSInteger)tag
+- (BOOL)updateFromLocalImageForPerson:(CNContact *)person object:(AIListObject *)inObject
 {
-	if (useABImages) {
-		NSNumber *tagNumber;
-		NSImage *image;
-		//		AIListContact	*parentContact;
-		NSString *uniqueID;
-		id setOrObject;
-
-		tagNumber = [NSNumber numberWithInteger:tag];
-
-		// Apply the image to the appropriate listObject
-		image = (inData ? [[[NSImage alloc] initWithData:inData] autorelease] : nil);
-
-		if (image) {
-			// Address book can feed us giant images, which we really don't want to keep around
-			NSSize size = [image size];
-			if (size.width > 96 || size.height > 96)
-				image = [image imageByScalingToSize:NSMakeSize(96, 96)];
-		}
-
-		// Get the object from our tracking dictionary
-		setOrObject = [trackingDict objectForKey:tagNumber];
-
-		if ([setOrObject isKindOfClass:[AIListObject class]]) {
-			AIListObject *listObject = (AIListObject *)setOrObject;
-
-			[AIUserIcons userIconSource:self didDetermineUserIcon:image asynchronously:YES forObject:listObject];
-
-		} else /*if ([setOrObject isKindOfClass:[NSSet class]])*/ {
-			// Apply the image to each listObject at the appropriate priority
-			for (AIListObject *listObject in [[(NSSet *)setOrObject copy] autorelease]) {
-				[AIUserIcons userIconSource:self didDetermineUserIcon:image asynchronously:YES forObject:listObject];
-			}
-		}
-
-		// No further need for the dictionary entries
-		[trackingDict removeObjectForKey:tagNumber];
-
-		if ((uniqueID = [trackingDictTagNumberToPerson objectForKey:tagNumber])) {
-			[trackingDictPersonToTagNumber removeObjectForKey:uniqueID];
-			[trackingDictTagNumberToPerson removeObjectForKey:tagNumber];
-		}
-	}
-}
-
-/*!
- * @brief Queue an asynchronous image fetch for person associated with inObject
- *
- * Image lookups are done asynchronously.  This allows other processing to be done between image calls, improving the
- * perceived speed.  [Evan: I have seen one instance of this being problematic. My localhost loop was broken due to odd
- * network problems, and the asynchronous lookup therefore hung the problem.  Submitted as radar 3977541.]
- *
- * We load from the same ABPerson for multiple AIListObjects, one for each service/UID combination times
- * the number of accounts on that service.  We therefore aggregate the lookups to lower the address book search
- * and image/data creation overhead.
- *
- * @param person The ABPerson to fetch the image from
- * @param inObject The AIListObject with which to ultimately associate the image
- */
-- (BOOL)queueDelayedFetchOfImageFromAnySourceForPerson:(ABPerson *)person object:(AIListObject *)inObject
-{
-	NSInteger tag;
-	NSNumber *tagNumber;
-	NSString *uniqueId;
-
-	uniqueId = [person uniqueId];
-
-	// Check if we already have a tag for the loading of another object with the same
-	// internalObjectID
-	if ((tagNumber = [trackingDictPersonToTagNumber objectForKey:uniqueId])) {
-		id previousValue;
-		NSMutableSet *objectSet;
-
-		previousValue = [trackingDict objectForKey:tagNumber];
-
-		if ([previousValue isKindOfClass:[AIListObject class]]) {
-			// If the old value is just a listObject, create a mutable set with the old object
-			// and the new object
-			if (previousValue != inObject) {
-				objectSet = [NSMutableSet setWithObjects:previousValue, inObject, nil];
-
-				// Store the set in the tracking dict
-				[trackingDict setObject:objectSet forKey:tagNumber];
-			}
-
-		} else /*if ([previousValue isKindOfClass:[NSMutableSet class]])*/ {
-			// Add the new object to the previously-created set
-			[(NSMutableSet *)previousValue addObject:inObject];
-		}
-
-	} else {
-		// Begin the image load
-		tag = [person beginLoadingImageDataForClient:self];
-		tagNumber = [NSNumber numberWithInteger:tag];
-
-		// We need to be able to take a tagNumber and retrieve the object
-		[trackingDict setObject:inObject forKey:tagNumber];
-
-		// We also want to take a person's uniqueID and potentially find an existing tag number
-		[trackingDictPersonToTagNumber setObject:tagNumber forKey:uniqueId];
-		[trackingDictTagNumberToPerson setObject:uniqueId forKey:tagNumber];
-	}
-
-	return YES;
-}
-
-- (BOOL)updateFromLocalImageForPerson:(ABPerson *)person object:(AIListObject *)inObject
-{
-	NSData *imageData = [person imageData];
+	NSData *imageData = person.imageData;
 	NSImage *image = (imageData ? [[[NSImage alloc] initWithData:imageData] autorelease] : nil);
 
 	// Address book can feed us giant images, which we really don't want to keep around
@@ -255,11 +132,6 @@
 			image = [image imageByScalingToSize:NSMakeSize(96, 96)];
 
 		[AIUserIcons userIconSource:self didDetermineUserIcon:image asynchronously:NO forObject:inObject];
-
-		NSInteger tag;
-		if ((tag = [[trackingDictPersonToTagNumber objectForKey:[person uniqueId]] integerValue])) {
-			[ABPerson cancelLoadingImageDataForTag:tag];
-		}
 
 		return YES;
 
