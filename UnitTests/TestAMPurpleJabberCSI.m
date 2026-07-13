@@ -16,7 +16,6 @@
 #import "TestAMPurpleJabberCSI.h"
 
 #import "AMPurpleJabberCSI.h"
-#import "ESPurpleJabberAccount.h"
 
 // Expose private XML-construction method for testing
 @interface AMPurpleJabberCSI (TestUtilities)
