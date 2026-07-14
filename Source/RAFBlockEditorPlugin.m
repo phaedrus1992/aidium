@@ -24,14 +24,24 @@
 
 - (void)installPlugin
 {
-	// Install the Block menu items
-	blockEditorMenuItem =
+	//Install the Block menu items
+	blockEditorMenuItem = [[NSMenuItem alloc] initWithTitle:[AILocalizedString(@"Privacy Settings", nil) stringByAppendingEllipsis]
+													  target:self
+													  action:@selector(showEditor:)
+											   keyEquivalent:@"p"];
+	[blockEditorMenuItem setKeyEquivalentModifierMask:(NSAlternateKeyMask | NSCommandKeyMask)];
+	[adium.menuController addMenuItem:blockEditorMenuItem toLocation:LOC_Adium_Preferences];
+}
+
+- (void)uninstallPlugin
+{
+	blockEditorMenuItem = nil;
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem
 {
 	for (AIAccount *account in adium.accountController.accounts) {
-		if (account.online && [account conformsToProtocol:@protocol(AIAccount_Privacy)])
+		if(account.online && [account conformsToProtocol:@protocol(AIAccount_Privacy)])
 			return YES;
 	}
 
