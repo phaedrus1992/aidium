@@ -43,7 +43,7 @@
 + (void)load
 {
 	// Anything you can do, I can do better...
-	method_exchangeImplementations(class_getInstanceMethod([NSToolbar class], @selector(dealloc)),
+	method_exchangeImplementations(class_getInstanceMethod([NSToolbar class], sel_registerName("dealloc")),
 								   class_getInstanceMethod(self, @selector(deallocWithNotifications)));
 }
 

@@ -43,7 +43,7 @@
 
 	if (userIconData) {
 		[AIUserIcons userIconSource:self
-			   didDetermineUserIcon:[[[NSImage alloc] initWithData:userIconData] autorelease]
+			   didDetermineUserIcon:[[NSImage alloc] initWithData:userIconData]
 					 asynchronously:NO
 						  forObject:inObject];
 

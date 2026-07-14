@@ -104,7 +104,6 @@
 		[adium.accountController accountWithInternalObjectID:[decoder decodeObjectForKey:KEY_ACCOUNT_INTERNAL_ID]];
 
 	if (!myAccount) {
-		[self release];
 		return nil;
 	}
 
@@ -130,18 +129,9 @@
 
 - (void)dealloc
 {
-	[name release];
-	name = nil;
-	[chatCreationDictionary release];
-	chatCreationDictionary = nil;
-	[password release];
-	password = nil;
-
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[adium.chatController unregisterChatObserver:self];
 	[self.account removeObserver:self forKeyPath:@"isOnline"];
-
-	[super dealloc];
 }
 
 /*!
@@ -189,8 +179,7 @@
 									  @"internalObjectID before it was loaded.");
 
 		// We're not like any other bookmarks by the same name.
-		internalObjectID =
-			[[NSString stringWithFormat:@"%@.%@.%@", self.service.serviceID, self.UID, self.account.UID] retain];
+		internalObjectID = [NSString stringWithFormat:@"%@.%@.%@", self.service.serviceID, self.UID, self.account.UID];
 	}
 
 	return internalObjectID;

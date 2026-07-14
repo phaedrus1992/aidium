@@ -43,7 +43,6 @@
 {
 	for (AIProxyListObject *proxy in proxyObjects)
 		[AIProxyListObject releaseProxyObject:proxy];
-	[proxyObjects release];
 	proxyObjects = nil;
 }
 
@@ -53,15 +52,6 @@
 - (void)dealloc
 {
 	[self _clearProxyObjects];
-
-	[propertiesDictionary release];
-	propertiesDictionary = nil;
-	[changedProperties release];
-	changedProperties = nil;
-	[displayDictionary release];
-	displayDictionary = nil;
-
-	[super dealloc];
 }
 
 // Setting properties
@@ -107,8 +97,7 @@
 		// check if it's a primitive type, if so, attempt to unwrap value
 		if (ivarType[0] == _C_ID) {
 
-			[oldValue release];
-			object_setIvar(self, ivar, [value retain]);
+			object_setIvar(self, ivar, value);
 
 		} else if (strcmp(ivarType, @encode(NSInteger)) == 0) {
 
@@ -120,7 +109,7 @@
 				iValue = 0;
 			}
 
-			object_setIvar(self, ivar, (void *)iValue);
+			object_setIvar(self, ivar, (__bridge id)(void *)iValue);
 		}
 	}
 
@@ -175,8 +164,6 @@
 		[self didModifyProperties:keys silent:silent];
 
 		[self didNotifyOfChangedPropertiesSilently:silent];
-
-		[keys release];
 	}
 }
 
@@ -204,9 +191,10 @@
 	id ret = nil;
 	id value = nil;
 
-	Ivar ivar = object_getInstanceVariable(self, [key UTF8String], (void **)&value);
+	Ivar ivar = class_getInstanceVariable([self class], [key UTF8String]);
 
 	if (ivar == NULL) {
+		value = nil;
 
 		// no dictionary -> this property is certainly nil
 		if (propertiesDictionary) {
@@ -214,18 +202,19 @@
 		}
 
 	} else {
+		value = object_getIvar(self, ivar);
 
 		const char *ivarType = ivar_getTypeEncoding(ivar);
 
 		// attempt to wrap it, if we know how
 		if (strcmp(ivarType, @encode(NSInteger)) == 0) {
-			ret = [[[NSNumber alloc] initWithInteger:(NSInteger)value] autorelease];
+			ret = [[NSNumber alloc] initWithInteger:(NSInteger)value];
 		} else if (ivarType[0] != _C_ID) {
 			AILogWithSignature(
 				@" *** This ivar is not an object but an %s! Should not use -valueForProperty: @\"%@\" ***", ivarType,
 				key);
 		} else {
-			ret = [[value retain] autorelease];
+			ret = value;
 		}
 	}
 
@@ -368,7 +357,6 @@
 		array = [[AIMutableOwnerArray alloc] init];
 		[array setDelegate:self];
 		[displayDictionary setObject:array forKey:inKey];
-		[array release];
 	}
 
 	return array;

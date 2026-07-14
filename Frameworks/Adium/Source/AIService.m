@@ -30,7 +30,7 @@
 
 + (void)registerService
 {
-	[[[self alloc] init] autorelease];
+	[[self alloc] init];
 }
 
 /*!
@@ -62,9 +62,9 @@
  */
 - (id)accountWithUID:(NSString *)inUID internalObjectID:(NSString *)inInternalObjectID
 {
-	return [[[[self accountClass] alloc] initWithUID:[self normalizeUID:inUID removeIgnoredCharacters:YES]
-									internalObjectID:inInternalObjectID
-											 service:self] autorelease];
+	return [[[self accountClass] alloc] initWithUID:[self normalizeUID:inUID removeIgnoredCharacters:YES]
+								   internalObjectID:inInternalObjectID
+											service:self];
 }
 
 /*!
@@ -489,7 +489,7 @@
 	/* If all characters are allowed, and we're either not removing ignored characters OR there are none, no change
 	 * needed. */
 	if (!allowedCharacters && (!removeIgnored || !ignoredCharacters))
-		return [[inUID copy] autorelease];
+		return [inUID copy];
 
 	// Prepare a little buffer for our filtered UID
 	NSUInteger destLength = 0;
@@ -547,7 +547,7 @@
  */
 - (NSArray *)accounts
 {
-	NSMutableArray *accountsForThisService = [[[NSMutableArray alloc] init] autorelease];
+	NSMutableArray *accountsForThisService = [[NSMutableArray alloc] init];
 	for (AIAccount *account in adium.accountController.accounts) {
 		if (account.service == self)
 			[accountsForThisService addObject:account];
@@ -562,10 +562,10 @@
 {
 	NSScriptClassDescription *containerClassDesc =
 		(NSScriptClassDescription *)[NSScriptClassDescription classDescriptionForClass:[NSApp class]];
-	return [[[NSNameSpecifier alloc] initWithContainerClassDescription:containerClassDesc
-													containerSpecifier:nil
-																   key:@"services"
-																  name:self.serviceID] autorelease];
+	return [[NSNameSpecifier alloc] initWithContainerClassDescription:containerClassDesc
+												   containerSpecifier:nil
+																  key:@"services"
+																 name:self.serviceID];
 }
 
 - (NSData *)image

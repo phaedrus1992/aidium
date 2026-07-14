@@ -167,12 +167,11 @@ static NSComparisonResult compareSources(id<AIUserIconSource> sourceA, id<AIUser
 #ifdef AIUSERICON_DEBUG
 		AILogWithSignature(@"%@ provided icon for %@", inSource, inObject);
 #endif
-		[inUserIcon retain];
+
 		[self flushCacheForObjectAndParentOnly:inObject];
 
 		[iconCache setObject:inUserIcon forKey:internalObjectID];
 		[iconCacheOwners setObject:inSource forKey:internalObjectID];
-		[inUserIcon release];
 
 	} else {
 		id<AIUserIconSource> source = [self userIconSourceForObject:inObject];
@@ -383,7 +382,6 @@ static NSComparisonResult compareSources(id<AIUserIconSource> sourceA, id<AIUser
 	if (userIcon && inSource) {
 		NSString *internalObjectID = inObject.internalObjectID;
 
-		[userIcon retain];
 		[self flushCacheForObjectOnly:inObject];
 
 #ifdef AIUSERICON_DEBUG
@@ -392,7 +390,6 @@ static NSComparisonResult compareSources(id<AIUserIconSource> sourceA, id<AIUser
 
 		[iconCache setObject:userIcon forKey:internalObjectID];
 		[iconCacheOwners setObject:inSource forKey:internalObjectID];
-		[userIcon release];
 	}
 }
 
@@ -468,7 +465,7 @@ static NSComparisonResult compareSources(id<AIUserIconSource> sourceA, id<AIUser
 	if (!userIcon)
 		userIcon = [AIServiceIcons serviceIconForObject:inObject type:AIServiceIconSmall direction:AIIconNormal];
 
-	return [[userIcon retain] autorelease];
+	return userIcon;
 }
 
 #pragma mark -

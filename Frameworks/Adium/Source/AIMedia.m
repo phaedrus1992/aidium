@@ -26,7 +26,7 @@
 
 + (AIMedia *)mediaWithContact:(AIListContact *)inListContact onAccount:(AIAccount<AIAccount_Media> *)inAccount
 {
-	return [[[self alloc] initWithContact:inListContact onAccount:inAccount] autorelease];
+	return [[self alloc] initWithContact:inListContact onAccount:inAccount];
 }
 
 @synthesize listContact, mediaType, mediaState, account, protocolInfo, sendProgress, receiveProgress;
@@ -48,8 +48,6 @@
 
 	self.account = nil;
 	self.listContact = nil;
-
-	[super dealloc];
 }
 
 - (void)setMediaState:(AIMediaState)inMediaState

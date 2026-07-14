@@ -32,7 +32,7 @@
  */
 + (AIStatus *)status
 {
-	AIStatus *newStatus = [[[self alloc] init] autorelease];
+	AIStatus *newStatus = [[self alloc] init];
 
 	// Configure defaults as necessary
 	[newStatus setAutoReplyIsStatusMessage:YES];
@@ -75,11 +75,7 @@
 }
 
 - (void)dealloc
-{
-	[filteredStatusMessage release];
-
-	[super dealloc];
-}
+{}
 
 /*!
  * @brief Returns an appropriate icon for this state
@@ -144,7 +140,6 @@
 		[statusDict removeObjectForKey:STATUS_STATUS_MESSAGE];
 	}
 
-	[filteredStatusMessage release];
 	filteredStatusMessage = nil;
 }
 
@@ -161,8 +156,7 @@
 - (void)setFilteredStatusMessage:(NSString *)inFilteredStatusMessage
 {
 	if (![filteredStatusMessage isEqualToString:inFilteredStatusMessage]) {
-		[filteredStatusMessage release];
-		filteredStatusMessage = [inFilteredStatusMessage retain];
+		filteredStatusMessage = [inFilteredStatusMessage copy];
 
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"AIStatusFilteredStatusMessageChanged" object:self];
 	}
@@ -444,7 +438,7 @@
  */
 - (NSTextStorage *)scriptingMessage
 {
-	return [[[NSTextStorage alloc] initWithAttributedString:self.statusMessage] autorelease];
+	return [[NSTextStorage alloc] initWithAttributedString:self.statusMessage];
 }
 - (void)setScriptingMessage:(NSTextStorage *)newMessage
 {
@@ -464,7 +458,7 @@
 		AILogWithSignature(@"Applying %@ to %@", self, [adium.accountController accountsWithCurrentStatus:self]);
 		[adium.statusController applyState:self toAccounts:[adium.accountController accountsWithCurrentStatus:self]];
 	} else {
-		AIStatus *newStatus = [[self mutableCopy] autorelease];
+		AIStatus *newStatus = [self mutableCopy];
 		[newStatus setMutabilityType:AITemporaryEditableStatusState];
 		if ([newMessage isKindOfClass:[NSAttributedString class]])
 			[newStatus setStatusMessage:newMessage];
@@ -483,7 +477,7 @@
 }
 - (NSTextStorage *)scriptingAutoreply
 {
-	return [[[NSTextStorage alloc] initWithAttributedString:[self autoReply]] autorelease];
+	return [[NSTextStorage alloc] initWithAttributedString:[self autoReply]];
 }
 - (void)setScriptingAutoreply:(NSTextStorage *)newAutoreply
 {
@@ -501,7 +495,7 @@
 		[adium.statusController savedStatusesChanged];
 		[adium.statusController applyState:self toAccounts:[adium.accountController accountsWithCurrentStatus:self]];
 	} else {
-		AIStatus *newStatus = [[self mutableCopy] autorelease];
+		AIStatus *newStatus = [self mutableCopy];
 		[newStatus setMutabilityType:AITemporaryEditableStatusState];
 		if ([newAutoreply isKindOfClass:[NSAttributedString class]])
 			[newStatus setAutoReply:newAutoreply];
@@ -543,7 +537,7 @@
 		[adium.statusController savedStatusesChanged];
 		[adium.statusController applyState:self toAccounts:[adium.accountController accountsWithCurrentStatus:self]];
 	} else {
-		AIStatus *newStatus = [[self mutableCopy] autorelease];
+		AIStatus *newStatus = [self mutableCopy];
 		[newStatus setMutabilityType:AITemporaryEditableStatusState];
 		[newStatus setStatusType:statusType];
 		[newStatus setStatusName:[adium.statusController defaultStatusNameForType:statusType]];
@@ -572,7 +566,7 @@
 		[adium.statusController savedStatusesChanged];
 		[adium.statusController applyState:self toAccounts:[adium.accountController accountsWithCurrentStatus:self]];
 	} else {
-		AIStatus *newStatus = [[self mutableCopy] autorelease];
+		AIStatus *newStatus = [self mutableCopy];
 		[newStatus setMutabilityType:AITemporaryEditableStatusState];
 		[newStatus setTitle:newTitle];
 		[adium.statusController savedStatusesChanged];

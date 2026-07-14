@@ -30,12 +30,12 @@
 			message:(NSAttributedString *)inMessage
 		  autoreply:(BOOL)inAutoReply
 {
-	return [[[self alloc] initWithChat:inChat
-								source:inSource
-						   destination:inDest
-								  date:inDate
-							   message:inMessage
-							 autoreply:inAutoReply] autorelease];
+	return [[self alloc] initWithChat:inChat
+							   source:inSource
+						  destination:inDest
+								 date:inDate
+							  message:inMessage
+							autoreply:inAutoReply];
 }
 
 // Content Identifier
@@ -62,14 +62,7 @@
 }
 
 - (void)dealloc
-{
-	if (encodedMessage)
-		[encodedMessage release];
-	if (encodedMessageAccountData)
-		[encodedMessageAccountData release];
-
-	[super dealloc];
-}
+{}
 
 - (NSMutableArray *)displayClasses
 {

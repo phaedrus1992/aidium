@@ -44,17 +44,15 @@
 - (AIListContactBubbleCell *)copyWithZone:(NSZone *)zone
 {
 	AIListContactBubbleCell *newCell = [super copyWithZone:zone];
-	newCell->lastBackgroundBezierPath = [lastBackgroundBezierPath retain];
+	newCell->lastBackgroundBezierPath = lastBackgroundBezierPath;
 
 	return newCell;
 }
 
 - (void)dealloc
 {
-	[lastBackgroundBezierPath release];
-	lastBackgroundBezierPath = nil;
 
-	[super dealloc];
+	lastBackgroundBezierPath = nil;
 }
 
 // Give ourselves extra padding to compensate for the rounded bubble
@@ -87,15 +85,15 @@
 			labelColor = [self backgroundColor];
 
 		// Draw our background with rounded corners, retaining the bezier path for use in drawUserIconInRect:position:
-		[lastBackgroundBezierPath release];
-		lastBackgroundBezierPath = [[NSBezierPath bezierPathWithRoundedRect:[self bubbleRectForFrame:rect]] retain];
+
+		lastBackgroundBezierPath = [NSBezierPath bezierPathWithRoundedRect:[self bubbleRectForFrame:rect]];
 
 		// Draw using a (slow) AIGradient if requested, otherwise just fill
 		if (drawWithGradient) {
 
 			NSGradient *gradient =
-				[[[NSGradient alloc] initWithStartingColor:labelColor
-											   endingColor:[labelColor darkenAndAdjustSaturationBy:0.4f]] autorelease];
+				[[NSGradient alloc] initWithStartingColor:labelColor
+											  endingColor:[labelColor darkenAndAdjustSaturationBy:0.4f]];
 			[gradient drawInBezierPath:lastBackgroundBezierPath angle:90.0f];
 
 		} else {
@@ -118,14 +116,12 @@
 	if ([self cellIsSelected]) {
 		NSColor *highlightColor = [self.outlineControlView highlightColor];
 		NSGradient *gradient =
-			highlightColor ? [[[NSGradient alloc]
-								 initWithStartingColor:highlightColor
-										   endingColor:[highlightColor darkenAndAdjustSaturationBy:0.4f]] autorelease]
-						   : [NSGradient selectedControlGradient];
+			highlightColor
+				? [[NSGradient alloc] initWithStartingColor:highlightColor
+												endingColor:[highlightColor darkenAndAdjustSaturationBy:0.4f]]
+				: [NSGradient selectedControlGradient];
 
-		[lastBackgroundBezierPath release];
-		lastBackgroundBezierPath =
-			[[NSBezierPath bezierPathWithRoundedRect:[self bubbleRectForFrame:cellFrame]] retain];
+		lastBackgroundBezierPath = [NSBezierPath bezierPathWithRoundedRect:[self bubbleRectForFrame:cellFrame]];
 
 		// Draw our bubble with the selected control gradient
 		[gradient drawInBezierPath:lastBackgroundBezierPath angle:90.0f];

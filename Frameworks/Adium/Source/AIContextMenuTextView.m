@@ -74,11 +74,11 @@
 				[[submenu delegate] menuNeedsUpdate:submenu];
 			}
 
-			[contextualMenu insertItem:[[menuItem copy] autorelease] atIndex:i++];
+			[contextualMenu insertItem:[menuItem copy] atIndex:i++];
 		}
 	}
 
-	return [contextualMenu autorelease];
+	return contextualMenu;
 }
 
 // Set our string, preserving the selected range
@@ -119,8 +119,6 @@
 																		NSForegroundColorAttributeName, // the blue
 																		nil]];                          // the myth
 			[self setTypingAttributes:textAttribs];
-
-			[textAttribs release];
 		}
 	}
 }
@@ -135,8 +133,6 @@
 	if (attributes) {
 		[self setTypingAttributes:attributes];
 	}
-
-	[attributes release];
 }
 
 - (void)deleteBackward:(id)sender
@@ -153,8 +149,6 @@
 
 			[newTypingAttributes removeObjectForKey:NSLinkAttributeName];
 			[self setTypingAttributes:newTypingAttributes];
-
-			[newTypingAttributes release];
 		}
 	}
 }
@@ -173,7 +167,7 @@
 
 		// Create cachedWhiteColor first time we're called; we'll need it later, repeatedly
 		if (!cachedWhiteColor)
-			cachedWhiteColor = [[NSColor whiteColor] retain];
+			cachedWhiteColor = [NSColor whiteColor];
 
 		[self setBackgroundColor:cachedWhiteColor];
 	}

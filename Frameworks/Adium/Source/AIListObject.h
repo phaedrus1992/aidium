@@ -84,7 +84,7 @@ typedef enum {
 @end
 
 @interface AIListObject : ESObjectWithProperties {
-	AIService *service;
+	__unsafe_unretained AIService *service;
 
 	NSString *UID;
 	NSString *internalObjectID;

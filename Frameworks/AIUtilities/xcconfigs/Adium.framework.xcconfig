@@ -12,3 +12,6 @@ FRAMEWORK_VERSION = A
 // rather than into the shared build dir, so add its output path
 // here so the PCH import <AIUtilities/AIStringUtilities.h> resolves.
 FRAMEWORK_SEARCH_PATHS = $(inherited) $(SRCROOT)/Frameworks/AIUtilities/build/$(CONFIGURATION)
+
+// ARC migration (issue #37)
+CLANG_ENABLE_OBJC_ARC = YES
