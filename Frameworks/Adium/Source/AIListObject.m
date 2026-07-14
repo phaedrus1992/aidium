@@ -68,12 +68,6 @@
 	return self;
 }
 
-/*!
- * @brief Deallocate
- */
-- (void)dealloc
-{}
-
 - (void)setupObservedValues
 {
 	[self setValue:[self preferenceForKey:@"Visible" group:PREF_GROUP_ALWAYS_VISIBLE]
