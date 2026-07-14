@@ -41,7 +41,7 @@
 }
 
 - (id)init
-	{
+{
 	if ((self = [super init])) {
 		self.download = nil;
 		window = nil;
@@ -49,8 +49,6 @@
 
 	return self;
 }
-
-
 
 - (IBAction)cancel:(id)sender
 {
@@ -60,18 +58,18 @@
 }
 
 - (void)sheetDidDismiss:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
-	{
+{
 	[self cancel:nil];
 }
 
 - (void)closeInstaller
-	{
+{
 	if (window)
 		[window close];
 }
 
 - (void)installXtraAtURL:(NSURL *)url
-	{
+{
 	if ([[url host] isEqualToString:@"adiumyextras.com"] || [[url host] isEqualToString:@"www.adiumyextras.com"] ||
 		ALLOW_UNTRUSTED_XTRAS) {
 		NSURL *urlToDownload;
@@ -101,7 +99,6 @@
 		self.download = [[NSURLDownload alloc] initWithRequest:request delegate:self];
 		//		[download setDestination:dest allowOverwrite:YES];
 
-
 	} else {
 		NSRunAlertPanel(
 			AILocalizedString(@"Nontrusted Xtra", nil),
@@ -113,7 +110,7 @@
 }
 
 - (void)updateInfoText
-	{
+{
 	NSInteger percentComplete =
 		(downloadSize > 0 ? (NSUInteger)(((double)amountDownloaded / (double)downloadSize) * 100.0) : 0);
 	NSString *installText = [NSString
@@ -124,7 +121,7 @@
 }
 
 - (void)download:(NSURLDownload *)connection didReceiveResponse:(NSHTTPURLResponse *)response
-	{
+{
 	self.xtraName = [[response allHeaderFields] objectForKey:@"X-Xtraname"];
 	amountDownloaded = 0;
 	downloadSize = [response expectedContentLength];
@@ -135,7 +132,7 @@
 }
 
 - (void)download:(NSURLDownload *)connection decideDestinationWithSuggestedFilename:(NSString *)filename
-	{
+{
 	NSString *downloadDir = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString uuid]];
 	[[NSFileManager defaultManager] createDirectoryAtPath:downloadDir
 							  withIntermediateDirectories:YES
@@ -147,7 +144,7 @@
 }
 
 - (void)download:(NSURLDownload *)download didReceiveDataOfLength:(NSUInteger)length
-	{
+{
 	amountDownloaded += (long long)length;
 	if (downloadSize != NSURLResponseUnknownLength) {
 		[progressBar setDoubleValue:(double)amountDownloaded];
@@ -157,12 +154,12 @@
 }
 
 - (BOOL)download:(NSURLDownload *)download shouldDecodeSourceDataOfMIMEType:(NSString *)encodingType
-	{
+{
 	return NO;
 }
 
 - (void)download:(NSURLDownload *)inDownload didFailWithError:(NSError *)error
-	{
+{
 	NSString *errorMsg;
 
 	errorMsg = [NSString stringWithFormat:AILocalizedString(@"An error occurred while downloading this Xtra: %@.", nil),
@@ -173,7 +170,7 @@
 }
 
 - (void)setQuarantineProperties:(NSDictionary *)dict forDirectory:(FSRef *)dir
-	{
+{
 	FSIterator iterator;
 
 	if (FSOpenIterator(dir, kFSIterateFlat, &iterator) != noErr) {
@@ -198,7 +195,7 @@
 }
 
 - (void)downloadDidFinish:(NSURLDownload *)inDownload
-	{
+{
 	NSString *lastPathComponent = [self.dest lastPathComponent];
 	NSString *pathExtension = [[lastPathComponent pathExtension] lowercaseString];
 	BOOL decompressionSuccess = YES, success = NO;
@@ -217,7 +214,6 @@
 		} @catch (id exc) {
 			decompressionSuccess = NO;
 		}
-
 
 		if (decompressionSuccess) {
 			if ([pathExtension isEqualToString:@"tgz"]) {

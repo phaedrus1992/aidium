@@ -77,7 +77,6 @@
 	} else {
 		[newABSearchWindow showWindow:nil];
 	}
-
 }
 
 /*!
@@ -194,8 +193,7 @@
 
 #pragma mark CNContactPickerDelegate
 
-- (void)contactPicker:(CNContactPicker *)picker
-	didSelectContactProperty:(CNContactProperty *)contactProperty
+- (void)contactPicker:(CNContactPicker *)picker didSelectContactProperty:(CNContactProperty *)contactProperty
 {
 	CNContact *selectedContact = contactProperty.contact;
 	CNInstantMessageAddress *imAddress = contactProperty.value;

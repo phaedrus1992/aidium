@@ -42,12 +42,12 @@ typedef enum { ALERT_TYPE_ERROR, ALERT_TYPE_QUESTION } AlertType;
 	NSDictionary *infoCopy = [userInfo copy];
 
 	switch (type) {
-		case ALERT_TYPE_QUESTION:
-			[questionQueue addObject:infoCopy];
-			break;
-		case ALERT_TYPE_ERROR:
-			[errorQueue addObject:infoCopy];
-			break;
+	case ALERT_TYPE_QUESTION:
+		[questionQueue addObject:infoCopy];
+		break;
+	case ALERT_TYPE_ERROR:
+		[errorQueue addObject:infoCopy];
+		break;
 	}
 
 	if (currentAlert == nil)
