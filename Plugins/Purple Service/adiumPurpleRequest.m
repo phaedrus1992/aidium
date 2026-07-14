@@ -78,7 +78,7 @@ NSString *processButtonText(NSString *inButtonText)
 									  options:NSLiteralSearch
 										range:NSMakeRange(0, [processedText length])];
 
-	return [processedText autorelease];
+	return processedText;
 }
 
 static void *adiumPurpleRequestInput(const char *title, const char *primary, const char *secondary,
@@ -99,7 +99,7 @@ static void *adiumPurpleRequestInput(const char *title, const char *primary, con
 		// Ignore purple trying to get an account's password; we'll feed it the password and reconnect if it gets here,
 		// somehow.
 		if (primaryString && [primaryString rangeOfString:@"Enter password for "].location != NSNotFound)
-			return [NSNull null];
+			return (__bridge void *)[NSNull null];
 
 		NSMutableDictionary *infoDict;
 		NSString *okButtonText = processButtonText([NSString stringWithUTF8String:okText]);
@@ -127,7 +127,7 @@ static void *adiumPurpleRequestInput(const char *title, const char *primary, con
 
 		requestController = [ESPurpleRequestWindowController showInputWindowWithDict:infoDict];
 
-		return requestController;
+		return (__bridge_retained void *)requestController;
 	}
 }
 
@@ -245,7 +245,7 @@ static void *adiumPurpleRequestActionWithIcon(const char *title, const char *pri
 
 			if (icon_data && (icon_size > 0)) {
 				NSData *imageData = [NSData dataWithBytes:icon_data length:icon_size];
-				NSImage *image = [[[NSImage alloc] initWithData:imageData] autorelease];
+				NSImage *image = [[NSImage alloc] initWithData:imageData];
 				if (image)
 					[infoDict setObject:image forKey:@"Image"];
 			}
@@ -253,7 +253,7 @@ static void *adiumPurpleRequestActionWithIcon(const char *title, const char *pri
 			requestController = [ESPurpleRequestActionController showActionWindowWithDict:infoDict];
 		}
 
-		return requestController;
+		return (__bridge_retained void *)requestController;
 	}
 }
 
@@ -304,7 +304,7 @@ static void *adiumPurpleRequestFields(const char *title, const char *primary, co
 			AILog(@"adiumPurpleRequestFields: %s\n%s\n%s ", (title ? title : ""), (primary ? primary : ""),
 				  (secondary ? secondary : ""));
 
-			id self = (CBPurpleAccount *)account->ui_data; // for AILocalizedString
+			id self = (__bridge CBPurpleAccount *)account->ui_data; // for AILocalizedString
 
 			requestController = [[AMPurpleRequestFieldsController alloc]
 				initWithTitle:(title ? [NSString stringWithUTF8String:title] : nil)
@@ -314,11 +314,11 @@ static void *adiumPurpleRequestFields(const char *title, const char *primary, co
 							 :okCb
 				   cancelText:(cancelText ? [NSString stringWithUTF8String:cancelText]
 										  : AILocalizedString(@"Cancel", nil))callback:cancelCb
-					  account:(CBPurpleAccount *)account->ui_data
+					  account:(__bridge CBPurpleAccount *)account->ui_data
 						  who:(who ? [NSString stringWithUTF8String:who] : nil)conversation:conv
 					 userData:userData];
 		}
-		return requestController;
+		return (__bridge_retained void *)requestController;
 	}
 }
 
@@ -398,7 +398,7 @@ static void *adiumPurpleRequestFile(const char *title, const char *filename, gbo
 static void adiumPurpleRequestClose(PurpleRequestType type, void *uiHandle)
 {
 	@autoreleasepool {
-		id ourHandle = (id)uiHandle;
+		id ourHandle = (__bridge_transfer id)uiHandle;
 		AILogWithSignature(@"%@ (%i)", uiHandle, [ourHandle respondsToSelector:@selector(purpleRequestClose)]);
 		if ([ourHandle respondsToSelector:@selector(purpleRequestClose)]) {
 			[ourHandle purpleRequestClose];
@@ -442,7 +442,7 @@ PurpleRequestUiOps *adium_purple_request_get_ui_ops()
 + (void)requestCloseWithHandle:(id)handle
 {
 	AILogWithSignature(@"%@", handle);
-	purple_request_close_with_handle(handle);
+	purple_request_close_with_handle((__bridge void *)handle);
 }
 
 + (void)returnedPassword:(NSString *)password returnCode:(AIPasswordPromptReturn)returnCode context:(id)context

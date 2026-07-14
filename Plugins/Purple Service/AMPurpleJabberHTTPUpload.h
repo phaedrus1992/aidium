@@ -21,6 +21,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface AMPurpleJabberHTTPUpload : NSObject {
+  @package
 	ESPurpleJabberAccount *_account;
 
 	// Discovery state

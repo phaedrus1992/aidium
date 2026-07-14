@@ -130,7 +130,7 @@
 + (NSAttributedString *)attributedStringFromStyledBody:(NSString *)body font:(NSFont *)baseFont
 {
 	if (body == nil || [body length] == 0) {
-		return [[[NSAttributedString alloc] init] autorelease];
+		return [[NSAttributedString alloc] init];
 	}
 
 	NSAttributedString *result = [self _parseBlocksInBody:body font:baseFont];
@@ -142,7 +142,7 @@
 
 + (NSAttributedString *)_parseBlocksInBody:(NSString *)body font:(NSFont *)baseFont
 {
-	NSMutableAttributedString *result = [[[NSMutableAttributedString alloc] init] autorelease];
+	NSMutableAttributedString *result = [[NSMutableAttributedString alloc] init];
 
 	NSArray *lines = [body componentsSeparatedByString:@"\n"];
 	NSUInteger i = 0;
@@ -172,12 +172,11 @@
 			// Join pre block lines
 			NSString *preText = [preLines componentsJoinedByString:@"\n"];
 			if ([preText length] > 0) {
-				NSMutableAttributedString *preAttr =
-					[[[NSMutableAttributedString alloc] initWithString:preText] autorelease];
+				NSMutableAttributedString *preAttr = [[NSMutableAttributedString alloc] initWithString:preText];
 				NSFont *monoFont = [NSFont userFixedPitchFontOfSize:[baseFont pointSize]];
 				[preAttr addAttribute:NSFontAttributeName value:monoFont range:NSMakeRange(0, [preText length])];
 				if ([result length] > 0) {
-					[result appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n"] autorelease]];
+					[result appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
 				}
 				[result appendAttributedString:preAttr];
 			}
@@ -207,7 +206,7 @@
 			NSAttributedString *quoteAttr = [self _parseBlocksInBody:quoteBody font:baseFont];
 
 			if ([result length] > 0) {
-				[result appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n"] autorelease]];
+				[result appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
 			}
 			NSUInteger quoteStart = [result length];
 			[result appendAttributedString:quoteAttr];
@@ -223,7 +222,6 @@
 							[style setHeadIndent:[style headIndent] + 20.0];
 							[style setFirstLineHeadIndent:[style firstLineHeadIndent] + 20.0];
 							[result addAttribute:NSParagraphStyleAttributeName value:style range:innerRange];
-							[style release];
 						}];
 			continue;
 		}
@@ -231,13 +229,13 @@
 		// Plain paragraph — process inline spans
 		if ([line length] > 0) {
 			if ([result length] > 0) {
-				[result appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n"] autorelease]];
+				[result appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
 			}
 			[self _appendLine:line toResult:result baseFont:baseFont depth:0];
 		} else {
 			// Empty line — preserve blank line separator
 			if ([result length] > 0) {
-				[result appendAttributedString:[[[NSAttributedString alloc] initWithString:@"\n"] autorelease]];
+				[result appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n"]];
 			}
 		}
 
@@ -274,7 +272,7 @@
 					   depth:(NSUInteger)depth
 {
 	if (depth >= AMPARSE_MAX_DEPTH) {
-		NSMutableAttributedString *plain = [[[NSMutableAttributedString alloc] initWithString:text] autorelease];
+		NSMutableAttributedString *plain = [[NSMutableAttributedString alloc] initWithString:text];
 		[self _applyFormattingToRange:NSMakeRange(0, [text length])
 							 inString:plain
 							 baseFont:baseFont
@@ -288,7 +286,7 @@
 
 	NSUInteger len = [text length];
 	NSUInteger i = 0;
-	NSMutableString *plainBuffer = [[[NSMutableString alloc] init] autorelease];
+	NSMutableString *plainBuffer = [[NSMutableString alloc] init];
 
 	while (i < len) {
 		unichar c = [text characterAtIndex:i];
@@ -392,7 +390,7 @@
 		return;
 	}
 
-	NSMutableAttributedString *plainPart = [[[NSMutableAttributedString alloc] initWithString:buffer] autorelease];
+	NSMutableAttributedString *plainPart = [[NSMutableAttributedString alloc] initWithString:buffer];
 	[self _applyFormattingToRange:NSMakeRange(0, [buffer length])
 						 inString:plainPart
 						 baseFont:baseFont
@@ -428,7 +426,7 @@
 
 		NSRange contentRange = NSMakeRange(pos + 1, closerPos - pos - 1);
 		NSString *codeText = [text substringWithRange:contentRange];
-		NSMutableAttributedString *codeAttr = [[[NSMutableAttributedString alloc] initWithString:codeText] autorelease];
+		NSMutableAttributedString *codeAttr = [[NSMutableAttributedString alloc] initWithString:codeText];
 		[self _applyFormattingToRange:NSMakeRange(0, [codeText length])
 							 inString:codeAttr
 							 baseFont:baseFont

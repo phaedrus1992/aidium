@@ -19,6 +19,7 @@
 @class ESPurpleJabberAccount;
 
 @interface AMPurpleJabberMAM : NSObject {
+  @package
 	ESPurpleJabberAccount *_account;
 	NSString *_activeQueryID;
 	NSString *_lastArchiveID;

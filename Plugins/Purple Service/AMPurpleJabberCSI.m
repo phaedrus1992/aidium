@@ -81,7 +81,7 @@
 		// Intercept CSI enable handshake response (<enabled/>)
 		PurplePlugin *jabber = purple_find_prpl("prpl-jabber");
 		if (jabber) {
-			purple_signal_connect(jabber, "jabber-receiving-xmlnode", self,
+			purple_signal_connect(jabber, "jabber-receiving-xmlnode", (__bridge void *)self,
 								  PURPLE_CALLBACK(AMPurpleJabberCSI_received_xmlnode_cb), (__bridge void *)self);
 		}
 	}
@@ -93,8 +93,6 @@
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	purple_signals_disconnect_by_handle((__bridge void *)self);
-
-	[super dealloc];
 }
 
 #pragma mark - Notifications

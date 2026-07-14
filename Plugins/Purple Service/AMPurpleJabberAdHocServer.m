@@ -30,7 +30,7 @@ static void AMPurpleJabberAdHocServer_received_data_cb(PurpleConnection *gc, xml
 {
 	@autoreleasepool {
 
-		AMPurpleJabberAdHocServer *self = this;
+		AMPurpleJabberAdHocServer *self = (__bridge AMPurpleJabberAdHocServer *)this;
 		PurpleAccount *account = [self.account purpleAccount];
 		if (purple_account_get_connection(account) == gc) {
 			if (strcmp((*packet)->name, "iq")) {
@@ -62,7 +62,7 @@ static void xmlnode_sent_cb(PurpleConnection *gc, xmlnode **packet, gpointer thi
 {
 	@autoreleasepool {
 		xmlnode *xml = *packet;
-		AMPurpleJabberAdHocServer *self = this;
+		AMPurpleJabberAdHocServer *self = (__bridge AMPurpleJabberAdHocServer *)this;
 		PurpleAccount *account = [self.account purpleAccount];
 		if (xml && purple_account_get_connection(account) == gc) {
 			if (!strcmp(xml->name, "iq")) {
@@ -106,22 +106,20 @@ static void xmlnode_sent_cb(PurpleConnection *gc, xmlnode **packet, gpointer thi
 		PurplePlugin *jabber = purple_find_prpl("prpl-jabber");
 		if (!jabber) {
 			AILog(@"Unable to locate jabber prpl");
-			[self release];
 			return nil;
 		}
 
-		purple_signal_connect(jabber, "jabber-receiving-xmlnode", self,
-							  PURPLE_CALLBACK(AMPurpleJabberAdHocServer_received_data_cb), self);
-		purple_signal_connect(jabber, "jabber-sending-xmlnode", self, PURPLE_CALLBACK(xmlnode_sent_cb), self);
+		purple_signal_connect(jabber, "jabber-receiving-xmlnode", (__bridge void *)self,
+							  PURPLE_CALLBACK(AMPurpleJabberAdHocServer_received_data_cb), (__bridge void *)self);
+		purple_signal_connect(jabber, "jabber-sending-xmlnode", (__bridge void *)self, PURPLE_CALLBACK(xmlnode_sent_cb),
+							  (__bridge void *)self);
 	}
 	return self;
 }
 
 - (void)dealloc
 {
-	purple_signals_disconnect_by_handle(self);
-	[commands release];
-	[super dealloc];
+	purple_signals_disconnect_by_handle((__bridge void *)self);
 }
 
 - (void)addCommand:(NSString *)node delegate:(id<AMPurpleJabberAdHocServerDelegate>)delegate name:(NSString *)name
@@ -174,7 +172,6 @@ static void xmlnode_sent_cb(PurpleConnection *gc, xmlnode **packet, gpointer thi
 																							 jid:jid
 																							iqid:iqid];
 			[[delegate nonretainedObjectValue] adHocServer:self executeCommand:cmd];
-			[cmd release];
 			return YES;
 		}
 	}

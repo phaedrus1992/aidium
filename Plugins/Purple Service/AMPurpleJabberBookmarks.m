@@ -152,8 +152,6 @@ static void AMPurpleJabberBookmarks_received_xmlnode_cb(PurpleConnection *gc, xm
 - (void)dealloc
 {
 	purple_signals_disconnect_by_handle((__bridge void *)self);
-
-	[super dealloc];
 }
 
 #pragma mark - Public

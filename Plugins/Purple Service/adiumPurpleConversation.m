@@ -52,7 +52,7 @@ static void adiumPurpleConvDestroy(PurpleConversation *conv)
 		 * calls this when we don't ask it to (for example if we are summarily kicked from a chat room and purple closes
 		 * the 'window').
 		 */
-		AIChat *chat = (AIChat *)conv->ui_data;
+		AIChat *chat = (__bridge_transfer AIChat *)conv->ui_data;
 
 		AILogWithSignature(@"%p: %@", conv, chat);
 
@@ -61,7 +61,6 @@ static void adiumPurpleConvDestroy(PurpleConversation *conv)
 			[accountLookup(purple_conversation_get_account(conv)) chatWasDestroyed:chat];
 
 			[chat setIdentifier:nil];
-			[chat release];
 			conv->ui_data = nil;
 		}
 	}
@@ -145,7 +144,7 @@ static NSString *attributedStringToSimpleHTML(NSAttributedString *attrStr)
 		NSString *content = [plainText substringWithRange:range];
 
 		// HTML-escape the text content
-		NSMutableString *escaped = [[content mutableCopy] autorelease];
+		NSMutableString *escaped = [content mutableCopy];
 		[escaped replaceOccurrencesOfString:@"&"
 								 withString:@"&amp;"
 									options:NSLiteralSearch
@@ -251,7 +250,7 @@ static void adiumPurpleConvWriteIm(PurpleConversation *conv, const char *who, co
 				// XEP-0393 Message Styling: apply styling to raw body text before image processing
 				if ([adiumAccount isKindOfClass:[ESPurpleJabberAccount class]]) {
 					ESPurpleJabberAccount *jabberAccount = (ESPurpleJabberAccount *)adiumAccount;
-					if (![jabberAccount.messageStylingController lastMessageHadUnstyled]) {
+					if (![jabberAccount->messageStylingController lastMessageHadUnstyled]) {
 						NSFont *baseFont = [NSFont systemFontOfSize:12.0];
 						NSAttributedString *styledBody =
 							[AMPurpleJabberMessageStylingParser attributedStringFromStyledBody:messageString

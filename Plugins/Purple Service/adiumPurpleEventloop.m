@@ -51,7 +51,7 @@ static inline dispatch_source_t sourceForTag(unsigned long tag)
 }
 static inline void setSourceForTag(dispatch_source_t source, unsigned long tag)
 {
-	CFDictionarySetValue(sourceInfoDict(), (void *)tag, source);
+	CFDictionarySetValue(sourceInfoDict(), (void *)tag, (__bridge const void *)source);
 }
 static inline void removeSourceForTag(unsigned long tag)
 {
@@ -72,8 +72,6 @@ gboolean adium_source_remove(guint tag)
 	BOOL success = (dispatch_source_testcancel(src) != 0);
 
 	removeSourceForTag(tag);
-
-	dispatch_release(src);
 
 	return success;
 }

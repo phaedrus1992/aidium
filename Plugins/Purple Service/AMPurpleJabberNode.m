@@ -42,7 +42,7 @@ static void AMPurpleJabberNode_received_data_cb(PurpleConnection *gc, xmlnode **
 {
 	@autoreleasepool {
 
-		AMPurpleJabberNode *self = (AMPurpleJabberNode *)this;
+		AMPurpleJabberNode *self = (__bridge AMPurpleJabberNode *)this;
 
 		// we're receiving *all* packets, so let's filter out those that don't concern us
 		const char *from = xmlnode_get_attrib(*packet, "from");
@@ -169,8 +169,8 @@ static void AMPurpleJabberNode_received_data_cb(PurpleConnection *gc, xmlnode **
 									   name:queryName ? [NSString stringWithUTF8String:queryName] : nil
 								 connection:self.gc];
 							// propagate delegates
-							newnode.delegates = [NSMakeCollectable(CFArrayCreateMutableCopy(
-								kCFAllocatorDefault, /*capacity*/ 0, (CFArrayRef)self.delegates)) autorelease];
+							newnode.delegates = CFBridgingRelease(CFArrayCreateMutableCopy(
+								kCFAllocatorDefault, /*capacity*/ 0, (CFArrayRef)self.delegates));
 							[newItems addObject:newnode];
 							// check if we're a conference service
 							if ([[self jid] rangeOfString:@"@"].location ==
@@ -187,7 +187,6 @@ static void AMPurpleJabberNode_received_data_cb(PurpleConnection *gc, xmlnode **
 									[newnode fetchInfo];
 							} else
 								[newnode fetchInfo];
-							[newnode release];
 						}
 					}
 				}
@@ -208,7 +207,6 @@ static void AMPurpleJabberNode_received_data_cb(PurpleConnection *gc, xmlnode **
 		PurplePlugin *jabber = purple_find_prpl("prpl-jabber");
 		if (!jabber) {
 			AILog(@"Unable to locate jabber prpl");
-			[self release];
 			return nil;
 		}
 		self.jid = _jid;
@@ -216,11 +214,10 @@ static void AMPurpleJabberNode_received_data_cb(PurpleConnection *gc, xmlnode **
 		self.name = _name;
 		self.gc = _gc;
 		self.delegates =
-			[NSMakeCollectable(CFArrayCreateMutable(kCFAllocatorDefault, /*capacity*/ 0, &nonretainingArrayCallbacks))
-				autorelease];
+			CFBridgingRelease(CFArrayCreateMutable(kCFAllocatorDefault, /*capacity*/ 0, &nonretainingArrayCallbacks));
 
-		purple_signal_connect(jabber, "jabber-receiving-xmlnode", self,
-							  PURPLE_CALLBACK(AMPurpleJabberNode_received_data_cb), self);
+		purple_signal_connect(jabber, "jabber-receiving-xmlnode", (__bridge void *)self,
+							  PURPLE_CALLBACK(AMPurpleJabberNode_received_data_cb), (__bridge void *)self);
 	}
 	return self;
 }
@@ -230,7 +227,6 @@ static void AMPurpleJabberNode_received_data_cb(PurpleConnection *gc, xmlnode **
 	PurplePlugin *jabber = purple_find_prpl("prpl-jabber");
 	if (!jabber) {
 		AILog(@"Unable to locate jabber prpl");
-		[self release];
 		return nil;
 	}
 	AMPurpleJabberNode *copy = [[AMPurpleJabberNode alloc] init];
@@ -243,30 +239,20 @@ static void AMPurpleJabberNode_received_data_cb(PurpleConnection *gc, xmlnode **
 	copy.gc = self.gc;
 
 	copy.delegates =
-		[NSMakeCollectable(CFArrayCreateMutable(kCFAllocatorDefault, /*capacity*/ 0, &nonretainingArrayCallbacks))
-			autorelease];
+		CFBridgingRelease(CFArrayCreateMutable(kCFAllocatorDefault, /*capacity*/ 0, &nonretainingArrayCallbacks));
 	copy.features = self.features;
 	copy.identities = self.identities;
 	copy.itemsArray = self.itemsArray;
 
-	purple_signal_connect(jabber, "jabber-receiving-xmlnode", copy,
-						  PURPLE_CALLBACK(AMPurpleJabberNode_received_data_cb), copy);
+	purple_signal_connect(jabber, "jabber-receiving-xmlnode", (__bridge void *)copy,
+						  PURPLE_CALLBACK(AMPurpleJabberNode_received_data_cb), (__bridge void *)copy);
 
 	return copy;
 }
 
 - (void)dealloc
 {
-	purple_signals_disconnect_by_handle(self);
-	[jid release];
-	[node release];
-	[features release];
-	[identities release];
-	[items release];
-	[name release];
-	[commands release];
-	[delegates release];
-	[super dealloc];
+	purple_signals_disconnect_by_handle((__bridge void *)self);
 }
 
 - (void)fetchItems

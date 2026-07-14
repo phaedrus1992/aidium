@@ -47,8 +47,9 @@
 	AMPurpleJabberCSI *csiController;
 	AMPurpleJabberBookmarks *bookmarksController;
 	AMPurpleJabberPubsubBookmarks *pubsubBookmarksController;
+  @public
 	AMPurpleJabberMessageStyling *messageStylingController;
-
+  @protected
 	NSMutableArray *gateways;
 }
 

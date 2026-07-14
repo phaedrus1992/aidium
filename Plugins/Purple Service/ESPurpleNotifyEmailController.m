@@ -65,8 +65,7 @@
 	titleAttributes = [NSDictionary dictionaryWithObjectsAndKeys:titleFont, NSFontAttributeName, centeredParagraphStyle,
 																 NSParagraphStyleAttributeName, nil];
 
-	[message appendAttributedString:[[[NSAttributedString alloc] initWithString:title
-																	 attributes:titleAttributes] autorelease]];
+	[message appendAttributedString:[[NSAttributedString alloc] initWithString:title attributes:titleAttributes]];
 
 	// Message
 	NSString *numberMessage;
@@ -97,8 +96,8 @@
 		[NSDictionary dictionaryWithObjectsAndKeys:messageFont, NSFontAttributeName, centeredParagraphStyle,
 												   NSParagraphStyleAttributeName, nil];
 
-	[message appendAttributedString:[[[NSAttributedString alloc] initWithString:numberMessage
-																	 attributes:numberMessageAttributes] autorelease]];
+	[message appendAttributedString:[[NSAttributedString alloc] initWithString:numberMessage
+																	attributes:numberMessageAttributes]];
 
 	if (count == 1) {
 		BOOL haveFroms = (froms != NULL);
@@ -118,12 +117,11 @@
 			if (haveFroms) {
 				NSString *fromString = [NSString stringWithUTF8String:(*froms)];
 				if (fromString && [fromString length]) {
-					[message appendAttributedString:[[[NSAttributedString alloc]
+					[message appendAttributedString:[[NSAttributedString alloc]
 														initWithString:AILocalizedString(@"From: ", nil)
-															attributes:fieldAttributed] autorelease]];
-					[message appendAttributedString:[[[NSAttributedString alloc] initWithString:fromString
-																					 attributes:infoAttributed]
-														autorelease]];
+															attributes:fieldAttributed]];
+					[message appendAttributedString:[[NSAttributedString alloc] initWithString:fromString
+																					attributes:infoAttributed]];
 				}
 			}
 
@@ -134,13 +132,12 @@
 			if (haveSubjects) {
 				NSString *subjectString = [NSString stringWithUTF8String:(*subjects)];
 				if (subjectString && [subjectString length]) {
-					[message appendAttributedString:[[[NSAttributedString alloc]
+					[message appendAttributedString:[[NSAttributedString alloc]
 														initWithString:AILocalizedString(@"Subject: ", nil)
-															attributes:fieldAttributed] autorelease]];
+															attributes:fieldAttributed]];
 					AILog(@"%@: %@ appending %@", self, message, subjectString);
-					[message appendAttributedString:[[[NSAttributedString alloc] initWithString:subjectString
-																					 attributes:infoAttributed]
-														autorelease]];
+					[message appendAttributedString:[[NSAttributedString alloc] initWithString:subjectString
+																					attributes:infoAttributed]];
 				} else {
 					AILog(@"Got an invalid subjectString from %s", *subjects);
 				}
@@ -161,9 +158,6 @@
 				   withObject:account
 				   withObject:message
 				   withObject:(urlString ? urlString : nil)];
-
-	[centeredParagraphStyle release];
-	[message release];
 
 	return NULL;
 }
@@ -267,12 +261,12 @@
 		 * editor. Instead, we want to know what application to use for viewing web pages... and then open this file in
 		 * it.
 		 */
-		err = LSGetApplicationForURL((CFURLRef)[NSURL URLWithString:@"https://github.com/phaedrus1992/adiumy"],
+		err = LSGetApplicationForURL((__bridge CFURLRef)[NSURL URLWithString:@"https://github.com/phaedrus1992/adiumy"],
 									 kLSRolesViewer,
 									 /*outAppRef*/ NULL, &appURL);
 		if (err == noErr) {
 			[[NSWorkspace sharedWorkspace] openFile:[urlString stringByExpandingTildeInPath]
-									withApplication:[(NSURL *)appURL path]];
+									withApplication:[(__bridge NSURL *)appURL path]];
 		} else {
 			NSURL *url;
 
@@ -303,20 +297,21 @@
  */
 + (NSString *)mailApplicationName
 {
-	NSString *appName;
 	FSRef myAppRef;
 
-	LSGetApplicationForURL((CFURLRef)[NSURL URLWithString:@"mailto://"], kLSRolesAll, &myAppRef, NULL);
-	LSCopyDisplayNameForRef(&myAppRef, (CFStringRef *)&appName);
+	LSGetApplicationForURL((__bridge CFURLRef)[NSURL URLWithString:@"mailto://"], kLSRolesAll, &myAppRef, NULL);
+	CFStringRef appNameCF = NULL;
+	LSCopyDisplayNameForRef(&myAppRef, &appNameCF);
+	NSString *appName = CFBridgingRelease(appNameCF);
 
 	NSRange appRange;
 	if ((appRange = [appName rangeOfString:@".app"
 								   options:(NSCaseInsensitiveSearch | NSBackwardsSearch | NSAnchoredSearch)])
 			.location != NSNotFound) {
-		appName = [[appName substringToIndex:appRange.location] retain];
+		appName = [appName substringToIndex:appRange.location];
 	}
 
-	return [appName autorelease];
+	return appName;
 }
 
 @end

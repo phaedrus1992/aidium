@@ -26,6 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// tracks the last stanza ID per chat+sender, and posts a notification when a
 /// correction (a message containing a \c <replace> element) is detected.
 @interface AMPurpleJabberCorrection : NSObject {
+  @package
 	ESPurpleJabberAccount *_account;
 	NSMutableDictionary *_trackedStanzaIDs;
 }

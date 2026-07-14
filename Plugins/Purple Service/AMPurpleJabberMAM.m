@@ -21,6 +21,7 @@
 #import <Adium/AIChat.h>
 #import <Adium/AIChatControllerProtocol.h>
 #import <Adium/AIContactControllerProtocol.h>
+#import <Adium/AIContentContext.h>
 #import <Adium/AIContentControllerProtocol.h>
 #import <Adium/AIListContact.h>
 #import <Adium/AISharedAdium.h>
@@ -113,7 +114,7 @@ static void AMPurpleJabberMAM_received_data_cb(PurpleConnection *gc, xmlnode **p
 
 		PurplePlugin *jabber = purple_find_prpl("prpl-jabber");
 		if (jabber) {
-			purple_signal_connect(jabber, "jabber-receiving-xmlnode", self,
+			purple_signal_connect(jabber, "jabber-receiving-xmlnode", (__bridge void *)self,
 								  PURPLE_CALLBACK(AMPurpleJabberMAM_received_data_cb), (__bridge void *)self);
 			AILog(@"AMPurpleJabberMAM: Connected to jabber-receiving-xmlnode signal");
 		}
@@ -124,11 +125,6 @@ static void AMPurpleJabberMAM_received_data_cb(PurpleConnection *gc, xmlnode **p
 - (void)dealloc
 {
 	purple_signals_disconnect_by_handle((__bridge void *)self);
-
-	[_activeQueryID release];
-	[_lastArchiveID release];
-
-	[super dealloc];
 }
 
 #pragma mark - Public
@@ -159,8 +155,7 @@ static void AMPurpleJabberMAM_received_data_cb(PurpleConnection *gc, xmlnode **p
 
 - (void)_generateQueryID
 {
-	[_activeQueryID release];
-	_activeQueryID = [[NSString stringWithFormat:@"mam-%ld", (long)(++_queryCounter)] retain];
+	_activeQueryID = [NSString stringWithFormat:@"mam-%ld", (long)(++_queryCounter)];
 }
 
 - (void)_sendQueryWithAfter:(NSString *)after
@@ -316,7 +311,6 @@ static void AMPurpleJabberMAM_received_data_cb(PurpleConnection *gc, xmlnode **p
 		return;
 	}
 
-	[_lastArchiveID release];
 	_lastArchiveID = [archiveID copy];
 
 	PurpleAccount *pa = [_account purpleAccount];
@@ -410,7 +404,7 @@ static void AMPurpleJabberMAM_received_data_cb(PurpleConnection *gc, xmlnode **p
 	// Expected format: 2024-01-15T10:30:00Z or 2024-01-15T10:30:00.123Z
 	NSString *stampStr = @(stamp);
 	NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-	[formatter setLocale:[[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"] autorelease]];
+	[formatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
 	[formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
 
 	// Try with fractional seconds first
@@ -428,8 +422,6 @@ static void AMPurpleJabberMAM_received_data_cb(PurpleConnection *gc, xmlnode **p
 		[formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
 		date = [formatter dateFromString:stampStr];
 	}
-
-	[formatter release];
 
 	return date;
 }

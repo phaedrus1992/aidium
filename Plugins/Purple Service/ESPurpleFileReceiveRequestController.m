@@ -51,8 +51,6 @@
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-
-	[super dealloc];
 }
 
 /*!
@@ -61,9 +59,7 @@
  * release (we returned without autoreleasing initially).
  */
 - (void)purpleRequestClose
-{
-	[self release];
-}
+{}
 
 /*!
  * @brief Our file transfer was cancelled
