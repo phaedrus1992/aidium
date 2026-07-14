@@ -96,24 +96,15 @@
 {
 	[adium.preferenceController unregisterPreferenceObserver:self];
 
-	[backgroundImage release];
-	[backgroundColor release];
-	[_backgroundColorWithOpacity release];
-	[highlightColor release];
-	[rowColor release];
-	[_rowColorWithOpacity release];
-
 	[self unregisterDraggedTypes];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-
-	[super dealloc];
 }
 
 - (void)preferencesChangedForGroup:(NSString *)group
-							   key:(NSString *)key
-							object:(AIListObject *)object
-					preferenceDict:(NSDictionary *)prefDict
-						 firstTime:(BOOL)firstTime
+								   key:(NSString *)key
+								object:(AIListObject *)object
+						preferenceDict:(NSDictionary *)prefDict
+							 firstTime:(BOOL)firstTime
 {
 	groupsHaveBackground = [[prefDict objectForKey:KEY_LIST_THEME_GROUP_GRADIENT] boolValue];
 }

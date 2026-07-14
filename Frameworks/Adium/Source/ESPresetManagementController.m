@@ -62,9 +62,9 @@
 	NSParameterAssert([inDelegate respondsToSelector:@selector(deletePreset:inPresets:)]);
 
 	if ((self = [super initWithWindowNibName:@"PresetManagement"])) {
-		presets = [inPresets retain];
-		nameKey = [inNameKey retain];
-		delegate = [inDelegate retain];
+		presets = inPresets;
+		nameKey = inNameKey;
+		delegate = inDelegate;
 	}
 
 	return self;
@@ -75,10 +75,10 @@
  */
 - (void)dealloc
 {
-	[presets release];
-	[nameKey release];
+	
+	
 
-	[super dealloc];
+	
 }
 
 /*!
@@ -129,7 +129,6 @@
 {
 	[sheet orderOut:nil];
 
-	[self autorelease];
 }
 
 /*!
@@ -141,7 +140,6 @@
 {
 	[super windowWillClose:sender];
 
-	[self autorelease];
 }
 
 /*!
@@ -165,8 +163,8 @@
 		NSArray *newPresets;
 		newPresets = [delegate duplicatePreset:selectedPreset inPresets:presets createdDuplicate:&duplicatePreset];
 
-		[presets autorelease];
-		presets = [newPresets retain];
+		
+		presets = newPresets;
 
 		// The delegate returned a potentially changed presets array; reload table data
 		[tableView_presets reloadData];
@@ -200,8 +198,8 @@
 		// Inform the delegate of the deletion
 		NSArray *newPresets;
 		newPresets = [delegate deletePreset:selectedPreset inPresets:presets];
-		[presets autorelease];
-		presets = [newPresets retain];
+		
+		presets = newPresets;
 
 		// The delegate returned a potentially changed presets array; reload table data
 		[tableView_presets reloadData];
@@ -304,8 +302,8 @@
 										 toName:(NSString *)anObject
 									  inPresets:presets
 								  renamedPreset:&renamedPreset];
-			[presets autorelease];
-			presets = [newPresets retain];
+			
+			presets = newPresets;
 
 			// The delegate returned a potentially changed presets array; reload table data
 			[tableView_presets reloadData];
@@ -342,8 +340,7 @@
 - (BOOL)tableView:(NSTableView *)tv writeRows:(NSArray *)rows toPasteboard:(NSPasteboard *)pboard
 {
 	if ([delegate respondsToSelector:@selector(movePreset:toIndex:inPresets:presetAfterMove:)]) {
-		[tempDragPreset release];
-		tempDragPreset = [[presets objectAtIndex:[[rows objectAtIndex:0] integerValue]] retain];
+		tempDragPreset = [presets objectAtIndex:[[rows objectAtIndex:0] integerValue]];
 
 		[pboard declareTypes:[NSArray arrayWithObject:PRESET_DRAG_TYPE] owner:self];
 		[pboard setString:@"Preset" forType:PRESET_DRAG_TYPE]; // Arbitrary state
@@ -389,8 +386,8 @@
 								  toIndex:row
 								inPresets:presets
 						  presetAfterMove:&presetAfterMove];
-		[presets autorelease];
-		presets = [newPresets retain];
+		
+		presets = newPresets;
 
 		// Reload with the new data
 		[tableView_presets reloadData];
@@ -405,7 +402,6 @@
 		success = YES;
 	}
 
-	[tempDragPreset release];
 	tempDragPreset = nil;
 
 	return success;

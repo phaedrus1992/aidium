@@ -26,7 +26,7 @@ NSComparisonResult statusArraySort(id objectA, id objectB, void *context);
 
 + (id)statusGroup
 {
-	return [[[self alloc] init] autorelease];
+	return [[self alloc] init];
 }
 
 + (id)statusGroupWithContainedStatusItems:(NSArray *)inContainedObjects
@@ -53,10 +53,6 @@ NSComparisonResult statusArraySort(id objectA, id objectB, void *context);
 
 - (void)dealloc
 {
-	[containedStatusItems release];
-	[_flatStatusSet release];
-
-	[super dealloc];
 }
 
 /*!
@@ -145,8 +141,8 @@ NSComparisonResult statusArraySort(id objectA, id objectB, void *context);
 - (NSArray *)sortedContainedStatusItems
 {
 	if (!_sortedContainedStatusItems) {
-		_sortedContainedStatusItems = [[containedStatusItems sortedArrayUsingFunction:statusArraySort
-																			  context:containedStatusItems] retain];
+		_sortedContainedStatusItems = [containedStatusItems sortedArrayUsingFunction:statusArraySort
+																			  context:(__bridge void *)containedStatusItems];
 	}
 
 	return _sortedContainedStatusItems;
@@ -216,19 +212,17 @@ NSComparisonResult statusArraySort(id objectA, id objectB, void *context);
 		[menuItem setTag:currentStatusType];
 		[menuItem setImage:[statusState menuIcon]];
 		[menu addItem:menuItem];
-		[menuItem release];
 
 		addedItemForThisStatusType = YES;
 	}
 
-	return [menu autorelease];
+	return menu;
 }
 
 #pragma mark Modifying contents
 - (void)setContainedStatusItems:(NSArray *)inContainedStatusItems
 {
 	if (containedStatusItems != inContainedStatusItems) {
-		[containedStatusItems release];
 		containedStatusItems = [inContainedStatusItems mutableCopy];
 	}
 }
@@ -236,9 +230,7 @@ NSComparisonResult statusArraySort(id objectA, id objectB, void *context);
 - (void)statusesOfContainedGroupChanged
 {
 	// Clear our cached sorted array so it'll resort as needed
-	[_sortedContainedStatusItems release];
 	_sortedContainedStatusItems = nil;
-	[_flatStatusSet release];
 	_flatStatusSet = nil;
 
 	// Let our containing group or the status controller know that there's power in the blood
@@ -252,7 +244,6 @@ NSComparisonResult statusArraySort(id objectA, id objectB, void *context);
 - (void)containedStatusesChanged
 {
 	// Clear our cached sorted array so it'll resort as needed
-	[_sortedContainedStatusItems release];
 	_sortedContainedStatusItems = nil;
 
 	// Let our containing group or the status controller know that there's power in the blood
@@ -305,7 +296,6 @@ NSComparisonResult statusArraySort(id objectA, id objectB, void *context);
 		[_flatStatusSet removeObject:(AIStatus *)inStatusItem];
 
 	} else if ([inStatusItem isKindOfClass:[AIStatusGroup class]]) {
-		[_flatStatusSet release];
 		_flatStatusSet = nil;
 	}
 
@@ -327,7 +317,6 @@ NSComparisonResult statusArraySort(id objectA, id objectB, void *context);
 	NSUInteger sourceIndex = [containedStatusItems indexOfObjectIdenticalTo:statusState];
 
 	// Remove the state
-	[statusState retain];
 	[containedStatusItems removeObject:statusState];
 
 	// Re-insert the state
@@ -337,7 +326,6 @@ NSComparisonResult statusArraySort(id objectA, id objectB, void *context);
 		destIndex = [containedStatusItems count];
 
 	[containedStatusItems insertObject:statusState atIndex:destIndex];
-	[statusState release];
 
 	if (!delaySavingAndNotification) {
 		[self containedStatusesChanged];
@@ -440,7 +428,7 @@ NSComparisonResult statusArraySort(id objectA, id objectB, void *context)
 					return NSOrderedAscending;
 
 				} else {
-					NSArray *originalArray = (NSArray *)context;
+					NSArray *originalArray = (__bridge NSArray *)context;
 
 					// Return them in the same relative order as the original array if they are of the same type
 					NSUInteger indexA = [originalArray indexOfObjectIdenticalTo:objectA];

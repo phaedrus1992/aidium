@@ -47,10 +47,10 @@
 		[inTarget respondsToSelector:@selector(presetNameSheetControllerDidEnd:returnCode:newName:userInfo:)]);
 
 	if ((self = [super initWithWindowNibName:PRESET_NAME_SHEET])) {
-		defaultName = [inDefaultName retain];
-		explanatoryText = [inExplanatoryText retain];
-		target = [inTarget retain];
-		userInfo = [inUserInfo retain];
+		defaultName = inDefaultName;
+		explanatoryText = inExplanatoryText;
+		target = inTarget;
+		userInfo = inUserInfo;
 	}
 
 	return self;
@@ -62,8 +62,6 @@
 - (void)sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
 {
 	[sheet orderOut:nil];
-
-	[self autorelease];
 }
 
 /*!
@@ -74,8 +72,6 @@
 - (void)windowWillClose:(id)sender
 {
 	[super windowWillClose:sender];
-
-	[self autorelease];
 }
 
 - (IBAction)okay:(id)sender

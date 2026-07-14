@@ -43,7 +43,7 @@
 	AIFileTransferStatus status;
 
 	NSString *uniqueID;
-	id<FileTransferDelegate> delegate;
+	__unsafe_unretained id<FileTransferDelegate> delegate;
 
 	ESFileTransferRequestPromptController *promptController;
 }

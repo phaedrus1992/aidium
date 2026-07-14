@@ -70,7 +70,7 @@ void AILog_impl(NSString *format, ...)
 
 	debugMessage = [[NSString alloc] initWithFormat:format arguments:ap];
 	AIAddDebugMessage(debugMessage);
-	[debugMessage release];
+	// ARC handles release
 
 	va_end(ap); /* clean up when done */
 }
@@ -93,7 +93,7 @@ void AILogWithSignature_impl(const char *name, int line, NSString *format, ...)
 	else
 		actualMessage = [NSString stringWithFormat:@"%s:%d: (on %s) %@", name, line, (queue ?: ""), debugMessage];
 	AIAddDebugMessage(actualMessage);
-	[debugMessage release];
+	// ARC handles release
 
 	va_end(ap); /* clean up when done */
 }
@@ -108,7 +108,7 @@ void AILogWithPrefix_impl(const char *prefix, NSString *format, ...)
 	debugMessage = [[NSString alloc] initWithFormat:format arguments:ap];
 	actualMessage = [NSString stringWithFormat:@"%s: %@", prefix, debugMessage];
 	AIAddDebugMessage(actualMessage);
-	[debugMessage release];
+	// ARC handles release
 
 	va_end(ap); /* clean up when done */
 }

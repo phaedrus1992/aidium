@@ -83,16 +83,11 @@ static NSString *horizontalRule = nil;
 
 - (void)dealloc
 {
-	[XMLNamespace release];
-	XMLNamespace = nil;
-	[baseURL release];
-	baseURL = nil;
-	[super dealloc];
 }
 
 + (AIHTMLDecoder *)decoder
 {
-	return [[[self alloc] init] autorelease];
+	return [[self alloc] init];
 }
 
 - (id)initWithHeaders:(BOOL)includeHeaders
@@ -141,7 +136,7 @@ static NSString *horizontalRule = nil;
 					   bodyBackground:(BOOL)bodyBackground
 				  allowJavascriptURLs:(BOOL)allowJS
 {
-	return [[[self alloc] initWithHeaders:includeHeaders
+	return [[self alloc] initWithHeaders:includeHeaders
 								 fontTags:includeFontTags
 							closeFontTags:closeFontTags
 								colorTags:includeColorTags
@@ -152,7 +147,7 @@ static NSString *horizontalRule = nil;
 				onlyIncludeOutgoingImages:onlyIncludeOutgoingImages
 						   simpleTagsOnly:simpleOnly
 						   bodyBackground:bodyBackground
-					  allowJavascriptURLs:allowJS] autorelease];
+					  allowJavascriptURLs:allowJS];
 }
 
 #pragma mark Work methods
@@ -171,13 +166,13 @@ static NSString *horizontalRule = nil;
 
 	// Setup
 	if (!equalsSet)
-		equalsSet = [[NSCharacterSet characterSetWithCharactersInString:@"="] retain];
+		equalsSet = [NSCharacterSet characterSetWithCharactersInString:@"="];
 	if (!dquoteSet)
-		dquoteSet = [[NSCharacterSet characterSetWithCharactersInString:@"\""] retain];
+		dquoteSet = [NSCharacterSet characterSetWithCharactersInString:@"\""];
 	if (!squoteSet)
-		squoteSet = [[NSCharacterSet characterSetWithCharactersInString:@"'"] retain];
+		squoteSet = [NSCharacterSet characterSetWithCharactersInString:@"'"];
 	if (!spaceSet)
-		spaceSet = [[NSCharacterSet characterSetWithCharactersInString:@" "] retain];
+		spaceSet = [NSCharacterSet characterSetWithCharactersInString:@" "];
 
 	scanner = [NSScanner scannerWithString:arguments];
 	argDict = [NSMutableDictionary dictionary];
@@ -254,7 +249,7 @@ static NSString *horizontalRule = nil;
 	}
 
 	// Setup the default attributes
-	NSString *currentFamily = [@"Helvetica" retain];
+	NSString *currentFamily = @"Helvetica";
 	NSString *currentColor = nil;
 	NSString *currentBackColor = nil;
 	CGFloat currentSize = 12;

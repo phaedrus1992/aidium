@@ -27,27 +27,27 @@
 
 + (id)preferencesWithPanesSearchPath:(NSString *)path bundleExtension:(NSString *)ext
 {
-	return [[[SS_PrefsController alloc] initWithPanesSearchPath:path bundleExtension:ext] autorelease];
+	return [[SS_PrefsController alloc] initWithPanesSearchPath:path bundleExtension:ext];
 }
 
 + (id)preferencesWithBundleExtension:(NSString *)ext
 {
-	return [[[SS_PrefsController alloc] initWithBundleExtension:ext] autorelease];
+	return [[SS_PrefsController alloc] initWithBundleExtension:ext];
 }
 
 + (id)preferencesWithPanesSearchPath:(NSString *)path
 {
-	return [[[SS_PrefsController alloc] initWithPanesSearchPath:path] autorelease];
+	return [[SS_PrefsController alloc] initWithPanesSearchPath:path];
 }
 
 + (id)preferences
 {
-	return [[[SS_PrefsController alloc] init] autorelease];
+	return [[SS_PrefsController alloc] init];
 }
 
 + (id)preferencesWithPanes:(NSArray *)inArray delegate:(id)inDelegate
 {
-	return [[[SS_PrefsController alloc] initWithPanes:inArray delegate:inDelegate] autorelease];
+	return [[SS_PrefsController alloc] initWithPanes:inArray delegate:inDelegate];
 }
 
 - (id)initWithPanesSearchPath:(NSString *)path
@@ -86,13 +86,13 @@
 		if (!ext || [ext isEqualToString:@""]) {
 			bundleExtension = [[NSString alloc] initWithString:@"preferencePane"];
 		} else {
-			bundleExtension = [ext retain];
+			bundleExtension = ext;
 		}
 
 		if (!path || [path isEqualToString:@""]) {
 			searchPath = [[NSString alloc] initWithString:[[NSBundle mainBundle] resourcePath]];
 		} else {
-			searchPath = [path retain];
+			searchPath = path;
 		}
 
 		// Read PreferencePanes
@@ -129,14 +129,7 @@
 {
 	[prefsWindow close];
 	prefsWindow = nil;
-	[prefsToolbar release];
-	[prefsToolbarItems release];
-	[preferencePanes release];
-	[panesOrder release];
-	[bundleExtension release];
-	[searchPath release];
 
-	[super dealloc];
 }
 
 // ************************************************
@@ -250,12 +243,10 @@
 - (void)destroyPreferencesWindow
 {
 	// Closing the window could release us; make sure we get to the end of the method to avoid double-releases
-	[self retain];
 
 	[prefsWindow close];
 	prefsWindow = nil;
 
-	[self release];
 }
 
 - (void)windowWillClose:(NSNotification *)aNotification
@@ -361,8 +352,7 @@
 
 		NSView *tempView = [[NSView alloc] initWithFrame:[[prefsWindow contentView] frame]];
 		[prefsWindow setContentView:tempView];
-		[tempView release];
-	}
+		}
 
 	// Preserve upper left point of window during resize.
 	NSRect newFrame = [prefsWindow frame];
@@ -468,7 +458,6 @@ CGFloat ToolbarHeightForWindow(NSWindow *window)
 			[item setTarget:self];
 			[item setAction:@selector(prefsToolbarItemClicked:)]; // action called when item is clicked
 			[prefsToolbarItems setObject:item forKey:identifier]; // add to items
-			[item release];
 		} else if ([identifier isEqual:NSToolbarSeparatorItemIdentifier]) {
 			// Don't have to do anything
 		} else {

@@ -46,7 +46,7 @@
 
 + (id)statusMenuWithDelegate:(id<AIStatusMenuDelegate>)inDelegate
 {
-	return [[[self alloc] initWithDelegate:inDelegate] autorelease];
+	return [[self alloc] initWithDelegate:inDelegate];
 }
 
 - (id)initWithDelegate:(id<AIStatusMenuDelegate>)inDelegate
@@ -83,12 +83,9 @@
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[stateMenuItemsAlreadyValidated release];
-	[menuItemArray release];
 
 	self.delegate = nil;
 
-	[super dealloc];
 }
 
 @synthesize delegate;
@@ -148,7 +145,7 @@
 													direction:AIIconNormal]];
 	[menuItem setTag:statusType];
 
-	return [menuItem autorelease];
+	return menuItem;
 }
 
 /*!
@@ -176,7 +173,7 @@
 	 */
 	enumerator = [[adium.statusController sortedFullStateArray] objectEnumerator];
 	while ((statusState = [enumerator nextObject])) {
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		@autoreleasepool {
 		AIStatusType thisStatusType = statusState.statusType;
 		AIStatusMutabilityType thisStatusMutabilityType = [statusState mutabilityType];
 
@@ -226,10 +223,9 @@
 		[menuItem setTag:currentStatusType];
 		[menuItem setImage:[statusState menuIcon]];
 		[menuItemArray addObject:menuItem];
-		[menuItem release];
 
 		currentStatusMutabilityType = thisStatusMutabilityType;
-		[pool release];
+		}
 	}
 
 	if (currentStatusType != AIOfflineStatusType) {
@@ -440,7 +436,7 @@
 				lastStatusStateOfThisType.statusMessage = baseStatusState.statusMessage;
 			}
 
-			baseStatusState = [[lastStatusStateOfThisType retain] autorelease];
+			baseStatusState = lastStatusStateOfThisType;
 		}
 	}
 
@@ -506,12 +502,11 @@
 		}
 
 		[statusStatesMenu addItem:menuItem];
-		[menuItem release];
 	}
 
 	[statusStatesMenu setMenuChangedMessagesEnabled:YES];
 
-	return [statusStatesMenu autorelease];
+	return statusStatesMenu;
 }
 
 /*!

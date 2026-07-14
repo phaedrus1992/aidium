@@ -62,9 +62,7 @@ int globalAlertAlphabeticalSort(id objectA, id objectB, void *context);
 - (void)awakeFromNib
 {
 	AILogWithSignature(@"");
-	[expandStateDict release];
 	expandStateDict = [[NSMutableDictionary alloc] init];
-	[requiredHeightDict release];
 	requiredHeightDict = [[NSMutableDictionary alloc] init];
 
 	// Configure Table view
@@ -119,25 +117,13 @@ int globalAlertAlphabeticalSort(id objectA, id objectB, void *context);
 	[outlineView_summary setDelegate:nil];
 	[outlineView_summary setDataSource:nil];
 
-	[editingPanel release];
 	editingPanel = nil;
-	[contactAlertsEvents release];
 	contactAlertsEvents = nil;
-	[contactAlertsActions release];
 	contactAlertsActions = nil;
-	[listObject release];
 	listObject = nil;
-	[expandStateDict release];
 	expandStateDict = nil;
-	[requiredHeightDict release];
 	requiredHeightDict = nil;
-
-	// I don't think this needs to be released, because the contact-specific
-	// alerts view does not appear to get released. But anyway...
-	[targetEventID release];
 	targetEventID = nil;
-
-	[super dealloc];
 }
 
 - (void)setDelegate:(id)inDelegate
@@ -172,18 +158,14 @@ int globalAlertAlphabeticalSort(id objectA, id objectB, void *context);
 	if (listObject != inObject) {
 		if (editingPanel) {
 			[editingPanel cancel:nil];
-			[editingPanel release];
 			editingPanel = nil;
 		}
 
 		// Configure for the list object, using the highest-up metacontact if necessary
-		[listObject release];
 		listObject =
 			([inObject isKindOfClass:[AIListContact class]] ? [(AIListContact *)inObject parentContact] : inObject);
-		[listObject retain];
 
-		[targetEventID release];
-		targetEventID = [inTargetEventID retain];
+		targetEventID = inTargetEventID;
 
 		//
 		[self preferencesChangedForGroup:nil key:nil object:nil preferenceDict:nil firstTime:NO];
@@ -233,12 +215,12 @@ int globalAlertAlphabeticalSort(id objectA, id objectB, void *context);
 		defaultEventID = [item objectForKey:KEY_EVENT_ID];
 	}
 
-	editingPanel = [[CSNewContactAlertWindowController editAlert:nil
+	editingPanel = [CSNewContactAlertWindowController editAlert:nil
 												   forListObject:listObject
 														onWindow:[view window]
 												 notifyingTarget:self
 											  configureForGlobal:configureForGlobal
-												  defaultEventID:defaultEventID] retain];
+												  defaultEventID:defaultEventID];
 }
 
 // Edit existing alert
@@ -248,12 +230,12 @@ int globalAlertAlphabeticalSort(id objectA, id objectB, void *context);
 	if (selectedRow >= 0 && selectedRow < [outlineView_summary numberOfRows]) {
 		NSDictionary *alert = [outlineView_summary itemAtRow:selectedRow];
 
-		editingPanel = [[CSNewContactAlertWindowController editAlert:alert
+		editingPanel = [CSNewContactAlertWindowController editAlert:alert
 													   forListObject:listObject
 															onWindow:[view window]
 													 notifyingTarget:self
 												  configureForGlobal:configureForGlobal
-													  defaultEventID:nil] retain];
+													  defaultEventID:nil];
 	}
 }
 
@@ -264,7 +246,6 @@ int globalAlertAlphabeticalSort(id objectA, id objectB, void *context);
 	if (selectedRow != -1) {
 		id item = [outlineView_summary itemAtRow:selectedRow];
 
-		[item retain];
 
 		if ([contactAlertsActions containsObjectIdenticalTo:item]) {
 			/* Deleting an entire event */
@@ -278,7 +259,7 @@ int globalAlertAlphabeticalSort(id objectA, id objectB, void *context);
 					AILocalizedString(@"Delete Event?", nil), AILocalizedString(@"OK", nil),
 					AILocalizedString(@"Cancel", nil), nil,                                    /*otherButton*/
 					[view window], self, @selector(sheetDidEnd:returnCode:contextInfo:), NULL, /* didDismissSelector */
-					contactEvents, AILocalizedString(@"Remove the %lu actions associated with this event?", nil),
+					(__bridge_retained void *)contactEvents, AILocalizedString(@"Remove the %lu actions associated with this event?", nil),
 					(unsigned long)contactEventsCount);
 			} else {
 				// Delete a single event immediately
@@ -296,7 +277,6 @@ int globalAlertAlphabeticalSort(id objectA, id objectB, void *context);
 			// The deletion changed our selection
 			[self outlineViewSelectionDidChange:[NSNotification notificationWithName:@"SelectionChanged" object:nil]];
 		}
-		[item release];
 
 	} else {
 		NSBeep();
@@ -311,7 +291,7 @@ int globalAlertAlphabeticalSort(id objectA, id objectB, void *context);
 - (void)sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
 {
 	if (returnCode == NSAlertDefaultReturn) {
-		[self deleteContactActionsInArray:(NSArray *)contextInfo];
+		[self deleteContactActionsInArray:(__bridge_transfer NSArray *)contextInfo];
 	}
 }
 
@@ -321,7 +301,6 @@ int globalAlertAlphabeticalSort(id objectA, id objectB, void *context);
 	if (newAlert) {
 		// If this was an edit, remove the old alert first
 		if (oldAlert) {
-			[[oldAlert retain] autorelease];
 			[adium.contactAlertsController removeAlert:oldAlert fromListObject:listObject];
 		}
 
@@ -336,7 +315,6 @@ int globalAlertAlphabeticalSort(id objectA, id objectB, void *context);
 		[self calculateAllHeights];
 	}
 
-	[editingPanel release];
 	editingPanel = nil;
 }
 
@@ -354,18 +332,15 @@ int globalAlertAlphabeticalSort(id objectA, id objectB, void *context);
 	[imageCell setAlignment:NSCenterTextAlignment];
 	[imageCell setMaxSize:NSMakeSize(MINIMUM_IMAGE_HEIGHT, MINIMUM_IMAGE_HEIGHT)];
 	[[outlineView_summary tableColumnWithIdentifier:@"image"] setDataCell:imageCell];
-	[imageCell release];
 
 	imageTextCell = [[AIImageTextCell alloc] init];
 	[imageTextCell setMaxImageWidth:MINIMUM_ROW_HEIGHT];
 	[imageTextCell setLineBreakMode:NSLineBreakByWordWrapping];
 	[[outlineView_summary tableColumnWithIdentifier:@"event"] setDataCell:imageTextCell];
-	[imageTextCell release];
 
 	verticallyCenteredTextCell = [[AIVerticallyCenteredTextCell alloc] init];
 	[verticallyCenteredTextCell setFont:[NSFont systemFontOfSize:10]];
 	[[outlineView_summary tableColumnWithIdentifier:@"action"] setDataCell:verticallyCenteredTextCell];
-	[verticallyCenteredTextCell release];
 
 	[outlineView_summary setUsesAlternatingRowBackgroundColors:YES];
 	[outlineView_summary setIntercellSpacing:NSMakeSize(6.0f, 6.0f)];
@@ -442,7 +417,6 @@ NSComparisonResult actionSort(id objectA, id objectB, void *context)
 #ifdef HEIGHT_DEBUG
 			AILogWithSignature(@"%@: width %f height %f", [attributedTitle string], tableColumnWidth, thisHeight);
 #endif
-			[attributedTitle release];
 		}
 	}
 
@@ -458,12 +432,11 @@ NSComparisonResult actionSort(id objectA, id objectB, void *context)
 												  ? ((necessaryHeight > MINIMUM_ROW_HEIGHT) ? necessaryHeight
 																							: MINIMUM_ROW_HEIGHT)
 												  : necessaryHeight)]
-		   forKey:[NSValue valueWithPointer:item]];
+		   forKey:[NSValue valueWithPointer:(__bridge const void *)item]];
 }
 
 - (void)calculateAllHeights
 {
-	[requiredHeightDict release];
 	requiredHeightDict = [[NSMutableDictionary alloc] init];
 
 	id item;
@@ -490,19 +463,17 @@ NSComparisonResult actionSort(id objectA, id objectB, void *context)
 
 		if ([contactAlertsActions containsObjectIdenticalTo:item]) {
 			selectedEventID =
-				[[contactAlertsEvents objectAtIndex:[contactAlertsActions indexOfObjectIdenticalTo:item]] retain];
+				[contactAlertsEvents objectAtIndex:[contactAlertsActions indexOfObjectIdenticalTo:item]];
 
 		} else {
-			selectedEventID = [[item objectForKey:KEY_EVENT_ID] retain];
+			selectedEventID = [item objectForKey:KEY_EVENT_ID];
 		}
 	}
 
 	contactAlertsDict = [adium.preferenceController preferenceForKey:KEY_CONTACT_ALERTS
 															   group:PREF_GROUP_CONTACT_ALERTS
 										   objectIgnoringInheritance:listObject];
-	[contactAlertsEvents release];
 	contactAlertsEvents = [[NSMutableArray alloc] init];
-	[contactAlertsActions release];
 	contactAlertsActions = [[NSMutableArray alloc] init];
 
 	enumerator =
@@ -544,7 +515,6 @@ NSComparisonResult actionSort(id objectA, id objectB, void *context)
 			[outlineView_summary selectRowIndexes:[NSIndexSet indexSetWithIndex:rowToSelect] byExtendingSelection:NO];
 		}
 
-		[selectedEventID release];
 	}
 }
 
@@ -778,7 +748,7 @@ NSComparisonResult actionSort(id objectA, id objectB, void *context)
 	CGFloat necessaryHeight;
 
 	if ([contactAlertsActions containsObjectIdenticalTo:item]) {
-		NSNumber *cachedHeight = [requiredHeightDict objectForKey:[NSValue valueWithPointer:item]];
+		NSNumber *cachedHeight = [requiredHeightDict objectForKey:[NSValue valueWithPointer:(__bridge const void *)item]];
 		necessaryHeight = (cachedHeight ? [cachedHeight floatValue] : MINIMUM_ROW_HEIGHT);
 
 	} else {
@@ -889,7 +859,7 @@ NSComparisonResult actionSort(id objectA, id objectB, void *context)
 	NSDictionary *eventDict;
 
 	[adium.preferenceController delayPreferenceChangedNotifications:YES];
-	for (eventDict in [[contactEventArray copy] autorelease]) {
+	for (eventDict in [contactEventArray copy]) {
 		[adium.contactAlertsController removeAlert:eventDict fromListObject:listObject];
 	}
 	[adium.preferenceController delayPreferenceChangedNotifications:NO];

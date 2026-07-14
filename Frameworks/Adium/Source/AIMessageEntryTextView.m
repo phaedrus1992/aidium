@@ -81,8 +81,6 @@
 
 - (void)dealloc
 {
-	[string release];
-	[super dealloc];
 }
 
 - (void)drawRect:(NSRect)rect
@@ -205,17 +203,6 @@
 	[adium.preferenceController unregisterPreferenceObserver:self];
 	[[AIContactObserverManager sharedManager] unregisterListObjectObserver:self];
 
-	[savedTextColor release];
-	[characterCounter release];
-	[characterCounterPrefix release];
-	[chat release];
-	[associatedView release];
-	[historyArray release];
-	historyArray = nil;
-	[pushArray release];
-	pushArray = nil;
-
-	[super dealloc];
 }
 
 - (void)keyDown:(NSEvent *)inEvent
@@ -358,7 +345,6 @@
 		[newTypingAttributes removeObjectForKey:NSLinkAttributeName];
 		[self setTypingAttributes:newTypingAttributes];
 
-		[newTypingAttributes release];
 	}
 }
 
@@ -371,7 +357,7 @@
 		NSUndoManager *undoManager = [self undoManager];
 		[undoManager registerUndoWithTarget:self
 								   selector:@selector(setAttributedString:)
-									 object:[[[self textStorage] copy] autorelease]];
+									 object:[[self textStorage] copy]];
 		[undoManager setActionName:AILocalizedString(@"Clear", nil)];
 
 		[self setString:@""];
@@ -544,7 +530,7 @@
 												NSWebResourceLoadDelegateDocumentOption : self
 											}
 								 documentAttributes:NULL
-											  error:NULL] autorelease]];
+											  error:NULL]];
 			handledPaste = YES;
 		}
 
@@ -568,7 +554,6 @@
 		[self setTypingAttributes:attributes];
 	}
 
-	[attributes release];
 
 	[self scrollRangeToVisible:[self selectedRange]];
 }
@@ -624,7 +609,6 @@
 			NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 			attributedString = [[NSMutableAttributedString alloc] initWithString:string
 																	  attributes:[self typingAttributes]];
-			[string release];
 
 		} else {
 			@try {
@@ -642,7 +626,6 @@
 					NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 					attributedString = [[NSMutableAttributedString alloc] initWithString:string
 																			  attributes:[self typingAttributes]];
-					[string release];
 				} else {
 					attributedString = nil;
 				}
@@ -673,7 +656,6 @@
 			[self setBaseWritingDirection:[[textStorage string] baseWritingDirection]];
 		// Notify that we changed our text
 		[[NSNotificationCenter defaultCenter] postNotificationName:NSTextDidChangeNotification object:self];
-		[attributedString release];
 
 	} else if ([FILES_AND_IMAGES_TYPES containsObject:type] || [type isEqualToString:NSURLPboardType]) {
 		if (![self handlePasteAsRichText]) {
@@ -689,7 +671,6 @@
 		[self setTypingAttributes:attributes];
 	}
 
-	[attributes release];
 
 	[self scrollRangeToVisible:[self selectedRange]];
 }
@@ -719,8 +700,7 @@
 			[chat removeObserver:self forKeyPath:@"Character Counter Prefix"];
 		}
 
-		[chat release];
-		chat = [inChat retain];
+		chat = inChat;
 
 		// We only need to update our observation state for group chats.
 		if (chat.isGroupChat) {
@@ -857,7 +837,7 @@
 {
 	if (currentHistoryLocation == 0) {
 		// Store current message
-		[historyArray replaceObjectAtIndex:0 withObject:[[[self textStorage] copy] autorelease]];
+		[historyArray replaceObjectAtIndex:0 withObject:[[self textStorage] copy]];
 	}
 
 	if (currentHistoryLocation < [historyArray count] - 1) {
@@ -887,7 +867,7 @@
 	NSAttributedString *textStorage = [self textStorage];
 
 	// Add to history if there is text being sent
-	[historyArray insertObject:[[textStorage copy] autorelease] atIndex:1];
+	[historyArray insertObject:[textStorage copy] atIndex:1];
 	if ([historyArray count] > MAX_HISTORY) {
 		[historyArray removeLastObject];
 	}
@@ -928,7 +908,7 @@
 - (void)pushContent
 {
 	if ([[self textStorage] length] != 0 && pushPopEnabled) {
-		[pushArray addObject:[[[self textStorage] copy] autorelease]];
+		[pushArray addObject:[[self textStorage] copy]];
 		[self setString:@""];
 		[self _setPushIndicatorVisible:YES];
 	}
@@ -951,7 +931,7 @@
 - (void)swapContent
 {
 	if (pushPopEnabled) {
-		NSAttributedString *tempMessage = [[[self textStorage] copy] autorelease];
+		NSAttributedString *tempMessage = [[self textStorage] copy];
 
 		if ([pushArray count]) {
 			[self popContent];
@@ -973,7 +953,7 @@
 
 	//
 	if (!pushIndicatorImage)
-		pushIndicatorImage = [[NSImage imageNamed:@"stackImage" forClass:[self class]] retain];
+		pushIndicatorImage = [NSImage imageNamed:@"stackImage" forClass:[self class]];
 
 	if (visible && !pushIndicatorVisible) {
 		pushIndicatorVisible = visible;
@@ -1026,7 +1006,6 @@
 		}
 		// Remove indicator
 		[pushIndicator removeFromSuperview];
-		[pushIndicator release];
 		pushIndicator = nil;
 
 		[self positionPushIndicator];
@@ -1102,7 +1081,6 @@
 														  object:[self superview]];
 		}
 
-		[characterCounter release];
 		characterCounter = nil;
 
 		// Reposition the push indicator, if necessary.
@@ -1119,8 +1097,7 @@
 - (void)setCharacterCounterPrefix:(NSString *)prefix
 {
 	if (prefix != characterCounterPrefix) {
-		[characterCounterPrefix release];
-		characterCounterPrefix = [prefix retain];
+		characterCounterPrefix = prefix;
 	}
 }
 
@@ -1147,7 +1124,7 @@
 	NSInteger currentCount = (maxCharacters - [inputString length]);
 
 	if (maxCharacters && currentCount < 0) {
-		savedTextColor = [[self textColor] retain];
+		savedTextColor = [self textColor];
 
 		[self setBackgroundColor:[NSColor colorWithCalibratedHue:0.983f saturation:0.43f brightness:0.99f alpha:1.0f]];
 
@@ -1176,7 +1153,6 @@
 										attributes:[adium.contentController defaultFormattingAttributes]];
 	[characterCounter setString:label];
 	[characterCounter setFrameSize:label.size];
-	[label release];
 
 	// Reposition the character counter.
 	[self positionCharacterCounter];
@@ -1253,7 +1229,7 @@
 	BOOL addedOurLinkItems = NO;
 
 	if ((contextualMenu = [super menuForEvent:theEvent])) {
-		contextualMenu = [[contextualMenu copy] autorelease];
+		contextualMenu = [contextualMenu copy];
 
 		NSMenuItem *editLinkItem = nil;
 		for (NSMenuItem *menuItem in contextualMenu.itemArray) {
@@ -1273,13 +1249,13 @@
 												arrayWithObject:[NSNumber numberWithInt:Context_TextView_LinkEditing]]];
 
 			for (NSMenuItem *menuItem in linkItemsMenu.itemArray) {
-				[contextualMenu insertItem:[[menuItem copy] autorelease] atIndex:editIndex++];
+				[contextualMenu insertItem:[menuItem copy] atIndex:editIndex++];
 			}
 
 			addedOurLinkItems = YES;
 		}
 	} else {
-		contextualMenu = [[[NSMenu alloc] init] autorelease];
+		contextualMenu = [[NSMenu alloc] init];
 	}
 
 	// Retrieve the items which should be added to the bottom of the default menu
@@ -1296,7 +1272,7 @@
 		for (NSMenuItem *menuItem in itemsArray) {
 			// We're going to be copying; call menu needs update now since it won't be called later.
 			NSMenu *submenu = [menuItem submenu];
-			NSMenuItem *menuItemCopy = [[menuItem copy] autorelease];
+			NSMenuItem *menuItemCopy = [menuItem copy];
 			if (submenu && [submenu respondsToSelector:@selector(delegate)]) {
 				[[menuItemCopy submenu] setDelegate:[submenu delegate]];
 			}
@@ -1413,7 +1389,6 @@
 		// The pasteboard contains image data with no corresponding file.
 		NSImage *image = [[NSImage alloc] initWithPasteboard:pasteboard];
 		[self addAttachmentOfImage:image];
-		[image release];
 	}
 }
 
@@ -1594,7 +1569,7 @@
 			data = [data subdataWithRange:NSMakeRange(260, [data length] - 260)];
 
 			NSAttributedString *clipping = [[[NSAttributedString alloc] initWithRTF:data
-																 documentAttributes:nil] autorelease];
+																 documentAttributes:nil]];
 			if (clipping) {
 				NSDictionary *attributes = [[self typingAttributes] copy];
 
@@ -1604,7 +1579,6 @@
 					[self setTypingAttributes:attributes];
 				}
 
-				[attributes release];
 			}
 		}
 
@@ -1617,7 +1591,6 @@
 		// Insert an attributed string into the text at the current insertion point
 		[self insertText:[self attributedStringWithTextAttachmentExtension:attachment]];
 
-		[attachment release];
 	}
 }
 
@@ -1634,7 +1607,6 @@
 	// Insert an attributed string into the text at the current insertion point
 	[self insertText:[self attributedStringWithTextAttachmentExtension:attachment]];
 
-	[attachment release];
 }
 
 /*!
@@ -1646,7 +1618,6 @@
 
 	[attachment setHasAlternate:NO];
 	[attachment setAttachmentCell:cell];
-	[cell release];
 
 	return [NSAttributedString attributedStringWithAttachment:attachment];
 }
@@ -1657,7 +1628,7 @@
 - (NSAttributedString *)attributedStringWithAITextAttachmentExtensionsFromRTFDData:(NSData *)data
 {
 	NSMutableAttributedString *attributedString = [[[NSMutableAttributedString alloc] initWithRTFD:data
-																				documentAttributes:NULL] autorelease];
+																				documentAttributes:NULL]];
 	if ([attributedString length] && [attributedString containsAttachments]) {
 		NSUInteger currentLocation = 0;
 		NSRange attachmentRange;
@@ -1702,7 +1673,6 @@
 
 				// Insert an attributed string into the text at the current insertion point
 				replacement = [self attributedStringWithTextAttachmentExtension:textAttachment];
-				[textAttachment release];
 
 				// Remove the NSTextAttachment, replacing it the AITextAttachmentExtension
 				[attributedString replaceCharactersInRange:attachmentRange withAttributedString:replacement];
@@ -1735,7 +1705,6 @@
 	[typingAttributes setObject:backgroundColor forKey:AIBodyColorAttributeName];
 	[typingAttributes setObject:backgroundColor forKey:NSBackgroundColorAttributeName];
 	[self setTypingAttributes:typingAttributes];
-	[typingAttributes release];
 
 	[[self textStorage] edited:NSTextStorageEditedAttributes range:selectedRange changeInLength:0];
 }

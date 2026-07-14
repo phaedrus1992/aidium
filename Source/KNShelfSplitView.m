@@ -92,7 +92,7 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMA
 
 		drawLine = YES;
 
-		background = [[NSImage imageNamed:@"sourceListBackground" forClass:[self class]] retain];
+		background = [NSImage imageNamed:@"sourceListBackground" forClass:[self class]];
 		backgroundSize = [background size];
 
 		[self setDelegate:nil];
@@ -108,22 +108,16 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMA
 - (void)dealloc
 {
 	if (autosaveName) {
-		[autosaveName release];
 	}
 	if (contextButtonImage) {
-		[contextButtonImage release];
 	}
 	if (actionButtonImage) {
-		[actionButtonImage release];
 	}
 	if (shelfBackgroundColor) {
-		[shelfBackgroundColor release];
 	}
 	if (background) {
-		[background release];
 	}
 
-	[super dealloc];
 }
 
 - (void)setDelegate:(id)aDelegate
@@ -290,9 +284,8 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMA
 - (void)setAutosaveName:(NSString *)aName
 {
 	if (autosaveName) {
-		[autosaveName autorelease];
 	}
-	autosaveName = [aName retain];
+	autosaveName = aName;
 }
 
 - (NSString *)autosaveName
@@ -380,11 +373,9 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMA
 {
 	if (shelfView) {
 		if (isShelfVisible && !visible) {
-			[shelfView retain];
 			[shelfView removeFromSuperview];
 		} else if (!isShelfVisible && visible) {
 			[self addSubview:shelfView];
-			[shelfView release];
 		}
 	}
 
@@ -395,10 +386,9 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMA
 - (void)setActionButtonImage:(NSImage *)anImage
 {
 	if (actionButtonImage) {
-		[actionButtonImage autorelease];
 	}
 
-	actionButtonImage = [anImage retain];
+	actionButtonImage = anImage;
 
 	[self setNeedsDisplayInRect:controlRect];
 }
@@ -411,10 +401,9 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMA
 - (void)setContextButtonImage:(NSImage *)anImage
 {
 	if (contextButtonImage) {
-		[contextButtonImage autorelease];
 	}
 
-	contextButtonImage = [anImage retain];
+	contextButtonImage = anImage;
 
 	[self setNeedsDisplayInRect:controlRect];
 }
@@ -427,10 +416,9 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMA
 - (void)setShelfBackgroundColor:(NSColor *)aColor
 {
 	if (shelfBackgroundColor) {
-		[shelfBackgroundColor autorelease];
 	}
 
-	shelfBackgroundColor = [aColor retain];
+	shelfBackgroundColor = aColor;
 	[self setNeedsDisplay:YES];
 }
 
@@ -761,7 +749,6 @@ OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMA
 {
 	if (!(attributedStringValue && [inString isEqualToString:[attributedStringValue string]])) {
 		if (attributedStringValue)
-			[attributedStringValue release];
 		if (inString) {
 			NSDictionary *attributes = [NSDictionary
 				dictionaryWithObjectsAndKeys:[NSParagraphStyle styleWithAlignment:NSLeftTextAlignment

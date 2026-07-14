@@ -27,13 +27,13 @@
 
 + (AITextAttachmentExtension *)textAttachmentExtensionFromTextAttachment:(NSTextAttachment *)textAttachment
 {
-	AITextAttachmentExtension *textAttachmentExtension = [[[AITextAttachmentExtension alloc] init] autorelease];
+	AITextAttachmentExtension *textAttachmentExtension = [[AITextAttachmentExtension alloc] init];
 	[textAttachmentExtension setShouldSaveImageForLogging:YES];
 	[textAttachmentExtension setAttachmentCell:[textAttachment attachmentCell]];
 
 	NSFileWrapper *fileWrapper = [textAttachment fileWrapper];
 	[textAttachmentExtension setString:[fileWrapper preferredFilename]];
-	[textAttachmentExtension setImage:[[[NSImage alloc] initWithData:[fileWrapper regularFileContents]] autorelease]];
+	[textAttachmentExtension setImage:[[NSImage alloc] initWithData:[fileWrapper regularFileContents]]];
 	NSLog(@"image is %@", [textAttachmentExtension image]);
 	return textAttachmentExtension;
 }
@@ -78,10 +78,6 @@
  */
 - (void)dealloc
 {
-	[image release];
-	[path release];
-	[stringRepresentation release];
-	[super dealloc];
 }
 
 - (void)encodeWithCoder:(NSCoder *)encoder
@@ -147,7 +143,6 @@
 - (void)setPath:(NSString *)inPath
 {
 	if (inPath != path) {
-		[path release];
 		path = [inPath copy];
 	}
 }
@@ -179,8 +174,7 @@
 - (void)setImage:(NSImage *)inImage
 {
 	if (inImage != image) {
-		[image release];
-		image = [inImage retain];
+		image = inImage;
 	}
 }
 
@@ -223,7 +217,7 @@
 			iconImage = [originalImage imageByScalingToSize:NSMakeSize(ICON_WIDTH, ICON_WIDTH)];
 
 		} else {
-			iconImage = [[originalImage copy] autorelease];
+			iconImage = [originalImage copy];
 		}
 
 	} else {
@@ -241,7 +235,7 @@
 - (void)setString:(NSString *)inString
 {
 	if (stringRepresentation != inString) {
-		[stringRepresentation autorelease];
+		
 		stringRepresentation = [inString copy];
 	}
 }
@@ -257,11 +251,11 @@
 
 	if (!myFilewrapper) {
 		if ([self path]) {
-			myFilewrapper = [[[NSFileWrapper alloc] initWithPath:[self path]] autorelease];
+			myFilewrapper = [[NSFileWrapper alloc] initWithPath:[self path]];
 
 		} else if ([self image]) {
 			myFilewrapper =
-				[[[NSFileWrapper alloc] initWithSerializedRepresentation:[[self image] PNGRepresentation]] autorelease];
+				[[NSFileWrapper alloc] initWithSerializedRepresentation:[[self image] PNGRepresentation]];
 			[myFilewrapper setPreferredFilename:[[[NSProcessInfo processInfo] globallyUniqueString]
 													stringByAppendingPathExtension:@"png"]];
 		}

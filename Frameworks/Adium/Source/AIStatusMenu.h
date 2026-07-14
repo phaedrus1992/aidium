@@ -21,7 +21,7 @@
 	NSMutableArray *menuItemArray;
 	NSMutableSet *stateMenuItemsAlreadyValidated;
 
-	id<AIStatusMenuDelegate> delegate;
+	/* delegate ivar removed for ARC — property synthesizes it */
 }
 
 + (id)statusMenuWithDelegate:(id<AIStatusMenuDelegate>)inDelegate;
