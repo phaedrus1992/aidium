@@ -25,7 +25,9 @@
 
 // #define ALWAYS_SHOW_TRUST_WARNING
 
-@interface AIPurpleCertificateTrustWarningAlert ()
+@interface AIPurpleCertificateTrustWarningAlert () {
+	id _selfRetain; /* keep ourselves alive while the trust panel is open */
+}
 - (id)initWithAccount:(AIAccount *)account
 			 hostname:(NSString *)hostname
 		 certificates:(CFArrayRef)certs
@@ -73,8 +75,8 @@
 																   certificates:certs
 																 resultCallback:_query_cert_cb
 																	   userData:ud];
+	alert->_selfRetain = alert;
 	[alert showWindow:nil];
-	[alert release];
 }
 
 - (id)initWithAccount:(AIAccount *)_account
@@ -94,17 +96,13 @@
 
 		userdata = ud;
 	}
-	return [self retain];
+	return self;
 }
 
 - (void)dealloc
 {
 	CFRelease(certificates);
 	CFRelease(trustRef);
-
-	[hostname release];
-
-	[super dealloc];
 }
 
 - (IBAction)showWindow:(id)sender
@@ -119,7 +117,7 @@
 	err = SecPolicySearchCreate(CSSM_CERT_X_509v3, &CSSMOID_APPLE_TP_SSL, NULL, &searchRef);
 	if (err != noErr) {
 		NSBeep();
-		[self release];
+		_selfRetain = nil;
 		return;
 	}
 
@@ -127,7 +125,7 @@
 	if (err != noErr) {
 		CFRelease(searchRef);
 		NSBeep();
-		[self release];
+		_selfRetain = nil;
 		return;
 	}
 
@@ -148,7 +146,7 @@
 		CFRelease(searchRef);
 		CFRelease(policyRef);
 		NSBeep();
-		[self release];
+		_selfRetain = nil;
 		return;
 	}
 
@@ -162,7 +160,7 @@
 		case kSecTrustResultUnspecified: // trust ok, user has no particular opinion about this
 #ifndef ALWAYS_SHOW_TRUST_WARNING
 			query_cert_cb(true, userdata);
-			[self autorelease];
+			_selfRetain = nil;
 			break;
 #endif
 		case kSecTrustResultConfirm: // trust ok, but user asked (earlier) that you check with him before proceeding
@@ -179,7 +177,7 @@
 				[[[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, TRUST_PANEL_WIDTH, 1)
 											 styleMask:(NSTitledWindowMask | NSMiniaturizableWindowMask)
 											   backing:NSBackingStoreBuffered
-												 defer:NO] autorelease];
+												 defer:NO]];
 			[fakeWindow center];
 			[fakeWindow setTitle:AILocalizedString(@"Verify Certificate", nil)];
 
@@ -197,12 +195,12 @@
 			 * kSecTrustResultInvalid -> logic error; fix your program (SecTrust was used incorrectly)
 			 */
 			query_cert_cb(false, userdata);
-			[self autorelease];
+			_selfRetain = nil;
 			break;
 		}
 	} else {
 		query_cert_cb(false, userdata);
-		[self autorelease];
+		_selfRetain = nil;
 	}
 
 	CFRelease(searchRef);
@@ -267,11 +265,9 @@
 
 	query_cert_cb(didTrustCerficate, userdata);
 
-	[trustpanel release];
-
 	[parentWindow performClose:nil];
 
-	[self release];
+	_selfRetain = nil;
 }
 
 @end

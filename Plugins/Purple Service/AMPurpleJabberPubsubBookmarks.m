@@ -164,7 +164,7 @@ static void AMPurpleJabberPubsubBookmarks_received_xmlnode_cb(PurpleConnection *
 		// Connect to jabber-receiving-xmlnode to intercept PubSub results for bookmarks
 		PurplePlugin *jabber = purple_find_prpl("prpl-jabber");
 		if (jabber) {
-			purple_signal_connect(jabber, "jabber-receiving-xmlnode", self,
+			purple_signal_connect(jabber, "jabber-receiving-xmlnode", (__bridge void *)self,
 								  PURPLE_CALLBACK(AMPurpleJabberPubsubBookmarks_received_xmlnode_cb),
 								  (__bridge void *)self);
 		}
@@ -178,8 +178,6 @@ static void AMPurpleJabberPubsubBookmarks_received_xmlnode_cb(PurpleConnection *
 - (void)dealloc
 {
 	purple_signals_disconnect_by_handle((__bridge void *)self);
-
-	[super dealloc];
 }
 
 #pragma mark - Public

@@ -83,7 +83,7 @@ static void AMPurpleJabberMessageStyling_received_xmlnode_cb(PurpleConnection *g
 		// Connect to jabber-receiving-xmlnode to detect <unstyled/> elements
 		PurplePlugin *jabber = purple_find_prpl("prpl-jabber");
 		if (jabber != NULL) {
-			purple_signal_connect(jabber, "jabber-receiving-xmlnode", self,
+			purple_signal_connect(jabber, "jabber-receiving-xmlnode", (__bridge void *)self,
 								  PURPLE_CALLBACK(AMPurpleJabberMessageStyling_received_xmlnode_cb),
 								  (__bridge void *)self);
 		}
@@ -97,8 +97,6 @@ static void AMPurpleJabberMessageStyling_received_xmlnode_cb(PurpleConnection *g
 - (void)dealloc
 {
 	purple_signals_disconnect_by_handle((__bridge void *)self);
-
-	[super dealloc];
 }
 
 #pragma mark - Public

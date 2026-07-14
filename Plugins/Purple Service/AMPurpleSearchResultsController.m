@@ -87,7 +87,6 @@
 			[searchButtons setObject:[NSValue valueWithPointer:button]
 							  forKey:[NSValue valueWithNonretainedObject:newbutton]];
 
-			[newbutton release];
 			offset -= 20.0f;
 		}
 
@@ -106,7 +105,6 @@
 			if (scol->title)
 				[[tcol headerCell] setStringValue:[NSString stringWithUTF8String:scol->title]];
 			[tableview addTableColumn:tcol];
-			[tcol release];
 		}
 
 		// convert the rows
@@ -124,7 +122,6 @@
 					[dict setObject:[NSString stringWithUTF8String:text]
 							 forKey:[NSNumber numberWithUnsignedInteger:col++]];
 			}
-			[dict release];
 		}
 
 		[tableview reloadData];
@@ -132,15 +129,11 @@
 		[self showWindow:nil];
 		[self tableViewSelectionDidChange:[NSNotification notificationWithName:@"SelectionChanged" object:nil]];
 	}
-	return [self retain]; // will be released in -purpleRequestClose when we're done
+	return self; // will be released in -purpleRequestClose when we're done
 }
 
 - (void)dealloc
-{
-	[searchButtons release];
-	[searchResults release];
-	[super dealloc];
-}
+{}
 
 - (void)addResults:(PurpleNotifySearchResults *)results
 {
@@ -155,7 +148,6 @@
 			if (text)
 				[dict setObject:[NSString stringWithUTF8String:text] forKey:[NSNumber numberWithUnsignedInteger:col++]];
 		}
-		[dict release];
 	}
 
 	[tableview reloadData];
@@ -187,7 +179,7 @@
 
 - (BOOL)windowShouldClose:(id)sender
 {
-	purple_notify_close(PURPLE_NOTIFY_SEARCHRESULTS, self);
+	purple_notify_close(PURPLE_NOTIFY_SEARCHRESULTS, (__bridge void *)self);
 	return windowIsClosing;
 }
 

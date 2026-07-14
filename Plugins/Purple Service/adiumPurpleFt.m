@@ -22,7 +22,7 @@ static void adiumPurpleNewXfer(PurpleXfer *xfer) {}
 static void adiumPurpleDestroy(PurpleXfer *xfer)
 {
 	@autoreleasepool {
-		ESFileTransfer *fileTransfer = (ESFileTransfer *)xfer->ui_data;
+		ESFileTransfer *fileTransfer = (__bridge ESFileTransfer *)xfer->ui_data;
 		[accountLookup(xfer->account) destroyFileTransfer:fileTransfer];
 
 		xfer->ui_data = nil;
@@ -34,7 +34,7 @@ static void adiumPurpleAddXfer(PurpleXfer *xfer) {}
 static void adiumPurpleUpdateProgress(PurpleXfer *xfer, double percent)
 {
 	@autoreleasepool {
-		ESFileTransfer *fileTransfer = (ESFileTransfer *)xfer->ui_data;
+		ESFileTransfer *fileTransfer = (__bridge ESFileTransfer *)xfer->ui_data;
 
 		if (fileTransfer) {
 			[accountLookup(xfer->account)
@@ -49,7 +49,7 @@ static void adiumPurpleCancelLocal(PurpleXfer *xfer)
 {
 	@autoreleasepool {
 		AILog(@"adiumPurpleCancelLocal");
-		ESFileTransfer *fileTransfer = (ESFileTransfer *)xfer->ui_data;
+		ESFileTransfer *fileTransfer = (__bridge ESFileTransfer *)xfer->ui_data;
 		[accountLookup(xfer->account) fileTransferCancelledLocally:fileTransfer];
 	}
 }
@@ -58,7 +58,7 @@ static void adiumPurpleCancelRemote(PurpleXfer *xfer)
 {
 	@autoreleasepool {
 		AILog(@"adiumPurpleCancelRemote");
-		ESFileTransfer *fileTransfer = (ESFileTransfer *)xfer->ui_data;
+		ESFileTransfer *fileTransfer = (__bridge ESFileTransfer *)xfer->ui_data;
 		[accountLookup(xfer->account) fileTransferCancelledRemotely:fileTransfer];
 	}
 }

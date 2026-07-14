@@ -9457,6 +9457,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 63C7E2060FAFAA4700B310AC /* AdiumLibpurple.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
@@ -9474,6 +9475,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 63C7E2060FAFAA4700B310AC /* AdiumLibpurple.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
@@ -9492,6 +9494,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 63C7E2060FAFAA4700B310AC /* AdiumLibpurple.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;

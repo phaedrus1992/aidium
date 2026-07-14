@@ -187,10 +187,6 @@ static void AMPurpleJabberCorrection_received_data_cb(PurpleConnection *gc, xmln
 - (void)dealloc
 {
 	purple_signals_disconnect_by_handle((__bridge void *)self);
-
-	[_trackedStanzaIDs release];
-
-	[super dealloc];
 }
 
 #pragma mark - Helpers

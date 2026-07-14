@@ -34,7 +34,6 @@
 {
 	AIPurpleCertificateViewer *viewer = [[self alloc] initWithCertificateChain:cc forAccount:account];
 	[viewer showWindow:nil];
-	[viewer release];
 }
 
 - (id)initWithCertificateChain:(CFArrayRef)cc forAccount:(AIAccount *)_account
@@ -44,13 +43,12 @@
 		CFRetain(certificatechain);
 		account = _account;
 	}
-	return [self retain];
+	return self;
 }
 
 - (void)dealloc
 {
 	CFRelease(certificatechain);
-	[super dealloc];
 }
 
 - (IBAction)showWindow:(id)sender
@@ -64,8 +62,8 @@
 	[panel beginSheetForWindow:window
 				 modalDelegate:self
 				didEndSelector:@selector(certificateSheetDidEnd:returnCode:contextInfo:)
-				   contextInfo:window
-				  certificates:(NSArray *)certificatechain
+				   contextInfo:(__bridge void *)window
+				  certificates:(__bridge NSArray *)certificatechain
 					 showGroup:YES];
 }
 
@@ -73,8 +71,7 @@
 					returnCode:(NSInteger)returnCode
 				   contextInfo:(void *)contextInfo
 {
-	NSWindow *win = (NSWindow *)contextInfo;
-	[panel release];
+	NSWindow *win = (__bridge NSWindow *)contextInfo;
 	[win performSelector:@selector(performClose:) withObject:nil afterDelay:0.0];
 }
 

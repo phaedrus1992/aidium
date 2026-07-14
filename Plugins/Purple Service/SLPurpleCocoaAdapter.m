@@ -107,10 +107,10 @@ static NSMutableArray *libpurplePluginArray = nil;
 	PurpleAccount *account = purple_account_new([adiumAccount purpleAccountName], [adiumAccount protocolPlugin]);
 
 	if (account->ui_data) {
-		[(CBPurpleAccount *)account->ui_data autorelease];
-		[(CBPurpleAccount *)account->ui_data setPurpleAccount:nil];
+		(void)(__bridge_transfer CBPurpleAccount *)account->ui_data;
+		[(__bridge CBPurpleAccount *)account->ui_data setPurpleAccount:nil];
 	}
-	account->ui_data = [adiumAccount retain];
+	account->ui_data = (__bridge_retained void *)adiumAccount;
 
 	[adiumAccount setPurpleAccount:account];
 
@@ -124,8 +124,8 @@ static NSMutableArray *libpurplePluginArray = nil;
 	PurpleAccount *account = accountLookupFromAdiumAccount(adiumAccount);
 
 	if (account) {
-		[(CBPurpleAccount *)account->ui_data release];
-		account->ui_data = nil;
+		(void)(__bridge_transfer CBPurpleAccount *)account->ui_data;
+		account->ui_data = NULL;
 
 		purple_accounts_remove(account);
 	}
@@ -318,7 +318,7 @@ static NSString *serviceClassForPurpleProtocolID(const char *protocolID)
  */
 CBPurpleAccount *accountLookup(PurpleAccount *account)
 {
-	CBPurpleAccount *adiumPurpleAccount = (account ? (CBPurpleAccount *)account->ui_data : nil);
+	CBPurpleAccount *adiumPurpleAccount = (account ? (__bridge CBPurpleAccount *)account->ui_data : nil);
 	/* If the account doesn't have its ui_data associated yet (we haven't tried to connect) but we want this
 	 * lookup data, we have to do some manual parsing.  This is used for example from the OTR preferences.
 	 */
@@ -346,7 +346,7 @@ PurpleAccount *accountLookupFromAdiumAccount(CBPurpleAccount *adiumAccount)
 AIListContact *contactLookupFromBuddy(PurpleBuddy *buddy)
 {
 	// Get the node's ui_data
-	AIListContact *theContact = (buddy ? (AIListContact *)buddy->node.ui_data : nil);
+	AIListContact *theContact = (buddy ? (__bridge AIListContact *)buddy->node.ui_data : nil);
 
 	// If the node does not have ui_data yet, we need to create a contact and associate it
 	if (!theContact && buddy) {
@@ -358,7 +358,7 @@ AIListContact *contactLookupFromBuddy(PurpleBuddy *buddy)
 		theContact = [accountLookup(purple_buddy_get_account(buddy)) contactWithUID:UID];
 
 		// Associate the handle with ui_data and the buddy with our statusDictionary
-		buddy->node.ui_data = [theContact retain];
+		buddy->node.ui_data = (__bridge_retained void *)theContact;
 
 		// This is the first time the contact has been accessed from the buddy; reset the icon cache for it
 		[AIUserIcons flushCacheForObject:theContact];
@@ -376,7 +376,7 @@ AIChat *groupChatLookupFromConv(PurpleConversation *conv)
 {
 	AIChat *chat;
 
-	chat = (AIChat *)conv->ui_data;
+	chat = (__bridge AIChat *)conv->ui_data;
 	if (!chat) {
 		NSString *name = [NSString stringWithUTF8String:purple_conversation_get_name(conv)];
 
@@ -400,9 +400,9 @@ AIChat *groupChatLookupFromConv(PurpleConversation *conv)
 			// If we don't have a chat creation dictionary (i.e., we didn't initiate the join), create one.
 			chat.chatCreationDictionary = [account extractChatCreationDictionaryFromConversation:conv];
 		}
-		if (conv->ui_data != chat) {
-			[(AIChat *)(conv->ui_data) release];
-			conv->ui_data = [chat retain];
+		if (conv->ui_data != (__bridge void *)chat) {
+			(void)(__bridge_transfer AIChat *)conv->ui_data;
+			conv->ui_data = (__bridge_retained void *)chat;
 		}
 		AILog(@"group chat lookup assigned %@ to %p (%s)", chat, conv, purple_conversation_get_name(conv));
 	}
@@ -412,7 +412,7 @@ AIChat *groupChatLookupFromConv(PurpleConversation *conv)
 
 AIChat *existingChatLookupFromConv(PurpleConversation *conv)
 {
-	return (conv ? conv->ui_data : nil);
+	return (conv ? (__bridge AIChat *)conv->ui_data : nil);
 }
 
 AIChat *chatLookupFromConv(PurpleConversation *conv)
@@ -434,7 +434,7 @@ AIChat *imChatLookupFromConv(PurpleConversation *conv)
 {
 	AIChat *chat;
 
-	chat = (AIChat *)conv->ui_data;
+	chat = (__bridge AIChat *)conv->ui_data;
 
 	if (!chat) {
 		// No chat is associated with the IM conversation
@@ -489,9 +489,9 @@ AIChat *imChatLookupFromConv(PurpleConversation *conv)
 		}
 
 		// Associate the PurpleConversation with the AIChat
-		if (conv->ui_data != chat) {
-			[(AIChat *)(conv->ui_data) release];
-			conv->ui_data = [chat retain];
+		if (conv->ui_data != (__bridge void *)chat) {
+			(void)(__bridge_transfer AIChat *)conv->ui_data;
+			conv->ui_data = (__bridge_retained void *)chat;
 		}
 	}
 
@@ -733,7 +733,6 @@ NSString *processPurpleImages(NSString *inString, AIAccount *adiumAccount)
 						[bitmapRep representationUsingType:NSPNGFileType
 												properties:[NSDictionary dictionaryWithValuesForKeys:[NSArray array]]];
 					extension = @"png";
-					[image release];
 				}
 
 				filename = [filename stringByAppendingPathExtension:extension];
@@ -755,7 +754,7 @@ NSString *processPurpleImages(NSString *inString, AIAccount *adiumAccount)
 		}
 	}
 
-	return ([newString autorelease]);
+	return newString;
 }
 
 #pragma mark Notify
@@ -888,7 +887,7 @@ NSString *processPurpleImages(NSString *inString, AIAccount *adiumAccount)
 
 	static AIHTMLDecoder *notifyFormattedHTMLDecoder = nil;
 	if (!notifyFormattedHTMLDecoder)
-		notifyFormattedHTMLDecoder = [[AIHTMLDecoder decoder] retain];
+		notifyFormattedHTMLDecoder = [AIHTMLDecoder decoder];
 
 	NSString *textString = (text ? [NSString stringWithUTF8String:text] : nil);
 	if (textString)
@@ -935,18 +934,19 @@ NSString *processPurpleImages(NSString *inString, AIAccount *adiumAccount)
 - (void)registerAccount:(id)adiumAccount
 {
 	purple_account_set_register_callback(accountLookupFromAdiumAccount(adiumAccount), adiumPurpleAccountRegisterCb,
-										 adiumAccount);
+										 (__bridge void *)adiumAccount);
 	purple_account_register(accountLookupFromAdiumAccount(adiumAccount));
 }
 
 static void purpleUnregisterCb(PurpleAccount *account, gboolean success, void *user_data)
 {
-	[(CBPurpleAccount *)user_data unregisteredAccount:success ? YES : NO];
+	[(__bridge CBPurpleAccount *)user_data unregisteredAccount:success ? YES : NO];
 }
 
 - (void)unregisterAccount:(id)adiumAccount
 {
-	purple_account_unregister(accountLookupFromAdiumAccount(adiumAccount), purpleUnregisterCb, adiumAccount);
+	purple_account_unregister(accountLookupFromAdiumAccount(adiumAccount), purpleUnregisterCb,
+							  (__bridge void *)adiumAccount);
 }
 
 // Called on the purple thread, actually performs the specified command (it should have already been tested by
@@ -1300,8 +1300,8 @@ static void purpleUnregisterCb(PurpleAccount *account, gboolean success, void *u
 		 */
 		AILogWithSignature(@"Destroying %p (and releasing chat %p)", conv, conv->ui_data);
 
-		[(AIChat *)conv->ui_data release];
-		conv->ui_data = nil;
+		(void)(__bridge_transfer AIChat *)conv->ui_data;
+		conv->ui_data = NULL;
 
 		// Tell purple to destroy the conversation.
 		purple_conversation_destroy(conv);
@@ -1598,7 +1598,7 @@ GList *createListFromDictionary(NSDictionary *arguments)
  */
 - (void)closeAuthRequestWithHandle:(id)authRequestHandle
 {
-	purple_account_request_close(authRequestHandle);
+	purple_account_request_close((__bridge void *)authRequestHandle);
 }
 
 #pragma mark Secure messaging
@@ -1614,8 +1614,6 @@ GList *createListFromDictionary(NSDictionary *arguments)
 - (void)dealloc
 {
 	purple_signals_disconnect_by_handle(adium_purple_get_handle());
-
-	[super dealloc];
 }
 
 #ifdef HAVE_CDSA

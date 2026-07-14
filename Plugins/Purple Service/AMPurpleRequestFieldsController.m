@@ -395,7 +395,6 @@
 		data = [bitmapRep representationUsingType:NSPNGFileType
 									   properties:[NSDictionary dictionaryWithValuesForKeys:[NSArray array]]];
 		extension = @"png";
-		[image release];
 	}
 
 	NSString *filename = [[[NSString stringWithFormat:@"TEMP-Image_%@", [self key]]
@@ -648,7 +647,6 @@
 
 					// Insert the field into the XHTML document
 					[fieldset addChild:[fieldobject xhtml]];
-					[fieldobject release];
 				}
 			}
 		}
@@ -708,14 +706,7 @@
 												   object:[self window]];
 	}
 
-	return [self retain]; // keep us as long as the form is open
-}
-
-- (void)dealloc
-{
-	[fieldobjects release];
-
-	[super dealloc];
+	return (__bridge id)CFBridgingRetain(self); // keep us as long as the form is open
 }
 
 - (void)loadForm:(NSXMLDocument *)doc
@@ -754,7 +745,7 @@
 			((PurpleRequestFieldsCb)cancelcb)(userData, fields);
 	}
 
-	[self autorelease]; // no we don't need us no longer, commit suicide
+	CFBridgingRelease((__bridge void *)self); // no we don't need us no longer, commit suicide
 }
 
 - (void)webView:(WebView *)webView
@@ -770,36 +761,31 @@
 		if ([[[request URL] absoluteString] isEqualToString:@"https://github.com/phaedrus1992/adiumy/XMPP/form"]) {
 			NSString *info = [[NSString alloc] initWithData:[request HTTPBody] encoding:NSUTF8StringEncoding];
 			NSArray *formfields = [info componentsSeparatedByString:@"&"];
-			[info release];
-
 			NSString *field;
 			for (field in formfields) {
 				NSArray *keyvalue = [field componentsSeparatedByString:@"="];
 				if ([keyvalue count] != 2)
 					continue;
 
-				NSString *key = [[[keyvalue objectAtIndex:0] mutableCopy] autorelease];
+				NSString *key = [[keyvalue objectAtIndex:0] mutableCopy];
 				[(NSMutableString *)key replaceOccurrencesOfString:@"+"
 														withString:@" "
 														   options:NSLiteralSearch
 															 range:NSMakeRange(0, [key length])];
 
-				key = (NSString *)CFURLCreateStringByReplacingPercentEscapesUsingEncoding(
-					kCFAllocatorDefault, (CFStringRef)key, (CFStringRef) @"", kCFStringEncodingUTF8);
+				key = CFBridgingRelease(CFURLCreateStringByReplacingPercentEscapesUsingEncoding(
+					kCFAllocatorDefault, (CFStringRef)key, (CFStringRef) @"", kCFStringEncodingUTF8));
 
-				NSString *value = [[[keyvalue objectAtIndex:1] mutableCopy] autorelease];
+				NSString *value = [[keyvalue objectAtIndex:1] mutableCopy];
 				[(NSMutableString *)value replaceOccurrencesOfString:@"+"
 														  withString:@" "
 															 options:NSLiteralSearch
 															   range:NSMakeRange(0, [value length])];
 
-				value = (NSString *)CFURLCreateStringByReplacingPercentEscapesUsingEncoding(
-					kCFAllocatorDefault, (CFStringRef)value, (CFStringRef) @"", kCFStringEncodingUTF8);
+				value = CFBridgingRelease(CFURLCreateStringByReplacingPercentEscapesUsingEncoding(
+					kCFAllocatorDefault, (CFStringRef)value, (CFStringRef) @"", kCFStringEncodingUTF8));
 
 				[[fieldobjects objectForKey:key] applyValue:value];
-
-				[key release];
-				[value release];
 			}
 
 			wasSubmitted = YES;

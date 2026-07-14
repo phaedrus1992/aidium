@@ -87,7 +87,7 @@ static void *adiumPurpleNotifySearchResults(PurpleConnection *gc, const char *ti
 	@autoreleasepool {
 		AILog(@"**** returning search results");
 		// This will be released in adiumPurpleNotifyClose()
-		void *res = [[AMPurpleSearchResultsController alloc]
+		void *res = (__bridge_retained void *)[[AMPurpleSearchResultsController alloc]
 			initWithPurpleConnection:gc
 							   title:(title ? [NSString stringWithUTF8String:title] : nil)primaryText
 									:(primary ? [NSString stringWithUTF8String:primary] : nil)secondaryText
@@ -100,8 +100,8 @@ static void *adiumPurpleNotifySearchResults(PurpleConnection *gc, const char *ti
 static void adiumPurpleNotifySearchResultsNewRows(PurpleConnection *gc, PurpleNotifySearchResults *results, void *data)
 {
 	@autoreleasepool {
-		if ([(id)data isKindOfClass:[AMPurpleSearchResultsController class]]) {
-			[(AMPurpleSearchResultsController *)data addResults:results];
+		if ([(__bridge id)data isKindOfClass:[AMPurpleSearchResultsController class]]) {
+			[(__bridge AMPurpleSearchResultsController *)data addResults:results];
 		}
 	}
 }
@@ -151,8 +151,8 @@ static void *adiumPurpleNotifyUri(const char *uri)
 				FSRef appRef;
 
 				// Open the HTML file with a web browser, not with an HTML editor
-				if (LSGetApplicationForURL((CFURLRef)[NSURL URLWithString:@"http://google.com"], kLSRolesViewer,
-										   &appRef, NULL) != kLSApplicationNotFoundErr) {
+				if (LSGetApplicationForURL((__bridge CFURLRef)[NSURL URLWithString:@"http://google.com"],
+										   kLSRolesViewer, &appRef, NULL) != kLSApplicationNotFoundErr) {
 					FSRef urlRef;
 
 					if (FSPathMakeRef((UInt8 *)[actualURI fileSystemRepresentation], &urlRef, NULL) == noErr) {
@@ -181,12 +181,12 @@ static void adiumPurpleNotifyClose(PurpleNotifyType type, void *uiHandle)
 {
 	@autoreleasepool {
 
-		id ourHandle = uiHandle;
+		id ourHandle = (__bridge_transfer id)uiHandle;
 		AILogWithSignature(@"Closing %p (%i)", ourHandle, type);
 
 		if ([ourHandle respondsToSelector:@selector(purpleRequestClose)]) {
 			[ourHandle performSelector:@selector(purpleRequestClose)];
-			[ourHandle release];
+
 		} else if ([ourHandle respondsToSelector:@selector(closeWindow:)]) {
 			[ourHandle performSelector:@selector(closeWindow:) withObject:nil];
 		}

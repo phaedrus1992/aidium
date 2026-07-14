@@ -55,7 +55,7 @@
 	else
 		return nil;
 
-	return [[[class alloc] initWithXML:xml] autorelease];
+	return [[class alloc] initWithXML:xml];
 }
 
 - (id)initWithXML:(xmlnode *)xml
@@ -91,9 +91,7 @@
 
 - (void)setLabel:(NSString *)_label
 {
-	id old = label;
 	label = [_label copy];
-	[old release];
 }
 
 - (NSString *)label
@@ -103,9 +101,7 @@
 
 - (void)setVariable:(NSString *)_var
 {
-	id old = var;
 	var = [_var copy];
-	[old release];
 }
 
 - (NSString *)var
@@ -115,22 +111,12 @@
 
 - (void)setDescription:(NSString *)_desc
 {
-	id old = desc;
 	desc = [_desc copy];
-	[old release];
 }
 
 - (NSString *)desc
 {
 	return desc;
-}
-
-- (void)dealloc
-{
-	[label release];
-	[var release];
-	[desc release];
-	[super dealloc];
 }
 
 - (xmlnode *)xml
@@ -203,17 +189,9 @@
 	return self;
 }
 
-- (void)dealloc
-{
-	[value release];
-	[super dealloc];
-}
-
 - (void)setStringValue:(NSString *)_value
 {
-	id old = value;
 	value = [_value copy];
-	[old release];
 }
 
 - (NSString *)stringValue
@@ -249,17 +227,9 @@
 	return self;
 }
 
-- (void)dealloc
-{
-	[value release];
-	[super dealloc];
-}
-
 - (void)setStringValue:(NSString *)_value
 {
-	id old = value;
 	value = [_value copy];
-	[old release];
 }
 
 - (NSString *)stringValue
@@ -299,17 +269,9 @@
 	return self;
 }
 
-- (void)dealloc
-{
-	[jids release];
-	[super dealloc];
-}
-
 - (void)setJIDs:(NSArray *)_jids
 {
-	id old = jids;
 	jids = [_jids copy];
-	[old release];
 }
 
 - (NSArray *)jids
@@ -348,17 +310,9 @@
 	return self;
 }
 
-- (void)dealloc
-{
-	[jid release];
-	[super dealloc];
-}
-
 - (void)setJID:(NSString *)_jid
 {
-	id old = jid;
 	jid = [_jid copy];
-	[old release];
 }
 
 - (NSString *)jid
@@ -401,14 +355,12 @@
 			if (option->type == XMLNODE_TYPE_TAG && !strcmp(option->name, "option")) {
 				const char *labelstr = xmlnode_get_attrib(option, "label");
 				xmlnode *lvaluenode = xmlnode_get_child(option, "value");
-				if (!valuenode) {
+				if (!lvaluenode) {
 					/* invalid field */
-					[self release];
 					return nil;
 				}
 				const char *valuestr = xmlnode_get_data(lvaluenode);
 				if (!valuestr) {
-					[self release];
 					return nil;
 				}
 				[newoptions
@@ -424,18 +376,9 @@
 	return self;
 }
 
-- (void)dealloc
-{
-	[options release];
-	[values release];
-	[super dealloc];
-}
-
 - (void)setOptions:(NSArray *)_options
 {
-	id old = options;
 	options = [_options copy];
-	[old release];
 }
 
 - (NSArray *)options
@@ -445,9 +388,7 @@
 
 - (void)setStringValues:(NSArray *)_values
 {
-	id old = values;
 	values = [_values copy];
-	[old release];
 }
 
 - (NSArray *)stringValues
@@ -496,12 +437,10 @@
 				xmlnode *lvaluenode = xmlnode_get_child(option, "value");
 				if (!lvaluenode) {
 					/* invalid field */
-					[self release];
 					return nil;
 				}
 				const char *valuestr = xmlnode_get_data(lvaluenode);
 				if (!valuestr) {
-					[self release];
 					return nil;
 				}
 				[newoptions
@@ -517,18 +456,9 @@
 	return self;
 }
 
-- (void)dealloc
-{
-	[options release];
-	[value release];
-	[super dealloc];
-}
-
 - (void)setStringValue:(NSString *)_value
 {
-	id old = value;
 	value = [_value copy];
-	[old release];
 }
 
 - (NSString *)stringValue
@@ -538,9 +468,7 @@
 
 - (void)setOptions:(NSArray *)_options
 {
-	id old = options;
 	options = [_options copy];
-	[old release];
 }
 
 - (NSArray *)options
@@ -588,17 +516,9 @@
 	return self;
 }
 
-- (void)dealloc
-{
-	[value release];
-	[super dealloc];
-}
-
 - (void)setStringValue:(NSString *)_value
 {
-	id old = value;
 	value = [_value copy];
-	[old release];
 }
 
 - (NSString *)stringValue
@@ -636,17 +556,9 @@
 	return self;
 }
 
-- (void)dealloc
-{
-	[value release];
-	[super dealloc];
-}
-
 - (void)setStringValue:(NSString *)_value
 {
-	id old = value;
 	value = [_value copy];
-	[old release];
 }
 
 - (NSString *)stringValue
@@ -682,17 +594,9 @@
 	return self;
 }
 
-- (void)dealloc
-{
-	[value release];
-	[super dealloc];
-}
-
 - (void)setStringValue:(NSString *)_value
 {
-	id old = value;
 	value = [_value copy];
-	[old release];
 }
 
 - (NSString *)stringValue
@@ -729,19 +633,16 @@
 	if ((self = [super init])) {
 		// verify that this is really a jabber:x:data
 		if (xml->type != XMLNODE_TYPE_TAG || strcmp(xml->name, "x")) {
-			[self release];
 			return nil;
 		}
 		const char *xmlns = xmlnode_get_namespace(xml);
 		if (!xmlns || strcmp(xmlns, "jabber:x:data")) {
-			[self release];
 			return nil;
 		}
 
 		// read global settings
 		const char *typestr = xmlnode_get_attrib(xml, "type");
 		if (!typestr) {
-			[self release];
 			return nil;
 		}
 
@@ -754,7 +655,6 @@
 		else if (!strcmp(typestr, "result"))
 			type = result;
 		else { /* unknown form type */
-			[self release];
 			return nil;
 		}
 
@@ -785,26 +685,14 @@
 	return self;
 }
 
-- (void)dealloc
-{
-	[title release];
-	[instructions release];
-	[fields release];
-	[super dealloc];
-}
-
 - (void)setTitle:(NSString *)_title
 {
-	id old = title;
 	title = [_title copy];
-	[old release];
 }
 
 - (void)setInstructions:(NSString *)_instructions
 {
-	id old = instructions;
 	instructions = [_instructions copy];
-	[old release];
 }
 
 - (NSString *)title

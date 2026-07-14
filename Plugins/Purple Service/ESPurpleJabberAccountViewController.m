@@ -68,7 +68,7 @@
 	// Resource
 	NSString *resource = [account preferenceForKey:KEY_JABBER_RESOURCE group:GROUP_ACCOUNT_STATUS];
 	if (!resource)
-		resource = [(NSString *)SCDynamicStoreCopyLocalHostName(NULL) autorelease];
+		resource = CFBridgingRelease(SCDynamicStoreCopyLocalHostName(NULL));
 	if (!resource)
 		resource = @"";
 	[textField_resource setStringValue:resource];
@@ -178,10 +178,6 @@
 - (void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[window_registerServer release];
-	[servers release];
-
-	[super dealloc];
 }
 
 #pragma mark group combobox datasource
@@ -252,9 +248,9 @@ static NSComparisonResult compareByDistance(id one, id two, void *context)
 {
 	if (!servers) {
 		NSError *err = NULL;
-		NSXMLDocument *serverfeed = [[[NSXMLDocument alloc] initWithContentsOfURL:[NSURL URLWithString:SERVERFEEDRSSURL]
-																		  options:0
-																			error:&err] autorelease];
+		NSXMLDocument *serverfeed = [[NSXMLDocument alloc] initWithContentsOfURL:[NSURL URLWithString:SERVERFEEDRSSURL]
+																		 options:0
+																		   error:&err];
 		if (err) {
 			[[NSAlert alertWithError:err] runModal];
 		} else {

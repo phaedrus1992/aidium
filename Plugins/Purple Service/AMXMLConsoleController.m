@@ -30,7 +30,7 @@ static void xmlnode_received_cb(PurpleConnection *gc, xmlnode **packet, gpointer
 {
 	@autoreleasepool {
 
-		AMXMLConsoleController *self = (AMXMLConsoleController *)this;
+		AMXMLConsoleController *self = (__bridge AMXMLConsoleController *)this;
 
 		if (!this || [self gc] != gc) {
 			return;
@@ -44,7 +44,6 @@ static void xmlnode_received_cb(PurpleConnection *gc, xmlnode **packet, gpointer
 
 		NSAttributedString *astr = [[NSAttributedString alloc] initWithString:sstr attributes:nil];
 		[self appendToLog:astr];
-		[astr release];
 
 		g_free(str);
 	}
@@ -53,7 +52,7 @@ static void xmlnode_received_cb(PurpleConnection *gc, xmlnode **packet, gpointer
 static void xmlnode_sent_cb(PurpleConnection *gc, char **packet, gpointer this)
 {
 	@autoreleasepool {
-		AMXMLConsoleController *self = (AMXMLConsoleController *)this;
+		AMXMLConsoleController *self = (__bridge AMXMLConsoleController *)this;
 		xmlnode *node;
 
 		if (!this || [self gc] != gc) {
@@ -77,7 +76,6 @@ static void xmlnode_sent_cb(PurpleConnection *gc, char **packet, gpointer this)
 				attributes:[NSDictionary dictionaryWithObject:[NSColor blueColor]
 													   forKey:NSForegroundColorAttributeName]];
 		[self appendToLog:astr];
-		[astr release];
 
 		g_free(str);
 		xmlnode_free(node);
@@ -88,9 +86,7 @@ static void xmlnode_sent_cb(PurpleConnection *gc, char **packet, gpointer this)
 
 - (void)dealloc
 {
-	purple_signals_disconnect_by_handle(self);
-
-	[super dealloc];
+	purple_signals_disconnect_by_handle((__bridge void *)self);
 }
 
 - (IBAction)sendXML:(id)sender
@@ -121,8 +117,10 @@ static void xmlnode_sent_cb(PurpleConnection *gc, char **packet, gpointer this)
 		if (!jabber)
 			AILog(@"Unable to locate jabber prpl");
 
-		purple_signal_connect(jabber, "jabber-receiving-xmlnode", self, PURPLE_CALLBACK(xmlnode_received_cb), self);
-		purple_signal_connect(jabber, "jabber-sending-text", self, PURPLE_CALLBACK(xmlnode_sent_cb), self);
+		purple_signal_connect(jabber, "jabber-receiving-xmlnode", (__bridge void *)self,
+							  PURPLE_CALLBACK(xmlnode_received_cb), (__bridge void *)self);
+		purple_signal_connect(jabber, "jabber-sending-text", (__bridge void *)self, PURPLE_CALLBACK(xmlnode_sent_cb),
+							  (__bridge void *)self);
 	}
 
 	[xmlConsoleWindow makeKeyAndOrderFront:sender];
@@ -134,7 +132,7 @@ static void xmlnode_sent_cb(PurpleConnection *gc, char **packet, gpointer this)
 	xmlConsoleWindow = nil;
 
 	// We don't need to watch the signals with the window closed
-	purple_signals_disconnect_by_handle(self);
+	purple_signals_disconnect_by_handle((__bridge void *)self);
 }
 
 - (void)close
