@@ -34,7 +34,6 @@
 
 - (void)dealloc
 {
-	[super dealloc];
 }
 
 // Set Validation Attribs
@@ -111,7 +110,7 @@
 									withString:@"%25n"
 									   options:NSLiteralSearch
 										 range:NSMakeRange(0, [newLinkURL length])];
-		linkURL = [newLinkURL autorelease];
+		linkURL = newLinkURL;
 	}
 
 	// Replace all existing percent escapes (in case the user actually escaped the URL properly or it was copy/pasted)
@@ -127,7 +126,7 @@
 		escapedURLString = nil;
 	}
 
-	return (escapedURLString ? [(NSString *)escapedURLString autorelease] : linkURL);
+	return (escapedURLString ? (NSString *)escapedURLString : linkURL);
 }
 
 @end

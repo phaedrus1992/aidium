@@ -46,14 +46,14 @@
 	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:EDIT_LINK_TITLE
 																	 target:self
 																	 action:@selector(editFormattedLink:)
-															  keyEquivalent:@"k"] autorelease];
+															  keyEquivalent:@"k"];
 	[adium.menuController addMenuItem:menuItem toLocation:LOC_Edit_Links];
 
 	// Context menu
 	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:EDIT_LINK_TITLE
 																	 target:self
 																	 action:@selector(editFormattedLink:)
-															  keyEquivalent:@""] autorelease];
+															  keyEquivalent:@""];
 	[adium.menuController addContextualMenuItem:menuItem toLocation:Context_TextView_LinkEditing];
 	[self registerToolbarItem];
 }
@@ -136,7 +136,6 @@
 	// Unregister the existing toolbar item first
 	if (toolbarItem) {
 		[adium.toolbarController unregisterToolbarItem:toolbarItem forToolbarType:@"TextEntry"];
-		[toolbarItem release];
 		toolbarItem = nil;
 	}
 

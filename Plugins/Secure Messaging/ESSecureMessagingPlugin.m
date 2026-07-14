@@ -63,11 +63,11 @@
 - (void)installPlugin
 {
 	// Muy imporatante: Set OTR as our encryption method
-	[adium.contentController setEncryptor:[[[AdiumOTREncryption alloc] init] autorelease]];
+	[adium.contentController setEncryptor:[[AdiumOTREncryption alloc] init]];
 
 	_secureMessagingMenu = nil;
-	lockImage_Locked = [[NSImage imageNamed:@"lock-locked" forClass:[self class]] retain];
-	lockImage_Unlocked = [[NSImage imageNamed:@"lock-unlocked" forClass:[self class]] retain];
+	lockImage_Locked = [NSImage imageNamed:@"lock-locked" forClass:[self class]];
+	lockImage_Unlocked = [NSImage imageNamed:@"lock-unlocked" forClass:[self class]];
 
 	[self registerToolbarItem];
 	[self configureMenuItems];
@@ -118,7 +118,7 @@
 	// Register our toolbar item
 	NSToolbarItem *toolbarItem;
 	MVMenuButton *button;
-	button = [[[MVMenuButton alloc] initWithFrame:NSMakeRect(0, 0, 32, 32)] autorelease];
+	button = [[MVMenuButton alloc] initWithFrame:NSMakeRect(0, 0, 32, 32)];
 	[button setImage:lockImage_Locked];
 
 	toolbarItem = [AIToolbarUtilities
@@ -162,7 +162,7 @@
 		[[item view] setMenu:menu];
 
 		// Add menu to toolbar item (for text mode)
-		NSMenuItem *mItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] init] autorelease];
+		NSMenuItem *mItem = [[NSMenuItem allocWithZone:[NSMenu menuZone]] init];
 		[mItem setSubmenu:menu];
 		[mItem setTitle:[menu title]];
 		[item setMenuFormRepresentation:mItem];
@@ -467,7 +467,7 @@
 		[_secureMessagingMenu addItem:item];
 	}
 
-	return [[_secureMessagingMenu copy] autorelease];
+	return [_secureMessagingMenu copy];
 }
 
 - (void)dummyAction:(id)sender

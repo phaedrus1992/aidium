@@ -96,21 +96,16 @@
 {
 	[self setChat:nil];
 
-	[leftColor release];
-	[rightColor release];
-	[super dealloc];
 }
 
 - (void)setLeftColor:(NSColor *)inLeftColor rightColor:(NSColor *)inRightColor
 {
 	if (leftColor != inLeftColor) {
-		[leftColor release];
-		leftColor = [inLeftColor retain];
+		leftColor = inLeftColor;
 	}
 
 	if (rightColor != inRightColor) {
-		[rightColor release];
-		rightColor = [inRightColor retain];
+		rightColor = inRightColor;
 	}
 
 	[self setNeedsDisplay:YES];
@@ -121,7 +116,6 @@
 	if (rightColor && leftColor) {
 		NSGradient *gradient = [[NSGradient alloc] initWithStartingColor:leftColor endingColor:rightColor];
 		[gradient drawInRect:self.bounds angle:0.0];
-		[gradient release];
 	}
 }
 
@@ -144,13 +138,12 @@
 			[self _destroyContactMenu];
 
 			// Release it
-			[chat release];
 			chat = nil;
 		}
 
 		if (inChat) {
 			// Retain the new chat
-			chat = [inChat retain];
+			chat = inChat;
 
 			// Observe changes to this chat's source and destination
 			[[NSNotificationCenter defaultCenter] addObserver:self
@@ -306,7 +299,6 @@
 	}
 
 	[popUp_accounts setMenu:menu];
-	[menu release];
 }
 
 /*!
@@ -347,11 +339,9 @@
 - (void)configureAccountMenu
 {
 	[box_accounts removeFromSuperview];
-	[box_accounts release];
-	box_accounts = [[self _boxWithFrame:BOX_RECT] retain];
+	box_accounts = [self _boxWithFrame:BOX_RECT];
 
-	[popUp_accounts release];
-	popUp_accounts = [[self _popUpButtonWithFrame:POPUP_RECT] retain];
+	popUp_accounts = [self _popUpButtonWithFrame:POPUP_RECT];
 	[box_accounts addSubview:popUp_accounts];
 
 	NSTextField *label_accounts =
@@ -380,11 +370,8 @@
 {
 	if (popUp_accounts) {
 		[box_accounts removeFromSuperview];
-		[popUp_accounts release];
 		popUp_accounts = nil;
-		[box_accounts release];
 		box_accounts = nil;
-		[accountMenu release];
 		accountMenu = nil;
 	}
 }
@@ -428,11 +415,9 @@
 - (void)_createContactMenu
 {
 	[box_contacts removeFromSuperview];
-	[box_contacts release];
-	box_contacts = [[self _boxWithFrame:BOX_RECT] retain];
+	box_contacts = [self _boxWithFrame:BOX_RECT];
 
-	[popUp_contacts release];
-	popUp_contacts = [[self _popUpButtonWithFrame:POPUP_RECT] retain];
+	popUp_contacts = [self _popUpButtonWithFrame:POPUP_RECT];
 	[box_contacts addSubview:popUp_contacts];
 
 	NSTextField *label_contacts = [self
@@ -462,11 +447,8 @@
 {
 	if (popUp_contacts) {
 		[box_contacts removeFromSuperview];
-		[box_contacts release];
 		box_contacts = nil;
-		[popUp_contacts release];
 		popUp_contacts = nil;
-		[contactMenu release];
 		contactMenu = nil;
 	}
 }
@@ -489,7 +471,7 @@
 	[label setFont:[NSFont systemFontOfSize:[NSFont systemFontSize]]];
 	[label setAlignment:NSRightTextAlignment];
 
-	return [label autorelease];
+	return label;
 }
 
 /*!
@@ -510,7 +492,7 @@
 	 */
 	[popUp setFont:[NSFont systemFontOfSize:0.0f]];
 
-	return [popUp autorelease];
+	return popUp;
 }
 
 /*!
@@ -522,7 +504,7 @@
 
 	[box setAutoresizingMask:(NSViewWidthSizable)];
 
-	return [box autorelease];
+	return box;
 }
 
 - (NSString *)description

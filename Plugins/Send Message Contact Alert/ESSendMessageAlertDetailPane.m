@@ -62,11 +62,8 @@
 
 - (void)viewWillClose
 {
-	[toContact release];
 	toContact = nil;
-	[accountMenu release];
 	accountMenu = nil;
-	[contactMenu release];
 	contactMenu = nil;
 }
 
@@ -85,7 +82,7 @@
 		destObject = inObject;
 
 	// Configure the destination menu
-	contactMenu = [[AIContactMenu contactMenuWithDelegate:self forContactsInObject:nil] retain];
+	contactMenu = [AIContactMenu contactMenuWithDelegate:self forContactsInObject:nil];
 
 	if (destObject && [destObject isKindOfClass:[AIListContact class]]) {
 		[self setDestinationContact:(AIListContact *)destObject];
@@ -144,8 +141,7 @@
 		NSMenuItem *firstMenuItem;
 		AIAccount *preferredAccount;
 
-		[toContact release];
-		toContact = [inContact retain];
+		toContact = inContact;
 
 		// NSPopUpButton doesn't handle submenus well at all. We put a blank menu item at the top of our
 		// menu when we created it. We can now change its attributes to affect the way the unclicked button

@@ -44,7 +44,6 @@
 
 - (void)uninstallPlugin
 {
-	[attributes release];
 }
 
 // Send Message Alert

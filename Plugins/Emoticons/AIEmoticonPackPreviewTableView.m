@@ -49,7 +49,6 @@
 	rowRect = [self rectOfRow:firstRow];
 	image = [[[NSImage alloc]
 		initWithSize:NSMakeSize(rowRect.size.width, rowRect.size.height * count +
-														[self intercellSpacing].height * (count - 1))] autorelease];
 
 	// Draw
 	[image lockFocus];

@@ -18,6 +18,7 @@
 #include <libpurple/debug.h>
 #include <libpurple/jabber.h>
 #include <libpurple/plugin.h>
+#include <libpurple/version.h>
 #include <libpurple/prpl.h>
 #include <libpurple/signals.h>
 #include <libpurple/xmlnode.h>
