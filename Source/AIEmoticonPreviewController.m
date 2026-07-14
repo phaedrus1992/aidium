@@ -38,7 +38,7 @@
 - (void)setXtra:(AIXtraInfo *)xtraInfo
 {
 	
-	emoticons = [[[AIEmoticonPack emoticonPackFromPath:[xtraInfo path]] emoticons] retain];
+	emoticons = [[AIEmoticonPack emoticonPackFromPath:[xtraInfo path]] emoticons];
 	[tableView reloadData];
 	[tableView sizeToFit];
 }

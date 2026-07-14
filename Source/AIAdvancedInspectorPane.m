@@ -129,7 +129,7 @@
 
 	if (!contactMenu) {
 		// Instantiate here so we don't end up creating a massive menu for all contacts.
-		contactMenu = [[AIContactMenu contactMenuWithDelegate:self forContactsInObject:displayedObject] retain];
+		contactMenu = [AIContactMenu contactMenuWithDelegate:self forContactsInObject:displayedObject];
 	} else {
 		[contactMenu setContainingObject:displayedObject];
 	}

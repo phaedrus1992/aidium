@@ -275,7 +275,7 @@
 {
 	static NSImage *eventImage = nil;
 	if (!eventImage)
-		eventImage = [[NSImage imageNamed:@"pref-file-transfer" forClass:[self class]] retain];
+		eventImage = [NSImage imageNamed:@"pref-file-transfer" forClass:[self class]];
 	return eventImage;
 }
 

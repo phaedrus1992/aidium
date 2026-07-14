@@ -359,8 +359,8 @@
 	if (accountMenu)
 		[accountMenu rebuildMenu];
 	else
-		accountMenu = [[AIAccountMenu accountMenuWithDelegate:self submenuType:AIAccountNoSubmenu
-											   showTitleVerbs:NO] retain];
+		accountMenu = [AIAccountMenu accountMenuWithDelegate:self submenuType:AIAccountNoSubmenu
+											   showTitleVerbs:NO];
 }
 
 /*!
@@ -436,8 +436,8 @@
 	if (contactMenu)
 		[contactMenu rebuildMenu];
 	else
-		contactMenu = [[AIContactMenu contactMenuWithDelegate:self
-										  forContactsInObject:chat.listObject.parentContact] retain];
+		contactMenu = [AIContactMenu contactMenuWithDelegate:self
+										  forContactsInObject:chat.listObject.parentContact];
 }
 
 /*!

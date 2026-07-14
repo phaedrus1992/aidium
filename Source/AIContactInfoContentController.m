@@ -42,7 +42,7 @@
 			return;
 		}
 
-		[contentArray addObject:[[[paneClass alloc] init] autorelease]];
+		[contentArray addObject:[[paneClass alloc] init]];
 	}
 
 	[self _setLoadedPanes:contentArray];

@@ -72,7 +72,7 @@
 	preferences =
 		
 					// Should prompt for where to apply the icon?
-					if (imageData && [[[NSImage alloc] initWithData:imageData] autorelease]) {
+					if (imageData && [[NSImage alloc] initWithData:imageData]) {
 						// If we successfully got image data, and that data makes a valid NSImage, set it as our global
 						// buddy icon
 						[adium.preferenceController setPreference:imageData

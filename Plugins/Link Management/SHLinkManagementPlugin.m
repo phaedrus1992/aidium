@@ -139,7 +139,7 @@
 		toolbarItem = nil;
 	}
 
-	toolbarItem = [[AIToolbarUtilities toolbarItemWithIdentifier:@"LinkEditor"
+	toolbarItem = [AIToolbarUtilities toolbarItemWithIdentifier:@"LinkEditor"
 														   label:AILocalizedString(@"Link", nil)
 													paletteLabel:AILocalizedString(@"Insert Link", nil)
 														 toolTip:AILocalizedString(@"Add/Edit Hyperlink", nil)
@@ -149,7 +149,7 @@
 																			forClass:[self class]
 																		  loadLazily:YES]
 														  action:@selector(editFormattedLink:)
-															menu:nil] retain];
+															menu:nil];
 
 	[adium.toolbarController registerToolbarItem:toolbarItem forToolbarType:@"TextEntry"];
 }

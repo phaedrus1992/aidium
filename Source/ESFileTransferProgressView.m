@@ -257,10 +257,10 @@ static NSDictionary *transferStatusSelectedAttributes = nil;
 											  lineBreakMode:NSLineBreakByTruncatingTail];
 			[paragraphStyle setMaximumLineHeight:[box_transferStatusFrame frame].size.height];
 
-			transferStatusSelectedAttributes = [[NSDictionary
+			transferStatusSelectedAttributes = [NSDictionary
 				dictionaryWithObjectsAndKeys:paragraphStyle, NSParagraphStyleAttributeName, [NSFont systemFontOfSize:9],
 											 NSFontAttributeName, SELECTED_TEXT_COLOR, NSForegroundColorAttributeName,
-											 nil] retain];
+											 nil];
 		}
 
 		attributes = transferStatusSelectedAttributes;
@@ -271,10 +271,10 @@ static NSDictionary *transferStatusSelectedAttributes = nil;
 											  lineBreakMode:NSLineBreakByTruncatingTail];
 			[paragraphStyle setMaximumLineHeight:[box_transferStatusFrame frame].size.height];
 
-			transferStatusAttributes = [[NSDictionary
+			transferStatusAttributes = [NSDictionary
 				dictionaryWithObjectsAndKeys:paragraphStyle, NSParagraphStyleAttributeName, [NSFont systemFontOfSize:9],
 											 NSFontAttributeName, TRANSFER_STATUS_COLOR, NSForegroundColorAttributeName,
-											 nil] retain];
+											 nil];
 		}
 
 		attributes = transferStatusAttributes;

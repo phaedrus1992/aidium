@@ -54,7 +54,7 @@
 - (void)activateAccountList:(id)sender;
 - (void)disableStatusItem:(id)sender;
 
-@property(nonatomic, retain) NSMenuItem *contactsMenuItem;
+@property(nonatomic, strong) NSMenuItem *contactsMenuItem;
 @end
 
 @implementation CBStatusMenuItemController
@@ -146,9 +146,9 @@
 		statusMenu = [AIStatusMenu statusMenuWithDelegate:self];
 
 		// Account menu
-		accountMenu = [[AIAccountMenu accountMenuWithDelegate:self
+		accountMenu = [AIAccountMenu accountMenuWithDelegate:self
 												  submenuType:AIAccountStatusSubmenu
-											   showTitleVerbs:YES] retain];
+											   showTitleVerbs:YES];
 
 		// Contact menu
 		contactMenu = [AIContactMenu contactMenuWithDelegate:self forContactsInObject:nil];
@@ -612,11 +612,11 @@
 		// If this particular Xtra wants us to flash unviewed content, start the timer up
 		if (flashUnviewed) {
 			currentlyIgnoringUnviewed = NO;
-			unviewedContentFlash = [[NSTimer scheduledTimerWithTimeInterval:1.0
+			unviewedContentFlash = [NSTimer scheduledTimerWithTimeInterval:1.0
 																	 target:self
 																   selector:@selector(updateUnviewedContentFlash:)
 																   userInfo:nil
-																	repeats:YES] retain];
+																	repeats:YES];
 		}
 
 		// Update unviewed content

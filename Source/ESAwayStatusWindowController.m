@@ -70,7 +70,7 @@ static BOOL hideInBackground = NO;
 - (void)setupMultistatusTable
 {
 	[[tableView_multiStatus tableColumnWithIdentifier:@"status"]
-		setDataCell:[[[AIImageTextCell alloc] init] autorelease]];
+		setDataCell:[[AIImageTextCell alloc] init]];
 }
 
 #pragma mark Multiservice table view datasource

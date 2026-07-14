@@ -369,7 +369,7 @@ static NSArray *draggedTypes = nil;
 
 	isUpdatingWebViewForCurrentPreferences = YES;
 	dispatch_sync(webViewUpdateQueue, ^{
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		@autoreleasepool {
 		// Cleanup first
 		messageStyle = nil;
 		activeStyle = nil;
@@ -491,6 +491,7 @@ static NSArray *draggedTypes = nil;
 		// Prime the webview with the new style/variant and settings, and re-insert all our content back into the view
 		[self _primeWebViewAndReprocessContent:YES];
 		isUpdatingWebViewForCurrentPreferences = NO;
+		}
 	});
 }
 
@@ -744,7 +745,7 @@ static NSArray *draggedTypes = nil;
 - (void)processQueuedContent
 {
 	dispatch_async(dispatch_get_main_queue(), ^{
-		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+		@autoreleasepool {
 		/* If the webview isn't ready, assume we have at least one piece of content left to display */
 		NSUInteger contentQueueCount = 1;
 		NSUInteger objectsAdded = 0;
@@ -789,6 +790,7 @@ static NSArray *draggedTypes = nil;
 			dispatch_after(popTime, dispatch_get_main_queue(), ^(void) {
 				[self processQueuedContent];
 			});
+		}
 		}
 	});
 }

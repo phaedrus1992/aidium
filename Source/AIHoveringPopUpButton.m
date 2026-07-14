@@ -65,7 +65,7 @@
 {
 	AIHoveringPopUpButton *newButton = [[[self class] allocWithZone:zone] initWithFrame:[self frame]];
 
-	[newButton setMenu:[[[self menu] copy] autorelease]];
+	[newButton setMenu:[[self menu] copy]];
 
 	return newButton;
 }
@@ -279,9 +279,9 @@
 
 		trackingTag = [self addTrackingRect:trackRect owner:self userData:nil assumeInside:mouseInside];
 		if (mouseInside) {
-			[self mouseEntered:[[[NSEvent alloc] init] autorelease]];
+			[self mouseEntered:[[NSEvent alloc] init]];
 		} else {
-			[self mouseExited:[[[NSEvent alloc] init] autorelease]];
+			[self mouseExited:[[NSEvent alloc] init]];
 		}
 	}
 }

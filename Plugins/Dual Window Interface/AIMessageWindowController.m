@@ -1314,9 +1314,9 @@
 	[toolbar setAutosavesConfiguration:YES];
 
 	//
-	toolbarItems = [[adium.toolbarController
+	toolbarItems = [adium.toolbarController
 		toolbarItemsForToolbarTypes:[NSArray arrayWithObjects:@"General", @"ListObject", @"TextEntry", @"MessageWindow",
-															  nil]] retain];
+															  nil]];
 
 	/* Seemingly randomly, setToolbar: may throw:
 	 * Exception:	NSInternalInconsistencyException

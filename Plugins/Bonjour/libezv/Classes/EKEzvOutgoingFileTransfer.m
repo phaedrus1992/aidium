@@ -118,7 +118,7 @@ typedef struct AppleSingleFinderInfo AppleSingleFinderInfo;
 {
 	[server stop];
 
-	/* We called -[self retain] in startSending */
+	/* We called -self in startSending */
 }
 
 - (bool)processTransfer

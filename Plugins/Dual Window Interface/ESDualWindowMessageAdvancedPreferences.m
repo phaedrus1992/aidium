@@ -224,8 +224,8 @@
 	[NSDateFormatter withLocalizedDateFormatterShowingSeconds:NO
 												showingAMorPM:NO
 													  perform:^(NSDateFormatter *noSecondsNoAMPM) {
-														  sampleStampB = [[noSecondsNoAMPM
-															  stringForObjectValue:[NSDate date]] retain];
+														  sampleStampB = [noSecondsNoAMPM
+															  stringForObjectValue:[NSDate date]];
 													  }];
 
 	BOOL noAMPM = [sampleStampA isEqualToString:sampleStampB];

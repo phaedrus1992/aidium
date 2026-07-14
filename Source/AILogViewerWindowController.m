@@ -157,7 +157,7 @@ static NSInteger toArraySort(id itemA, id itemB, void *context);
 		comps.hour -= comps.hour;
 		comps.minute -= comps.minute;
 		comps.second -= comps.second + 1;
-		filterDate = [[calendar dateFromComponents:comps] retain];
+		filterDate = [calendar dateFromComponents:comps];
 		break;
 
 	case AIDateTypeThisWeek:
@@ -166,7 +166,7 @@ static NSInteger toArraySort(id itemA, id itemB, void *context);
 		comps.hour -= comps.hour;
 		comps.minute -= comps.minute;
 		comps.second -= comps.second + 1;
-		filterDate = [[calendar dateFromComponents:comps] retain];
+		filterDate = [calendar dateFromComponents:comps];
 		break;
 
 	case AIDateTypeWithinLastTwoWeeks:
@@ -175,7 +175,7 @@ static NSInteger toArraySort(id itemA, id itemB, void *context);
 		comps.hour -= comps.hour;
 		comps.minute -= comps.minute;
 		comps.second -= comps.second + 1;
-		filterDate = [[calendar dateFromComponents:comps] retain];
+		filterDate = [calendar dateFromComponents:comps];
 		break;
 
 	case AIDateTypeThisMonth:
@@ -184,7 +184,7 @@ static NSInteger toArraySort(id itemA, id itemB, void *context);
 		comps.hour -= comps.hour;
 		comps.minute -= comps.minute;
 		comps.second -= comps.second + 1;
-		filterDate = [[calendar dateFromComponents:comps] retain];
+		filterDate = [calendar dateFromComponents:comps];
 		break;
 
 	case AIDateTypeWithinLastTwoMonths:
@@ -194,7 +194,7 @@ static NSInteger toArraySort(id itemA, id itemB, void *context);
 		comps.hour = 0;
 		comps.minute = 0;
 		comps.second--;
-		filterDate = [[calendar dateFromComponents:comps] retain];
+		filterDate = [calendar dateFromComponents:comps];
 		break;
 
 	default:
@@ -204,19 +204,19 @@ static NSInteger toArraySort(id itemA, id itemB, void *context);
 	switch (dateType) {
 	case AIDateTypeExactly:
 		filterDateType = AIDateTypeExactly;
-		filterDate = [[[datePicker dateValue] dateWithCalendarFormat:nil timeZone:nil] retain];
+		filterDate = [[datePicker dateValue] dateWithCalendarFormat:nil timeZone:nil];
 		showDatePicker = YES;
 		break;
 
 	case AIDateTypeBefore:
 		filterDateType = AIDateTypeBefore;
-		filterDate = [[[datePicker dateValue] dateWithCalendarFormat:nil timeZone:nil] retain];
+		filterDate = [[datePicker dateValue] dateWithCalendarFormat:nil timeZone:nil];
 		showDatePicker = YES;
 		break;
 
 	case AIDateTypeAfter:
 		filterDateType = AIDateTypeAfter;
-		filterDate = [[[datePicker dateValue] dateWithCalendarFormat:nil timeZone:nil] retain];
+		filterDate = [[datePicker dateValue] dateWithCalendarFormat:nil timeZone:nil];
 		showDatePicker = YES;
 		break;
 

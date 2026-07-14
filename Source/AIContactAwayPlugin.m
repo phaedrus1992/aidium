@@ -47,7 +47,7 @@
 
 		} else {
 			NSString *awayDescription = [self awayDescriptionForObject:inObject];
-			entry = (awayDescription ? [[[NSAttributedString alloc] initWithString:awayDescription] autorelease] : nil);
+			entry = (awayDescription ? [[NSAttributedString alloc] initWithString:awayDescription] : nil);
 		}
 	}
 

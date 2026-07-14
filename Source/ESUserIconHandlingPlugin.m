@@ -214,7 +214,7 @@
 	NSMenuItem *menuItem = [menu itemAtIndex:0];
 	NSToolbarItem *toolbarItem = [menuItem representedObject];
 
-	[menuItem setImage:[[[(AIImageButton *)[toolbarItem view] image] copy] autorelease]];
+	[menuItem setImage:[[(AIImageButton *)[toolbarItem view] image] copy]];
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem

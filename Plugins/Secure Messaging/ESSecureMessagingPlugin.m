@@ -433,36 +433,36 @@
 		_secureMessagingMenu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
 		[_secureMessagingMenu setTitle:TITLE_ENCRYPTION];
 
-		item = [[[NSMenuItem alloc] initWithTitle:TITLE_MAKE_SECURE
+		item = [[NSMenuItem alloc] initWithTitle:TITLE_MAKE_SECURE
 										   target:self
 										   action:@selector(toggleSecureMessaging:)
-									keyEquivalent:@""] autorelease];
+									keyEquivalent:@""];
 		[item setTag:AISecureMessagingMenu_Toggle];
 		[_secureMessagingMenu addItem:item];
 
-		item = [[[NSMenuItem alloc] initWithTitle:TITLE_SHOW_DETAILS
+		item = [[NSMenuItem alloc] initWithTitle:TITLE_SHOW_DETAILS
 										   target:self
 										   action:@selector(showDetails:)
-									keyEquivalent:@""] autorelease];
+									keyEquivalent:@""];
 		[item setTag:AISecureMessagingMenu_ShowDetails];
 		[_secureMessagingMenu addItem:item];
 
-		item = [[[NSMenuItem alloc] initWithTitle:TITLE_VERIFY target:self action:@selector(verify:)
-									keyEquivalent:@""] autorelease];
+		item = [[NSMenuItem alloc] initWithTitle:TITLE_VERIFY target:self action:@selector(verify:)
+									keyEquivalent:@""];
 		[item setTag:AISecureMessagingMenu_Verify];
 		[_secureMessagingMenu addItem:item];
 
-		item = [[[NSMenuItem alloc] initWithTitle:TITLE_ENCRYPTION_OPTIONS target:nil action:nil
-									keyEquivalent:@""] autorelease];
+		item = [[NSMenuItem alloc] initWithTitle:TITLE_ENCRYPTION_OPTIONS target:nil action:nil
+									keyEquivalent:@""];
 		[item setTag:AISecureMessagingMenu_Options];
 		[item setSubmenu:[adium.contentController encryptionMenuNotifyingTarget:self withDefault:YES]];
 		[_secureMessagingMenu addItem:item];
 
 		[_secureMessagingMenu addItem:[NSMenuItem separatorItem]];
-		item = [[[NSMenuItem alloc] initWithTitle:TITLE_ABOUT_ENCRYPTION
+		item = [[NSMenuItem alloc] initWithTitle:TITLE_ABOUT_ENCRYPTION
 										   target:self
 										   action:@selector(showAbout:)
-									keyEquivalent:@""] autorelease];
+									keyEquivalent:@""];
 		[item setTag:AISecureMessagingMenu_ShowAbout];
 		[_secureMessagingMenu addItem:item];
 	}

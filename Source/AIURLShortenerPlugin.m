@@ -42,7 +42,7 @@
 	NSMenuItem *menuItem;
 
 	NSMenu *shortenerSubMenu = 
-	[menuItem setSubmenu:[[shortenerSubMenu copy] autorelease]];
+	[menuItem setSubmenu:[shortenerSubMenu copy]];
 
 	[adium.menuController addContextualMenuItem:menuItem toLocation:Context_TextView_Edit];
 
@@ -266,8 +266,8 @@
 		[attrs setObject:shortenedURL forKey:NSLinkAttributeName];
 
 		[textView.textStorage replaceCharactersInRange:selectedRange
-								  withAttributedString:[[[NSAttributedString alloc] initWithString:shortenedURL
-																						attributes:attrs] autorelease]];
+								  withAttributedString:[[NSAttributedString alloc] initWithString:shortenedURL
+																						attributes:attrs]];
 
 		// Select the inserted URL
 		textView.selectedRange = NSMakeRange(selectedRange.location, shortenedURL.length);

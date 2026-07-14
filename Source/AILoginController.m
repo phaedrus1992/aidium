@@ -37,8 +37,8 @@
 
 	// Save the user directory
 	currentUser = userName;
-	userDirectory = [[[[adium applicationSupportDirectory] stringByAppendingPathComponent:PATH_USERS]
-		stringByAppendingPathComponent:userName] retain];
+	userDirectory = [[[adium applicationSupportDirectory] stringByAppendingPathComponent:PATH_USERS]
+		stringByAppendingPathComponent:userName];
 
 	// Tell Adium to complete login
 	[target performSelector:selector];
