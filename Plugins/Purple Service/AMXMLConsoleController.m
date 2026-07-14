@@ -47,7 +47,6 @@ static void xmlnode_received_cb(PurpleConnection *gc, xmlnode **packet, gpointer
 		[astr release];
 
 		g_free(str);
-
 	}
 }
 
@@ -75,13 +74,13 @@ static void xmlnode_sent_cb(PurpleConnection *gc, char **packet, gpointer this)
 
 		NSAttributedString *astr = [[NSAttributedString alloc]
 			initWithString:sstr
-				attributes:[NSDictionary dictionaryWithObject:[NSColor blueColor] forKey:NSForegroundColorAttributeName]];
+				attributes:[NSDictionary dictionaryWithObject:[NSColor blueColor]
+													   forKey:NSForegroundColorAttributeName]];
 		[self appendToLog:astr];
 		[astr release];
 
 		g_free(str);
 		xmlnode_free(node);
-
 	}
 }
 

@@ -88,14 +88,16 @@ static void AMPurpleJabberNode_received_data_cb(PurpleConnection *gc, xmlnode **
 						const char *queryName = xmlnode_get_attrib(item, "name");
 						[identities
 							addObject:[NSDictionary
-										  dictionaryWithObjectsAndKeys:category ? [NSString stringWithUTF8String:category]
-																				: [NSNull null],
+										  dictionaryWithObjectsAndKeys:category
+																		   ? [NSString stringWithUTF8String:category]
+																		   : [NSNull null],
 																	   @"category",
 																	   ltype ? [NSString stringWithUTF8String:ltype]
 																			 : [NSNull null],
 																	   @"type",
-																	   queryName ? [NSString stringWithUTF8String:queryName]
-																				 : [NSNull null],
+																	   queryName
+																		   ? [NSString stringWithUTF8String:queryName]
+																		   : [NSNull null],
 																	   @"name", nil]];
 					} else if (!strcmp(item->name, "feature")) {
 						const char *var = xmlnode_get_attrib(item, "var");
@@ -114,8 +116,8 @@ static void AMPurpleJabberNode_received_data_cb(PurpleConnection *gc, xmlnode **
 			}
 
 			if ([features containsObject:@"http://jabber.org/protocol/commands"]) {
-				// in order to avoid endless loops, check if the current node isn't a command by itself (which can't contain
-				// other commands)
+				// in order to avoid endless loops, check if the current node isn't a command by itself (which can't
+				// contain other commands)
 				BOOL isCommand = NO;
 				NSDictionary *identity;
 				for (identity in identities) {
@@ -197,7 +199,6 @@ static void AMPurpleJabberNode_received_data_cb(PurpleConnection *gc, xmlnode **
 					[delegate jabberNodeGotItems:self];
 			}
 		}
-
 	}
 }
 

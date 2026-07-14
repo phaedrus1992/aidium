@@ -125,7 +125,6 @@ static void *adiumPurpleNotifyUserinfo(PurpleConnection *gc, const char *who, Pu
 
 			[adiumAccount updateUserInfo:contact withData:user_info];
 		}
-
 	}
 
 	return NULL;
@@ -152,8 +151,8 @@ static void *adiumPurpleNotifyUri(const char *uri)
 				FSRef appRef;
 
 				// Open the HTML file with a web browser, not with an HTML editor
-				if (LSGetApplicationForURL((CFURLRef)[NSURL URLWithString:@"http://google.com"], kLSRolesViewer, &appRef,
-										   NULL) != kLSApplicationNotFoundErr) {
+				if (LSGetApplicationForURL((CFURLRef)[NSURL URLWithString:@"http://google.com"], kLSRolesViewer,
+										   &appRef, NULL) != kLSApplicationNotFoundErr) {
 					FSRef urlRef;
 
 					if (FSPathMakeRef((UInt8 *)[actualURI fileSystemRepresentation], &urlRef, NULL) == noErr) {
@@ -173,7 +172,6 @@ static void *adiumPurpleNotifyUri(const char *uri)
 				[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:passedURI]];
 			}
 		}
-
 	}
 
 	return NULL;
@@ -192,7 +190,6 @@ static void adiumPurpleNotifyClose(PurpleNotifyType type, void *uiHandle)
 		} else if ([ourHandle respondsToSelector:@selector(closeWindow:)]) {
 			[ourHandle performSelector:@selector(closeWindow:) withObject:nil];
 		}
-
 	}
 }
 

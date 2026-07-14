@@ -16,9 +16,9 @@
 
 #import "adiumPurpleConversation.h"
 #import "AINudgeBuzzHandlerPlugin.h"
+#import "AMPurpleJabberMessageStyling.h"
 #import "AMPurpleJabberMessageStylingParser.h"
 #import "ESPurpleJabberAccount.h"
-#import "AMPurpleJabberMessageStyling.h"
 #import <AIUtilities/AIAttributedStringAdditions.h>
 #import <AIUtilities/AIObjectAdditions.h>
 #import <Adium/AIChat.h>
@@ -48,9 +48,9 @@ static void adiumPurpleConvDestroy(PurpleConversation *conv)
 {
 	@autoreleasepool {
 
-		/* Purple is telling us a conv was destroyed.  We've probably already cleaned up, but be sure in case purple calls
-		 * this when we don't ask it to (for example if we are summarily kicked from a chat room and purple closes the
-		 * 'window').
+		/* Purple is telling us a conv was destroyed.  We've probably already cleaned up, but be sure in case purple
+		 * calls this when we don't ask it to (for example if we are summarily kicked from a chat room and purple closes
+		 * the 'window').
 		 */
 		AIChat *chat = (AIChat *)conv->ui_data;
 
@@ -104,13 +104,14 @@ static void adiumPurpleConvWriteChat(PurpleConversation *conv, const char *who, 
 																		 @"PurpleMessageFlags", date, @"Date", nil];
 
 			} else {
-				messageDict =
-					[NSDictionary dictionaryWithObjectsAndKeys:attributedMessage, @"AttributedMessage", purpleMessageFlags,
-															   @"PurpleMessageFlags", date, @"Date", nil];
+				messageDict = [NSDictionary dictionaryWithObjectsAndKeys:attributedMessage, @"AttributedMessage",
+																		 purpleMessageFlags, @"PurpleMessageFlags",
+																		 date, @"Date", nil];
 			}
 
-			[accountLookup(purple_conversation_get_account(conv)) receivedMultiChatMessage:messageDict
-																					inChat:groupChatLookupFromConv(conv)];
+			[accountLookup(purple_conversation_get_account(conv))
+				receivedMultiChatMessage:messageDict
+								  inChat:groupChatLookupFromConv(conv)];
 		}
 	}
 }
@@ -221,8 +222,8 @@ static void adiumPurpleConvWriteIm(PurpleConversation *conv, const char *who, co
 				NSString *type, *messageString = [NSString stringWithUTF8String:message];
 
 				// Determine what we're actually notifying about.
-				if ([messageString rangeOfString:@"nudge" options:(NSCaseInsensitiveSearch | NSLiteralSearch)].location !=
-					NSNotFound) {
+				if ([messageString rangeOfString:@"nudge" options:(NSCaseInsensitiveSearch | NSLiteralSearch)]
+						.location != NSNotFound) {
 					type = @"Nudge";
 				} else if ([messageString rangeOfString:@"buzz" options:(NSCaseInsensitiveSearch | NSLiteralSearch)]
 							   .location != NSNotFound) {
@@ -253,7 +254,8 @@ static void adiumPurpleConvWriteIm(PurpleConversation *conv, const char *who, co
 					if (![jabberAccount.messageStylingController lastMessageHadUnstyled]) {
 						NSFont *baseFont = [NSFont systemFontOfSize:12.0];
 						NSAttributedString *styledBody =
-							[AMPurpleJabberMessageStylingParser attributedStringFromStyledBody:messageString font:baseFont];
+							[AMPurpleJabberMessageStylingParser attributedStringFromStyledBody:messageString
+																						  font:baseFont];
 						messageString = attributedStringToSimpleHTML(styledBody);
 					}
 				}
@@ -261,10 +263,10 @@ static void adiumPurpleConvWriteIm(PurpleConversation *conv, const char *who, co
 				// Process any purple imgstore references into real HTML tags pointing to real images
 				messageString = processPurpleImages(messageString, adiumAccount);
 
-				messageDict =
-					[NSDictionary dictionaryWithObjectsAndKeys:messageString, @"Message",
-															   [NSNumber numberWithInteger:flags], @"PurpleMessageFlags",
-															   [NSDate dateWithTimeIntervalSince1970:mtime], @"Date", nil];
+				messageDict = [NSDictionary
+					dictionaryWithObjectsAndKeys:messageString, @"Message", [NSNumber numberWithInteger:flags],
+												 @"PurpleMessageFlags", [NSDate dateWithTimeIntervalSince1970:mtime],
+												 @"Date", nil];
 
 				[adiumAccount receivedIMChatMessage:messageDict inChat:chat];
 			}
@@ -301,12 +303,13 @@ static void adiumPurpleConvWriteConv(PurpleConversation *conv, const char *who, 
 
 			AIChatErrorType errorType = AIChatUnknownError;
 
-			if (([messageString rangeOfString:[NSString stringWithUTF8String:_("Not logged in")]].location != NSNotFound) ||
-				([messageString rangeOfString:[NSString stringWithUTF8String:_("User temporarily unavailable")]].location !=
-				 NSNotFound)) {
+			if (([messageString rangeOfString:[NSString stringWithUTF8String:_("Not logged in")]].location !=
+				 NSNotFound) ||
+				([messageString rangeOfString:[NSString stringWithUTF8String:_("User temporarily unavailable")]]
+					 .location != NSNotFound)) {
 				errorType = AIChatMessageSendingUserNotAvailable;
-			} else if ([messageString rangeOfString:[NSString stringWithUTF8String:_("In local permit/deny")]].location !=
-					   NSNotFound) {
+			} else if ([messageString rangeOfString:[NSString stringWithUTF8String:_("In local permit/deny")]]
+						   .location != NSNotFound) {
 				errorType = AIChatMessageSendingUserIsBlocked;
 			} else if (([messageString rangeOfString:[NSString stringWithUTF8String:_("Reply too big")]].location !=
 						NSNotFound) ||
@@ -322,7 +325,8 @@ static void adiumPurpleConvWriteConv(PurpleConversation *conv, const char *who, 
 			} else if ([messageString rangeOfString:[NSString stringWithUTF8String:_("Rate")]].location != NSNotFound) {
 				// XXX Is 'Rate' really a standalone translated string?
 				errorType = AIChatMessageSendingMissedRateLimitExceeded;
-			} else if ([messageString rangeOfString:[NSString stringWithUTF8String:_("Too evil")]].location != NSNotFound) {
+			} else if ([messageString rangeOfString:[NSString stringWithUTF8String:_("Too evil")]].location !=
+					   NSNotFound) {
 				errorType = AIChatMessageReceivingMissedRemoteIsTooEvil;
 			}
 			/* Another is 'refused by client', which is definitely seen when sending an offline message to an invalid
@@ -334,10 +338,11 @@ static void adiumPurpleConvWriteConv(PurpleConversation *conv, const char *who, 
 			 * first.
 			 */
 			if (errorType != AIChatUnknownError) {
-				[accountLookup(purple_conversation_get_account(conv)) performSelector:@selector(errorForChat:type:)
-																		   withObject:chat
-																		   withObject:[NSNumber numberWithInteger:errorType]
-																		   afterDelay:0];
+				[accountLookup(purple_conversation_get_account(conv))
+					performSelector:@selector(errorForChat:type:)
+						 withObject:chat
+						 withObject:[NSNumber numberWithInteger:errorType]
+						 afterDelay:0];
 			} else {
 				[adium.contentController performSelector:@selector(displayEvent:ofType:inChat:)
 											  withObject:messageString
@@ -440,8 +445,8 @@ static void adiumPurpleConvChatAddUsers(PurpleConversation *conv, GList *cbuddie
 			for (GList *l = cbuddies; l; l = l->next) {
 				PurpleConvChatBuddy *cb = (PurpleConvChatBuddy *)l->data;
 
-				// We use cb->name for the alias field, since libpurple sets the one we're after (the chat name) formatted
-				// correctly inside.
+				// We use cb->name for the alias field, since libpurple sets the one we're after (the chat name)
+				// formatted correctly inside.
 				NSMutableDictionary *user = [NSMutableDictionary dictionary];
 				[user setObject:get_real_name_for_account_conv_buddy(account, conv, cb->name) forKey:@"UID"];
 				[user setObject:[NSNumber numberWithInteger:cb->flags] forKey:@"Flags"];
@@ -462,8 +467,8 @@ static void adiumPurpleConvChatRenameUser(PurpleConversation *conv, const char *
 										  const char *newAlias)
 {
 	@autoreleasepool {
-		AILog(@"adiumPurpleConvChatRenameUser: %s: oldName %s, newName %s, newAlias %s", purple_conversation_get_name(conv),
-			  oldName, newName, newAlias);
+		AILog(@"adiumPurpleConvChatRenameUser: %s: oldName %s, newName %s, newAlias %s",
+			  purple_conversation_get_name(conv), oldName, newName, newAlias);
 
 		if (purple_conversation_get_type(conv) == PURPLE_CONV_TYPE_CHAT) {
 			PurpleConvChat *convChat = purple_conversation_get_chat_data(conv);
@@ -523,8 +528,8 @@ static void adiumPurpleConvUpdateUser(PurpleConversation *conv, const char *user
 
 		g_list_free(attribute);
 
-		// We use cb->name for the alias field, since libpurple sets the one we're after (the chat name) formatted correctly
-		// inside.
+		// We use cb->name for the alias field, since libpurple sets the one we're after (the chat name) formatted
+		// correctly inside.
 		NSString *name = cb->name ? [NSString stringWithUTF8String:cb->name] : nil;
 
 		[adiumAccount updateUser:get_real_name_for_account_conv_buddy(account, conv, (char *)user)

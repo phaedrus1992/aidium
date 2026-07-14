@@ -44,6 +44,5 @@ void adium_query_cert_chain(PurpleSslConnection *gsc, const char *hostname, CFAr
 		}
 		// default fallback
 		query_cert_cb(true, userdata);
-
 	}
 }

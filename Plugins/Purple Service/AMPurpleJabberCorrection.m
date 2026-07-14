@@ -151,7 +151,6 @@ static void AMPurpleJabberCorrection_received_data_cb(PurpleConnection *gc, xmln
 		} @catch (NSException *exception) {
 			AILog(@"AMPurpleJabberCorrection: exception handling stanza: %@", exception);
 		}
-
 	}
 }
 

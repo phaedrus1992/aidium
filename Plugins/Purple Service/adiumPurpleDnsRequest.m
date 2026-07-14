@@ -125,7 +125,6 @@ static void host_client_cb(CFHostRef theHost, CFHostInfoType typeInfo, const CFS
 				[self lookupFailedWithError:NULL];
 			}
 		}
-
 	}
 }
 

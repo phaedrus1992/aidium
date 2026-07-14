@@ -105,11 +105,11 @@ static void *adiumPurpleRequestInput(const char *title, const char *primary, con
 		NSString *okButtonText = processButtonText([NSString stringWithUTF8String:okText]);
 		NSString *cancelButtonText = processButtonText([NSString stringWithUTF8String:cancelText]);
 
-		infoDict =
-			[NSMutableDictionary dictionaryWithObjectsAndKeys:okButtonText, @"OK Text", cancelButtonText, @"Cancel Text",
-															  [NSValue valueWithPointer:okCb], @"OK Callback",
-															  [NSValue valueWithPointer:cancelCb], @"Cancel Callback",
-															  [NSValue valueWithPointer:userData], @"userData", nil];
+		infoDict = [NSMutableDictionary
+			dictionaryWithObjectsAndKeys:okButtonText, @"OK Text", cancelButtonText, @"Cancel Text",
+										 [NSValue valueWithPointer:okCb], @"OK Callback",
+										 [NSValue valueWithPointer:cancelCb], @"Cancel Callback",
+										 [NSValue valueWithPointer:userData], @"userData", nil];
 
 		if (primaryString)
 			[infoDict setObject:primaryString forKey:@"Primary Text"];
@@ -156,14 +156,16 @@ static void *adiumPurpleRequestActionWithIcon(const char *title, const char *pri
 
 		if (primaryString &&
 			([primaryString
-				isEqualToString:[NSString stringWithFormat:[NSString stringWithUTF8String:
-																		 _("%s has just asked to directly connect to %s")],
-														   who, purple_account_get_username(account)]])) {
+				isEqualToString:[NSString
+									stringWithFormat:[NSString stringWithUTF8String:
+																   _("%s has just asked to directly connect to %s")],
+													 who, purple_account_get_username(account)]])) {
 			AIListContact *adiumContact = contactLookupFromBuddy(purple_find_buddy(account, who));
 
 			// Look up the user preference for this setting -- we use the same settings as the File Transfer code.
 			AIFileTransferAutoAcceptType autoAccept =
-				[[adium.preferenceController preferenceForKey:KEY_FT_AUTO_ACCEPT group:PREF_GROUP_FILE_TRANSFER] intValue];
+				[[adium.preferenceController preferenceForKey:KEY_FT_AUTO_ACCEPT
+														group:PREF_GROUP_FILE_TRANSFER] intValue];
 			if ((autoAccept == AutoAccept_All) || ((autoAccept == AutoAccept_FromContactList) && adiumContact &&
 												   [adiumContact isIntentionallyNotAStranger])) {
 				GCallback ok_cb;
@@ -216,8 +218,8 @@ static void *adiumPurpleRequestActionWithIcon(const char *title, const char *pri
 
 			NSMutableDictionary *infoDict = [NSMutableDictionary
 				dictionaryWithObjectsAndKeys:buttonNamesArray, @"Button Names", [NSValue valueWithPointer:callBacks],
-											 @"callBacks", [NSValue valueWithPointer:userData], @"userData", titleString,
-											 @"TitleString", nil];
+											 @"callBacks", [NSValue valueWithPointer:userData], @"userData",
+											 titleString, @"TitleString", nil];
 
 			// If we have both a primary and secondary string, use the primary as a header.
 			if (secondaryString) {
@@ -295,7 +297,8 @@ static void *adiumPurpleRequestFields(const char *title, const char *primary, co
 																	[NSValue valueWithPointer:fields], @"fields",
 																	[NSValue valueWithPointer:okCb], @"okCb",
 																	[NSValue valueWithPointer:cancelCb], @"cancelCb",
-																	[NSValue valueWithPointer:userData], @"userData", nil]];
+																	[NSValue valueWithPointer:userData], @"userData",
+																	nil]];
 
 		} else {
 			AILog(@"adiumPurpleRequestFields: %s\n%s\n%s ", (title ? title : ""), (primary ? primary : ""),
@@ -307,7 +310,8 @@ static void *adiumPurpleRequestFields(const char *title, const char *primary, co
 				initWithTitle:(title ? [NSString stringWithUTF8String:title] : nil)
 				  primaryText:(primary ? [NSString stringWithUTF8String:primary] : nil)secondaryText
 							 :(secondary ? [NSString stringWithUTF8String:secondary] : nil)requestFields:fields
-					   okText:(okText ? [NSString stringWithUTF8String:okText] : AILocalizedString(@"OK", nil))callback:okCb
+					   okText:(okText ? [NSString stringWithUTF8String:okText] : AILocalizedString(@"OK", nil))callback
+							 :okCb
 				   cancelText:(cancelText ? [NSString stringWithUTF8String:cancelText]
 										  : AILocalizedString(@"Cancel", nil))callback:cancelCb
 					  account:(CBPurpleAccount *)account->ui_data
@@ -352,18 +356,19 @@ static void *adiumPurpleRequestFile(const char *title, const char *filename, gbo
 				PurpleXferType xferType = purple_xfer_get_type(xfer);
 
 				if (xferType == PURPLE_XFER_RECEIVE) {
-					AILog(@"*** WARNING: File request: %s from %s on IP %s which wasn't handled by the file-recv-request "
-						  @"signal",
-						  xfer->filename, xfer->who, purple_xfer_get_remote_ip(xfer));
-					/* We should never get here.  The file-recv-request signal is posted before we could.  We handle that
-					 * signal (in adiumPurpleSignals) and set a local filename when we do to prevent being prompted via the
-					 * request_file() ui op.
+					AILog(
+						@"*** WARNING: File request: %s from %s on IP %s which wasn't handled by the file-recv-request "
+						@"signal",
+						xfer->filename, xfer->who, purple_xfer_get_remote_ip(xfer));
+					/* We should never get here.  The file-recv-request signal is posted before we could.  We handle
+					 * that signal (in adiumPurpleSignals) and set a local filename when we do to prevent being prompted
+					 * via the request_file() ui op.
 					 */
 
 				} else if (xferType == PURPLE_XFER_SEND) {
 					/*
-					 * Um, yes, we've already set the local filename... which should be the same as the file name for the
-					 * transfer itself... and we do, in fact, want to send. Call the OK callback immediately.
+					 * Um, yes, we've already set the local filename... which should be the same as the file name for
+					 * the transfer itself... and we do, in fact, want to send. Call the OK callback immediately.
 					 */
 					if (xfer->local_filename != NULL && xfer->filename != NULL) {
 						AILog(@"PURPLE_XFER_SEND: %p (%s)", xfer, xfer->local_filename);

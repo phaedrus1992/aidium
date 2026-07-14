@@ -60,7 +60,6 @@ static void AMPurpleJabberMessageStyling_received_xmlnode_cb(PurpleConnection *g
 		} @catch (NSException *exception) {
 			AILog(@"AMPurpleJabberMessageStyling: exception handling stanza: %@", exception);
 		}
-
 	}
 }
 

@@ -42,7 +42,8 @@ static void AMPurpleJabberAdHocServer_received_data_cb(PurpleConnection *gc, xml
 			}
 			const char *from = xmlnode_get_attrib(*packet, "from");
 			const char *iqid = xmlnode_get_attrib(*packet, "id");
-			xmlnode *command = xmlnode_get_child_with_namespace(*packet, "command", "http://jabber.org/protocol/commands");
+			xmlnode *command =
+				xmlnode_get_child_with_namespace(*packet, "command", "http://jabber.org/protocol/commands");
 			if (command) {
 				BOOL handled = [self receivedCommand:command
 												from:from ? [NSString stringWithUTF8String:from] : nil
@@ -53,7 +54,6 @@ static void AMPurpleJabberAdHocServer_received_data_cb(PurpleConnection *gc, xml
 				}
 			}
 		}
-
 	}
 }
 
@@ -75,8 +75,8 @@ static void xmlnode_sent_cb(PurpleConnection *gc, xmlnode **packet, gpointer thi
 						if ([barejid isEqualToString:self.account.UID]) {
 							const char *type = xmlnode_get_attrib(xml, "type");
 							if (type && !strcmp(type, "result")) {
-								xmlnode *query = xmlnode_get_child_with_namespace(xml, "query",
-																				  "http://jabber.org/protocol/disco#items");
+								xmlnode *query = xmlnode_get_child_with_namespace(
+									xml, "query", "http://jabber.org/protocol/disco#items");
 								if (query) {
 									const char *node = xmlnode_get_attrib(query, "node");
 									if (node && !strcmp(node, "http://jabber.org/protocol/commands"))

@@ -133,7 +133,6 @@ static void buddy_event_cb(PurpleBuddy *buddy, PurpleBuddyEvent event)
 				}
 			}
 		}
-
 	}
 }
 
@@ -175,11 +174,11 @@ static void buddy_idle_changed_cb(PurpleBuddy *buddy, gboolean old_idle, gboolea
 		if (idle) {
 			time_t idleTime = purple_presence_get_idle_time(presence);
 
-			[account updateWentIdle:theContact withData:(idleTime ? [NSDate dateWithTimeIntervalSince1970:idleTime] : nil)];
+			[account updateWentIdle:theContact
+						   withData:(idleTime ? [NSDate dateWithTimeIntervalSince1970:idleTime] : nil)];
 		} else {
 			[account updateIdleReturn:theContact withData:nil];
 		}
-
 	}
 }
 
@@ -194,8 +193,8 @@ static void buddy_added_cb(PurpleBuddy *buddy)
 			NSString *groupName =
 				((g && purple_group_get_name(g)) ? [NSString stringWithUTF8String:purple_group_get_name(g)] : nil);
 			AIListContact *listContact = contactLookupFromBuddy(buddy);
-			/* We pass in purple_buddy_get_name(buddy) directly (without filtering or normalizing it) as it may indicate a
-			 * formatted version of the UID.  We have a signal for when a rename occurs, but passing here lets us get
+			/* We pass in purple_buddy_get_name(buddy) directly (without filtering or normalizing it) as it may indicate
+			 * a formatted version of the UID.  We have a signal for when a rename occurs, but passing here lets us get
 			 * formatted names which are originally formatted in a way which differs from the results of normalization.
 			 * For example, TekJew will normalize to tekjew in AIM; we want to use tekjew internally but display TekJew.
 			 */
@@ -203,7 +202,8 @@ static void buddy_added_cb(PurpleBuddy *buddy)
 					toGroupName:groupName
 					contactName:[NSString stringWithUTF8String:purple_buddy_get_name(buddy)]];
 
-			/* We won't get an initial alias update for this buddy if one is already set, so check and update appropriately.
+			/* We won't get an initial alias update for this buddy if one is already set, so check and update
+			 * appropriately.
 			 *
 			 * This will give us an alias we've set serverside (the "private server alias") if possible.
 			 * Failing that, we will get an alias specified remotely (either by the server or by the buddy).
@@ -214,8 +214,8 @@ static void buddy_added_cb(PurpleBuddy *buddy)
 				[account updateContact:listContact toAlias:[NSString stringWithUTF8String:alias]];
 			}
 
-			// Force a status update for the user. Useful for things like XMPP which might display an error message for an
-			// offline contact.
+			// Force a status update for the user. Useful for things like XMPP which might display an error message for
+			// an offline contact.
 			buddy_status_changed_cb(buddy, NULL, purple_presence_get_active_status(purple_buddy_get_presence(buddy)),
 									PURPLE_BUDDY_NONE);
 		}
@@ -232,8 +232,8 @@ static void buddy_removed_cb(PurpleBuddy *buddy)
 			NSString *groupName =
 				((g && purple_group_get_name(g)) ? [NSString stringWithUTF8String:purple_group_get_name(g)] : nil);
 			AIListContact *listContact = contactLookupFromBuddy(buddy);
-			/* We pass in purple_buddy_get_name(buddy) directly (without filtering or normalizing it) as it may indicate a
-			 * formatted version of the UID.  We have a signal for when a rename occurs, but passing here lets us get
+			/* We pass in purple_buddy_get_name(buddy) directly (without filtering or normalizing it) as it may indicate
+			 * a formatted version of the UID.  We have a signal for when a rename occurs, but passing here lets us get
 			 * formatted names which are originally formatted in a way which differs from the results of normalization.
 			 * For example, TekJew will normalize to tekjew in AIM; we want to use tekjew internally but display TekJew.
 			 */
@@ -251,7 +251,6 @@ static void connection_signed_on_cb(PurpleConnection *gc)
 			buddy_added_cb((PurpleBuddy *)cur->data);
 		}
 		g_slist_free(buddies);
-
 	}
 }
 
@@ -272,7 +271,6 @@ static void node_aliased_cb(PurpleBlistNode *node, char *old_alias)
 			[account updateContact:contactLookupFromBuddy(buddy)
 						   toAlias:(alias ? [NSString stringWithUTF8String:alias] : nil)];
 		}
-
 	}
 }
 
@@ -313,7 +311,6 @@ static void chat_join_failed_cb(PurpleConnection *gc, GHashTable *components)
 				break;
 			}
 		}
-
 	}
 }
 
@@ -337,7 +334,6 @@ static void typing_changed(PurpleAccount *account, const char *name, AITypingSta
 
 		if (chat)
 			[cbaccount typingUpdateForIMChat:chat typing:[NSNumber numberWithInteger:typingState]];
-
 	}
 }
 
@@ -385,7 +381,6 @@ static void chat_joined_cb(PurpleConversation *conv, void *data)
 
 			[accountLookup(purple_conversation_get_account(conv)) addChat:chat];
 		}
-
 	}
 }
 
@@ -417,7 +412,6 @@ static void file_recv_request_cb(PurpleXfer *xfer)
 
 		// Tell the account that we are ready to request the reception
 		[accountLookup(purple_xfer_get_account(xfer)) requestReceiveOfFileTransfer:fileTransfer];
-
 	}
 }
 
@@ -437,7 +431,6 @@ static void jabber_receipt_received_cb(PurpleConnection *gc, const char *from, c
 			NSString *message = [NSString stringWithFormat:@"Message delivered (%s)", message_id ? message_id : "?"];
 			[cbaccount receivedEventForChat:chat message:message date:[NSDate date] flags:@(0)];
 		}
-
 	}
 }
 
@@ -453,10 +446,10 @@ static void jabber_chat_marker_received_cb(PurpleConnection *gc, const char *fro
 		AIChat *chat = [adium.chatController existingChatWithContact:contact];
 
 		if (chat && marker_type) {
-			NSString *message = [NSString stringWithFormat:@"Message %s (%s)", marker_type, message_id ? message_id : "?"];
+			NSString *message =
+				[NSString stringWithFormat:@"Message %s (%s)", marker_type, message_id ? message_id : "?"];
 			[cbaccount receivedEventForChat:chat message:message date:[NSDate date] flags:@(0)];
 		}
-
 	}
 }
 
@@ -505,8 +498,8 @@ void configureAdiumPurpleSignals(void)
 		purple_signal_connect(purple_conversations_get_handle(), "chat-join-failed", handle,
 							  PURPLE_CALLBACK(chat_join_failed_cb), NULL);
 
-		purple_signal_connect(purple_conversations_get_handle(), "buddy-typing", handle, PURPLE_CALLBACK(buddy_typing_cb),
-							  NULL);
+		purple_signal_connect(purple_conversations_get_handle(), "buddy-typing", handle,
+							  PURPLE_CALLBACK(buddy_typing_cb), NULL);
 
 		purple_signal_connect(purple_conversations_get_handle(), "buddy-typed", handle, PURPLE_CALLBACK(buddy_typed_cb),
 							  NULL);
@@ -514,8 +507,8 @@ void configureAdiumPurpleSignals(void)
 		purple_signal_connect(purple_conversations_get_handle(), "buddy-typing-stopped", handle,
 							  PURPLE_CALLBACK(buddy_typing_stopped_cb), NULL);
 
-		purple_signal_connect(purple_xfers_get_handle(), "file-recv-request", handle, PURPLE_CALLBACK(file_recv_request_cb),
-							  NULL);
+		purple_signal_connect(purple_xfers_get_handle(), "file-recv-request", handle,
+							  PURPLE_CALLBACK(file_recv_request_cb), NULL);
 
 		// Register XEP-0184 and XEP-0333 callbacks
 		jabber_set_receipt_cb(jabber_receipt_received_cb);
@@ -524,6 +517,5 @@ void configureAdiumPurpleSignals(void)
 		// Advertise XEP-0184 and XEP-0333 support in disco#info capabilities
 		jabber_add_feature(NS_RECEIPTS, NULL);
 		jabber_add_feature(NS_CHAT_MARKERS, NULL);
-
 	}
 }

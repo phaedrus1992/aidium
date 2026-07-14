@@ -142,7 +142,6 @@ static void AMPurpleJabberPubsubBookmarks_received_xmlnode_cb(PurpleConnection *
 		} @catch (NSException *exception) {
 			AILog(@"AMPurpleJabberPubsubBookmarks: exception handling stanza: %@", exception);
 		}
-
 	}
 }
 

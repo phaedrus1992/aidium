@@ -93,9 +93,9 @@ static void init_all_plugins()
 	// Load each plugin
 	for (id<AILibpurplePlugin> plugin in [SLPurpleCocoaAdapter libpurplePluginArray]) {
 		if ([plugin respondsToSelector:@selector(installLibpurplePlugin)]) {
-	@autoreleasepool {
+			@autoreleasepool {
 				[plugin installLibpurplePlugin];
-	}
+			}
 		}
 	}
 #ifdef HAVE_CDSA
@@ -114,9 +114,9 @@ static void load_external_plugins(void)
 	// Load each plugin
 	for (id<AILibpurplePlugin> plugin in [SLPurpleCocoaAdapter libpurplePluginArray]) {
 		if ([plugin respondsToSelector:@selector(loadLibpurplePlugin)]) {
-	@autoreleasepool {
+			@autoreleasepool {
 				[plugin loadLibpurplePlugin];
-	}
+			}
 		}
 	}
 }
@@ -155,7 +155,6 @@ static void adiumPurpleCoreDebugInit(void)
 
 		AILogWithSignature(@"");
 		configurePurpleDebugLogging();
-
 	}
 }
 
@@ -179,8 +178,8 @@ static void adiumPurpleCoreUiInit(void)
 {
 	@autoreleasepool {
 
-		bindtextdomain("pidgin",
-					   [[[NSBundle bundleWithIdentifier:@"im.pidgin.libpurple"] resourcePath] fileSystemRepresentation]);
+		bindtextdomain(
+			"pidgin", [[[NSBundle bundleWithIdentifier:@"im.pidgin.libpurple"] resourcePath] fileSystemRepresentation]);
 		bind_textdomain_codeset("pidgin", "UTF-8");
 		textdomain("pidgin");
 
@@ -264,8 +263,8 @@ static GHashTable *adiumPurpleCoreGetUiInfo(void)
 			ui_info = g_hash_table_new(g_str_hash, g_str_equal);
 			g_hash_table_insert(ui_info, "name", "AdiumY");
 
-			/* I have a vague recollection of a crash if we didn't g_strdup() this, but it really shouldn't be necessary.
-			 * The ui_info stays in memory forever, anyways, so it hardly matters. -evands
+			/* I have a vague recollection of a crash if we didn't g_strdup() this, but it really shouldn't be
+			 * necessary. The ui_info stays in memory forever, anyways, so it hardly matters. -evands
 			 */
 			g_hash_table_insert(ui_info, "version", g_strdup([[NSApp applicationVersion] UTF8String]));
 			g_hash_table_insert(ui_info, "website", "https://github.com/phaedrus1992/adiumy");
@@ -287,7 +286,6 @@ static GHashTable *adiumPurpleCoreGetUiInfo(void)
 			 * points, we now use the key used by the offical AIR (Mac/Linux) client. */
 			g_hash_table_insert(ui_info, "prpl-icq-clientkey", "ic1-IIcaJnnNV5xA");
 		}
-
 
 		return ui_info;
 	}

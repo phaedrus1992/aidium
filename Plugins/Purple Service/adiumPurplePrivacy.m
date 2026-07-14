@@ -26,7 +26,8 @@ static void adiumPurplePermitAdded(PurpleAccount *account, const char *name)
 static void adiumPurplePermitRemoved(PurpleAccount *account, const char *name)
 {
 	@autoreleasepool {
-		[accountLookup(account) privacyPermitListRemoved:[NSString stringWithUTF8String:purple_normalize(account, name)]];
+		[accountLookup(account)
+			privacyPermitListRemoved:[NSString stringWithUTF8String:purple_normalize(account, name)]];
 	}
 }
 static void adiumPurpleDenyAdded(PurpleAccount *account, const char *name)
