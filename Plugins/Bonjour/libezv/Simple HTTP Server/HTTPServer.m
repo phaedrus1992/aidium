@@ -298,17 +298,17 @@
 	
 	// Print out the entire httprequest
 //	NSDictionary *headers = [(NSDictionary *)CFHTTPMessageCopyAllHeaderFields(request);
-//	NSString *requestMethod = CFBridgingRelease(CFHTTPMessageCopyRequestMethod(request);
-//	NSString *requestVersion = CFBridgingRelease(CFHTTPMessageCopyVersion(request);
-//	NSURL *requestURI = CFBridgingRelease(CFHTTPMessageCopyRequestURL(request);
+//	NSString *requestMethod = CFBridgingRelease(CFHTTPMessageCopyRequestMethod(request));
+//	NSString *requestVersion = CFBridgingRelease(CFHTTPMessageCopyVersion(request));
+//	NSURL *requestURI = CFBridgingRelease(CFHTTPMessageCopyRequestURL(request));
 
-	NSString *encoding = CFBridgingRelease(CFHTTPMessageCopyHeaderFieldValue(request, CFSTR("Accept-Encoding"));
+	NSString *encoding = CFBridgingRelease(CFHTTPMessageCopyHeaderFieldValue(request, CFSTR("Accept-Encoding")));
 	bool isAppleSingle = NO;
 	if ([encoding isEqualToString:@"AppleSingle"]) {
 		isAppleSingle = YES;
 	}
 	
-	NSString *connection = CFBridgingRelease(CFHTTPMessageCopyHeaderFieldValue(request, CFSTR("Connection"));
+	NSString *connection = CFBridgingRelease(CFHTTPMessageCopyHeaderFieldValue(request, CFSTR("Connection")));
 	bool isKeepAlive = NO;
 	if ([connection isEqualToString:@"keep-alive"]) {
 		isKeepAlive = YES;
@@ -318,14 +318,14 @@
 	
 	// Check the HTTP version
 	// If it's anything but HTTP version 1.1, we don't support it
-	NSString *version = CFBridgingRelease(CFHTTPMessageCopyVersion(request);
+	NSString *version = CFBridgingRelease(CFHTTPMessageCopyVersion(request));
     if (!version || ![version isEqualToString:(NSString *)kCFHTTPVersion1_1]) {
 		//NSLog(@"HTTP Server: Error 505 - Version Not Supported");
 		
 		// Status Code 505 - Version Not Supported
         CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 505, NULL, (CFStringRef)version);
 		CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Length"), CFSTR("0"));
-        NSData *responseData = CFBridgingRelease(CFHTTPMessageCopySerializedMessage(response);
+        NSData *responseData = CFBridgingRelease(CFHTTPMessageCopySerializedMessage(response));
 		[asyncSocket writeData:responseData withTimeout:WRITE_ERROR_TIMEOUT tag:HTTP_RESPONSE];
 		CFRelease(response);
 		[[server transfer] userFailedDownload];
@@ -334,14 +334,14 @@
 	
 	// Check HTTP method
 	// If no method was passed, issue a Bad Request response
-    NSString *method = CFBridgingRelease(CFHTTPMessageCopyRequestMethod(request);
+    NSString *method = CFBridgingRelease(CFHTTPMessageCopyRequestMethod(request));
     if (!method) {
 		//NSLog(@"HTTP Server: Error 400 - Bad Request");
 		
 		// Status Code 400 - Bad Request
         CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 400, NULL, kCFHTTPVersion1_1);
 		CFHTTPMessageSetHeaderFieldValue(response, CFSTR("Content-Length"), CFSTR("0"));
-        NSData *responseData = CFBridgingRelease(CFHTTPMessageCopySerializedMessage(response);
+        NSData *responseData = CFBridgingRelease(CFHTTPMessageCopySerializedMessage(response));
 		[asyncSocket writeData:responseData withTimeout:WRITE_ERROR_TIMEOUT tag:HTTP_RESPONSE];
         CFRelease(response);
 		[[server transfer] userFailedDownload];
@@ -349,7 +349,7 @@
 	}
 	
 	// Extract requested URI
-	NSURL *uri = CFBridgingRelease(CFHTTPMessageCopyRequestURL(request);
+	NSURL *uri = CFBridgingRelease(CFHTTPMessageCopyRequestURL(request));
 	
 	// Respond properly to HTTP 'GET' and 'HEAD' commands
     if ([method isEqualToString:@"GET"] || [method isEqualToString:@"HEAD"]) {
@@ -377,14 +377,14 @@
 		// If they issue a 'GET' command, we need to include the file
 		if ([method isEqual:@"HEAD"])
 		{
-			NSData *responseData = CFBridgingRelease(CFHTTPMessageCopySerializedMessage(response);
+			NSData *responseData = CFBridgingRelease(CFHTTPMessageCopySerializedMessage(response));
 			[asyncSocket writeData:responseData withTimeout:WRITE_HEAD_TIMEOUT tag:HTTP_RESPONSE];
         } else {
 			// Previously, we would use the CFHTTPMessageSetBody method here.
 			// This caused problems, however, if the data was large.
 			// For example, if the data represented a 500 MB movie on the disk, this method would thrash the OS!
 			
-			NSData *responseData = CFBridgingRelease(CFHTTPMessageCopySerializedMessage(response);
+			NSData *responseData = CFBridgingRelease(CFHTTPMessageCopySerializedMessage(response));
 			[asyncSocket writeData:responseData withTimeout:WRITE_HEAD_TIMEOUT tag:HTTP_PARTIAL_RESPONSE];
 			[asyncSocket writeData:data withTimeout:WRITE_BODY_TIMEOUT tag:HTTP_RESPONSE];
 		}
@@ -397,7 +397,7 @@
 	
 	// Status code 405 - Method Not Allowed
     CFHTTPMessageRef response = CFHTTPMessageCreateResponse(kCFAllocatorDefault, 405, NULL, kCFHTTPVersion1_1);
-    NSData *responseData = CFBridgingRelease(CFHTTPMessageCopySerializedMessage(response);
+    NSData *responseData = CFBridgingRelease(CFHTTPMessageCopySerializedMessage(response));
 	[asyncSocket writeData:responseData withTimeout:WRITE_ERROR_TIMEOUT tag:HTTP_RESPONSE];
     CFRelease(response);
 
