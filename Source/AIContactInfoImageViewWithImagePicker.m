@@ -56,7 +56,7 @@
 		resetImageTrackingTag = -1;
 	}
 
-	[super dealloc];
+	
 }
 
 - (void)drawRect:(NSRect)inRect

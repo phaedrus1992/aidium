@@ -53,52 +53,7 @@ static SS_PrefsController *prefsController = nil;
 + (SS_PrefsController *)sharedPrefsController
 {
 	if (!prefsController) {
-		prefsController = [[SS_PrefsController preferencesWithPanes:[adium.preferenceController paneArray]
-														   delegate:self] retain];
-
-		// Set which panes are included, and their order.
-		[prefsController
-			setPanesOrder:[NSArray arrayWithObjects:@"Accounts", NSToolbarSeparatorItemIdentifier, @"General",
-													@"Personal", @"Appearance", @"Messages", @"Status", @"Events",
-													@"File Transfer", @"Advanced", nil]];
-		[prefsController setDebug:YES];
-	}
-
-	return prefsController;
-}
-
-/*!
- * @brief Open the preference window
- */
-+ (void)openPreferenceWindow
-{
-	// Show the preferences window.
-	[[self sharedPrefsController] showPreferencesWindow];
-}
-
-/*!
- * @brief Open the preference window to a specific category
- */
-+ (void)openPreferenceWindowToCategoryWithIdentifier:(NSString *)identifier
-{
-	[[self sharedPrefsController] createPreferencesWindowAndDisplay:NO];
-	[[self sharedPrefsController] loadPreferencePaneNamed:identifier];
-	[[self sharedPrefsController] showPreferencesWindow];
-}
-
-/*!
- * @brief Close the preference window (if it is open)
- */
-+ (void)closePreferenceWindow
-{
-	[prefsController destroyPreferencesWindow];
-	[prefsController release];
-	prefsController = nil;
-}
-
-+ (void)prefsWindowWillClose:(SS_PrefsController *)inPrefsController
-{
-	[prefsController release];
+		prefsController = 
 	prefsController = nil;
 }
 

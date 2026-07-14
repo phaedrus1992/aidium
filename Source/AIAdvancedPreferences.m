@@ -31,105 +31,12 @@
 @implementation AIAdvancedPreferences
 + (AIPreferencePane *)preferencePane
 {
-	[adium.preferenceController registerDefaults:[NSDictionary dictionaryWithObject:[NSNumber numberWithDouble:150]
-																			 forKey:KEY_ADVANCED_PREFERENCE_SHELF_WIDTH]
-										forGroup:PREF_GROUP_WINDOW_POSITIONS];
-
-	return [super preferencePane];
-}
-
-- (NSString *)paneIdentifier
-{
-	return @"Advanced";
-}
-- (NSString *)paneName
-{
-	return AILocalizedString(@"Advanced", "Title of the messages preferences");
-}
-- (NSString *)nibName
-{
-	return @"AdvancedPreferences";
-}
-- (NSImage *)paneIcon
-{
-	return [NSImage imageNamed:@"pref-advanced"];
-}
-
-/*!
- * @brief Configure the preference view
- */
-- (void)viewDidLoad
-{
-	[shelf_splitView setFrame:[[shelf_splitView superview] frame]];
-	[shelf_splitView
-		setShelfWidth:(CGFloat)[[adium.preferenceController preferenceForKey:KEY_ADVANCED_PREFERENCE_SHELF_WIDTH
-																	   group:PREF_GROUP_WINDOW_POSITIONS] doubleValue]];
-
-	[tableView_categories accessibilitySetOverrideValue:AILocalizedString(@"Advanced Preference Categories", nil)
-										   forAttribute:NSAccessibilityRoleDescriptionAttribute];
-
-	[self _configureAdvancedPreferencesTable];
-}
-
-- (void)viewWillClose
-{
-	// Select the previously selected row
-	[adium.preferenceController setPreference:[NSNumber numberWithInteger:[tableView_categories selectedRow]]
-									   forKey:KEY_ADVANCED_PREFERENCE_SELECTED_ROW
-										group:PREF_GROUP_WINDOW_POSITIONS];
-
-	[adium.preferenceController setPreference:[NSNumber numberWithDouble:[shelf_splitView shelfWidth]]
-									   forKey:KEY_ADVANCED_PREFERENCE_SHELF_WIDTH
-										group:PREF_GROUP_WINDOW_POSITIONS];
-
-	// Close open panes
-	[loadedAdvancedPanes makeObjectsPerformSelector:@selector(closeView)];
-	[modularPane removeAllSubviews];
-	[loadedAdvancedPanes release];
-	loadedAdvancedPanes = nil;
-	[_advancedCategoryArray release];
-	_advancedCategoryArray = nil;
-}
-
-/*!
- * @brief Returns an array containing all the available advanced preference views
- */
-- (NSArray *)advancedCategoryArray
-{
-	if (!_advancedCategoryArray) {
-		_advancedCategoryArray = [[[adium.preferenceController advancedPaneArray]
-			sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] retain];
-	}
-
-	return _advancedCategoryArray;
-}
-
-/*!
- * @brief Displays the passed AIPreferencePane in the advanced preferences tab of our window
- */
-- (void)configureAdvancedPreferencesForPane:(AIAdvancedPreferencePane *)preferencePane
-{
-	// Close open panes
-	[loadedAdvancedPanes makeObjectsPerformSelector:@selector(closeView)];
-	[modularPane removeAllSubviews];
-	[loadedAdvancedPanes release];
+	
 	loadedAdvancedPanes = nil;
 
 	// Load new panes
 	if (preferencePane) {
-		loadedAdvancedPanes = [[NSArray arrayWithObject:preferencePane] retain];
-		[modularPane setPanes:loadedAdvancedPanes];
-	}
-}
-
-/*!
- * @brief Configure the advanced preference category table view
- */
-- (void)_configureAdvancedPreferencesTable
-{
-	[[tableView_categories enclosingScrollView] setAutohidesScrollers:YES];
-
-	AIImageTextCell *cell = [[[AIImageTextCell alloc] initTextCell:@""] autorelease];
+		loadedAdvancedPanes = 
 	[cell setFont:[NSFont systemFontOfSize:11]];
 	[cell setLineBreakMode:NSLineBreakByTruncatingTail];
 

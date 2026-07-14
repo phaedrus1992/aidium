@@ -8250,7 +8250,6 @@
 				34DC8B040A7EEEF7003E1636 /* ESFileWrapperExtension.m in Sources */,
 				34DC8B090A7EEEF7003E1636 /* JVFontPreviewField.m in Sources */,
 				343700A80A9C1E170028604E /* AIAdvancedPreferencePane.m in Sources */,
-				34F312F00ADC476300A4310E /* KNShelfSplitView.m in Sources */,
 				11CA00120C35EC5200A6BB8D /* SS_PrefsController.m in Sources */,
 				34A88E180C7A26E0006EB7D4 /* AIPasswordPromptController.m in Sources */,
 				347933F40C861017007ADCAA /* AIColorStringTransformer.m in Sources */,

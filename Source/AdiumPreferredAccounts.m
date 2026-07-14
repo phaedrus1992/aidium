@@ -61,7 +61,7 @@
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 
-	[super dealloc];
+	
 }
 
 - (AIAccount *)fallbackAccountForSendingToContact:(AIListContact *)inContact strictChecking:(BOOL)strictChecking

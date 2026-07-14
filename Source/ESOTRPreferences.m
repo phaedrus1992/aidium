@@ -45,68 +45,7 @@
 }
 - (NSImage *)image
 {
-	return [NSImage imageNamed:@"lock-locked" forClass:[adium class]];
-}
-
-- (void)viewDidLoad
-{
-	viewIsOpen = YES;
-
-	// Account Menu
-	accountMenu = [[AIAccountMenu accountMenuWithDelegate:self submenuType:AIAccountNoSubmenu
-										   showTitleVerbs:NO] retain];
-
-	// Fingerprints
-	[tableView_fingerprints setDelegate:self];
-	[tableView_fingerprints setDataSource:self];
-	[tableView_fingerprints setTarget:self];
-	[tableView_fingerprints setDoubleAction:@selector(showFingerprint:)];
-	[self updateFingerprintsList];
-
-	[self updatePrivateKeyList];
-
-	[textField_privateKey setSelectable:YES];
-
-	[self tableViewSelectionDidChange:[NSNotification notificationWithName:@"SelectionChanged" object:nil]];
-}
-
-- (void)viewWillClose
-{
-	viewIsOpen = NO;
-	[fingerprintDictArray release];
-	fingerprintDictArray = nil;
-	[accountMenu release];
-	accountMenu = nil;
-
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:Account_ListChanged object:nil];
-}
-
-/*!
- * @brief Deallocate
- */
-- (void)dealloc
-{
-	[fingerprintDictArray release];
-	fingerprintDictArray = nil;
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
-
-	[super dealloc];
-}
-
-/*!
- * @brief Update the fingerprint display
- *
- * Called by the OTR adapter when -otr informs us the fingerprint list changed
- */
-- (void)updateFingerprintsList
-{
-	OtrlUserState otrg_plugin_userstate = otrg_get_userstate();
-
-	if (viewIsOpen && otrg_plugin_userstate) {
-		ConnContext *context;
-		Fingerprint *fingerprint;
-
-		[fingerprintDictArray release];
+	return 
 		fingerprintDictArray = [[NSMutableArray alloc] init];
 
 		for (context = otrg_plugin_userstate->context_root; context != NULL; context = context->next) {

@@ -26,20 +26,8 @@
 
 - (id)init
 {
-	self = [super init];
-	if (self != nil) {
-		[NSBundle loadNibNamed:[self nibName] owner:self];
-		// Other init goes here.
-	}
-	return self;
-}
-
-- (void)dealloc
-{
-	[inspectorContentView release];
-	[alertsController release];
-
-	[super dealloc];
+	self = 
+	
 }
 
 - (NSString *)nibName

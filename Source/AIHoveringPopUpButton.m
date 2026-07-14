@@ -91,7 +91,7 @@
 		trackingTag = -1;
 	}
 
-	[super dealloc];
+	
 }
 
 // Mouse Tracking

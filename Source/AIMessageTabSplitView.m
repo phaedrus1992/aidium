@@ -20,37 +20,7 @@
 
 - (void)dealloc
 {
-	[leftColor release];
-	[rightColor release];
-	[super dealloc];
-}
-
-- (void)setLeftColor:(NSColor *)inLeftColor rightColor:(NSColor *)inRightColor
-{
-	if (leftColor != inLeftColor) {
-		[leftColor release];
-		leftColor = [inLeftColor retain];
-	}
-
-	if (rightColor != inRightColor) {
-		[rightColor release];
-		rightColor = [inRightColor retain];
-	}
-
-	[self setNeedsDisplay:YES];
-}
-
-- (void)setTabPosition:(AIMessageSplitTabPosition)inPosition
-{
-	position = inPosition;
-}
-
-- (void)drawDividerInRect:(NSRect)aRect
-{
-	if (rightColor && leftColor) {
-		NSGradient *gradient = [[NSGradient alloc] initWithStartingColor:leftColor endingColor:rightColor];
-		[gradient drawInRect:self.bounds angle:90.0];
-		[gradient release];
+	
 		NSBezierPath *line = nil;
 
 		if (position == AIMessageSplitTabPositionLeft) {

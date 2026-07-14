@@ -43,17 +43,7 @@ static AINewMessagePromptController *sharedNewMessageInstance = nil;
  */
 + (id)createSharedInstance
 {
-	sharedNewMessageInstance = [[self alloc] initWithWindowNibName:NEW_MESSAGE_PROMPT_NIB];
-
-	return sharedNewMessageInstance;
-}
-
-/*!
- * @brief Destroy the shared instance
- */
-+ (void)destroySharedInstance
-{
-	[sharedNewMessageInstance autorelease];
+	sharedNewMessageInstance = 
 	sharedNewMessageInstance = nil;
 }
 

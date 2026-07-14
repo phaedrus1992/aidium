@@ -52,71 +52,11 @@
 
 - (id)init
 {
-	self = [super init];
-	if (self != nil) {
-		[NSBundle loadNibNamed:[self nibName] owner:self];
-
-		// Load Encryption menus
-		[popUp_encryption setMenu:[adium.contentController encryptionMenuNotifyingTarget:self withDefault:YES]];
-		[[popUp_encryption menu] setAutoenablesItems:NO];
-
-		// Observe contact list changes
-		[[NSNotificationCenter defaultCenter] addObserver:self
-												 selector:@selector(reloadPopup)
-													 name:Contact_ListChanged
-												   object:nil];
-		// Observe account changes
-		[[NSNotificationCenter defaultCenter] addObserver:self
-												 selector:@selector(reloadPopup)
-													 name:Account_ListChanged
-												   object:nil];
-
-		accountMenu = [[AIAccountMenu accountMenuWithDelegate:self submenuType:AIAccountNoSubmenu
-											   showTitleVerbs:NO] retain];
-	}
-
-	return self;
-}
-
-- (void)dealloc
-{
-	[accountMenu release];
-	accountMenu = nil;
-	[contactMenu release];
-	contactMenu = nil;
-	[displayedObject release];
-	displayedObject = nil;
-	[inspectorContentView release];
-	inspectorContentView = nil;
-
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[super dealloc];
-}
-
-- (NSString *)nibName
-{
-	return ADVANCED_NIB_NAME;
-}
-
-- (NSView *)inspectorContentView
-{
-	return inspectorContentView;
-}
-
-- (void)configureControlDimming
-{
-	[button_addOrRemoveGroup setEnabled:[tableView_groups numberOfSelectedRows] forSegment:1];
-}
-
-- (void)updateForListObject:(AIListObject *)inObject
-{
-	if (displayedObject != inObject) {
-		[displayedObject release];
-
+	self = 
 		displayedObject =
 			([inObject isKindOfClass:[AIListContact class]] ? [(AIListContact *)inObject parentContact] : inObject);
 
-		[displayedObject retain];
+		displayedObject;
 
 		// Rebuild the account and contacts lists
 		[self reloadPopup];
